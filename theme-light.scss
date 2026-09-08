@@ -1,33 +1,39 @@
 /*-- scss:defaults --*/
 
-// Spatial Python palette — inspired by terrain + sky
-$primary: #1d6fa5;      // deep sky blue
+$primary: #1d6fa5;
 $body-bg: #fbfaf7;
 $body-color: #262523;
 $link-color: #1d6fa5;
 $code-bg: #f2f0ea;
 $code-color: #a34d1d;
 
-// Headings
 $headings-color: #1a3c40;
 $headings-font-weight: 700;
 
-// Fonts
-$font-family-sans-serif: "Inter", "Segoe UI", -apple-system, sans-serif;
+$font-family-sans-serif:
+  system-ui,
+  -apple-system,
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  Arial,
+  sans-serif;
 $font-family-monospace: "JetBrains Mono", "Fira Code", monospace;
 
 /*-- scss:rules --*/
 
+// ----- Navbar -----
 .navbar {
   background: linear-gradient(90deg, #1a3c40 0%, #1d6fa5 100%) !important;
 }
 
-.navbar-title, .navbar-brand {
+.navbar-title,
+.navbar-brand {
   font-weight: 700;
   letter-spacing: 0.3px;
 }
 
-// Callout boxes with a bit more personality
+// ----- Callouts -----
 div.callout-note {
   border-left-color: #1d6fa5;
 }
@@ -40,19 +46,19 @@ div.callout-warning {
   border-left-color: #d98c1f;
 }
 
-// Code blocks
-pre.sourceCode {
-  border-radius: 8px;
-  border: 1px solid #e3e0d6;
-}
-
-// Inline code
+// ----- Code -----
 code {
   border-radius: 4px;
   padding: 0.1em 0.35em;
 }
 
-// Collapsible exercise/solution blocks (<details>)
+pre.sourceCode {
+  border-radius: 8px;
+  border: 1px solid #e3e0d6;
+  padding: 1rem;
+}
+
+// ----- Details / Collapsible -----
 details {
   background-color: #f5f3ec;
   border: 1px solid #e3e0d6;
@@ -71,13 +77,12 @@ details[open] summary {
   margin-bottom: 0.6em;
 }
 
-// Nested details (solutions inside exercises) — slightly different shade
 details details {
   background-color: #eef4f0;
   margin-top: 0.5em;
 }
 
-// Tables
+// ----- Tables -----
 table {
   border-radius: 6px;
   overflow: hidden;
@@ -87,7 +92,7 @@ thead {
   background-color: #eef2f5;
 }
 
-// Footer
+// ----- Footer -----
 .page-footer {
   background-color: #1a3c40;
   color: #eae7dc;
@@ -95,4 +100,24 @@ thead {
 
 .page-footer a {
   color: #9fd3ff;
+}
+
+// ----- Sidebar -----
+.sidebar-navigation .sidebar-item-text {
+  font-size: 0.88rem;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.sidebar-navigation .sidebar-item {
+  margin-bottom: 2px;
+}
+
+.sidebar-navigation .sidebar-item-container {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.sidebar-navigation .sidebar-item-text:hover {
+  font-weight: 600;
 }

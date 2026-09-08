@@ -1,6 +1,6 @@
 /*-- scss:defaults --*/
 
-$primary: #5fb4e0;         // lighter sky blue for contrast on dark
+$primary: #5fb4e0;
 $body-bg: #14181b;
 $body-color: #e6e3da;
 $link-color: #5fb4e0;
@@ -10,20 +10,30 @@ $code-color: #e8a15c;
 $headings-color: #cfe8e2;
 $headings-font-weight: 700;
 
-$font-family-sans-serif: "Inter", "Segoe UI", -apple-system, sans-serif;
+$font-family-sans-serif:
+  system-ui,
+  -apple-system,
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  Arial,
+  sans-serif;
 $font-family-monospace: "JetBrains Mono", "Fira Code", monospace;
 
 /*-- scss:rules --*/
 
+// ----- Navbar -----
 .navbar {
   background: linear-gradient(90deg, #0f1f21 0%, #163a4d 100%) !important;
 }
 
-.navbar-title, .navbar-brand {
+.navbar-title,
+.navbar-brand {
   font-weight: 700;
   letter-spacing: 0.3px;
 }
 
+// ----- Callouts -----
 div.callout-note {
   border-left-color: #5fb4e0;
   background-color: #16232a;
@@ -39,16 +49,19 @@ div.callout-warning {
   background-color: #241d13;
 }
 
-pre.sourceCode {
-  border-radius: 8px;
-  border: 1px solid #2a3136;
-}
-
+// ----- Code -----
 code {
   border-radius: 4px;
   padding: 0.1em 0.35em;
 }
 
+pre.sourceCode {
+  border-radius: 8px;
+  border: 1px solid #2a3136;
+  padding: 1rem;
+}
+
+// ----- Details / Collapsible -----
 details {
   background-color: #1a2024;
   border: 1px solid #2a3136;
@@ -72,6 +85,7 @@ details details {
   margin-top: 0.5em;
 }
 
+// ----- Tables -----
 table {
   border-radius: 6px;
   overflow: hidden;
@@ -81,6 +95,7 @@ thead {
   background-color: #1e2b30;
 }
 
+// ----- Footer -----
 .page-footer {
   background-color: #0f1f21;
   color: #cfe8e2;
@@ -88,4 +103,19 @@ thead {
 
 .page-footer a {
   color: #5fb4e0;
+}
+
+// ----- Sidebar -----
+.sidebar-navigation .sidebar-item-text {
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.sidebar-navigation .sidebar-item {
+  margin-bottom: 2px;
+}
+
+.sidebar-navigation .sidebar-item-container {
+  padding-top: 3px;
+  padding-bottom: 3px;
 }

@@ -7,14 +7,21 @@ book:
   subtitle: "A project-based course in spatial data science with Python"
   author: "Yousef Esmaeili"
   date: today
-  cover-image: images/logo.png
-  cover-image-alt: |
-    Spatial Python course logo - a topographic contour pattern merged with a Python-inspired icon
+
+  description: |
+    A hands-on, project-based course for learning spatial data science with Python,
+    covering vector data, raster data, remote sensing, spatial analysis,
+    suitability modeling, interactive maps, and Streamlit applications.
+
+  favicon: images/logo.png
+
   chapters:
     - index.qmd
+
     - part: "Getting Started"
       chapters:
         - sessions/session-00-python-review.qmd
+
     - part: "Building the Project"
       chapters:
         - sessions/session-01-intro-loading-data.qmd
@@ -27,35 +34,61 @@ book:
         - sessions/session-08-suitability-model.qmd
         - sessions/session-09-interactive-map.qmd
         - sessions/session-10-streamlit-app.qmd
+
     - part: "Epilogue"
       chapters:
         - sessions/datasets.qmd
         - sessions/references.qmd
+
   page-footer:
     left: |
       Spatial Python by Yousef Esmaeili.
     right: |
       Built with <a href="https://quarto.org/">Quarto</a>.
+
   site-url: https://yousefess.github.io/spatial-python-course/
   repo-url: https://github.com/yousefess/spatial-python-course
-  repo-actions: [edit, issue]
-  sharing: [twitter, linkedin, facebook]
+
+  repo-actions:
+    - edit
+    - issue
+
+  sharing:
+    - linkedin
+
   page-navigation: true
   search: true
+
+  sidebar:
+    style: docked
+    border: true
 
 bibliography: sessions/references.bib
 
 format:
   html:
     theme:
-      light: [cosmo, theme-light.scss]
-      dark: [darkly, theme-dark.scss]
+      light:
+        - cosmo
+        - theme-light.scss
+      dark:
+        - darkly
+        - theme-dark.scss
+
     toc: true
     toc-depth: 3
+
+    number-sections: false
+
     code-fold: false
     code-copy: true
+
     smooth-scroll: true
-    number-sections: true
+
     highlight-style: github
+
+    html-math-method: katex
+
+    link-external-newwindow: true
 
 editor: visual

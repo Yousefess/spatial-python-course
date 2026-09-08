@@ -1,25 +1,31 @@
 # Welcome {.unnumbered}
 
-::: {style="margin-top: 40px; margin-bottom: 60px; text-align: center;"}
-![](images/logo.png){width="220px"}
+::: {style="margin-top: 30px; margin-bottom: 45px; text-align: center;"}
+![](images/spatial-python-welcome.webp){fig-alt="Spatial Python course overview" width="100%"}
 :::
 
-::: {style="margin-top: 20px; margin-bottom: 80px;"}
-This is the website for **Spatial Python**, a hands-on, project-based course teaching Python for spatial analysis - combining **vector data** (roads, power lines, administrative boundaries) and **raster data** (elevation models, satellite imagery).
+::: {style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;"}
+*Image generated with ChatGPT.*
+:::
 
-Across ten sessions, students build a complete real-world application from scratch: a **Solar Site Suitability** tool that takes a Digital Elevation Model, a Sentinel-2 satellite image, and OpenStreetMap infrastructure layers, and identifies the best areas for solar panel installation — all wrapped in an interactive web app.
+::: {style="margin-top: 20px; margin-bottom: 60px; text-align: justify;"}
+This is the website for **Spatial Python**, a hands-on, project-based course teaching Python for spatial analysis, combining **vector data** (roads, power lines, administrative boundaries) and **raster data** (elevation models, satellite imagery).
+
+Across ten sessions, students build a complete real-world application from scratch: a **Solar Site Suitability** tool that takes a Digital Elevation Model, a Sentinel-2 satellite image, and OpenStreetMap infrastructure layers, and identifies the best areas for solar panel installation, all wrapped in an interactive web app.
 
 The course material has been designed and taught by [Yousef Esmaeili](https://github.com/yousefess).
 :::
 
-::: {.callout-note}
+::: {.callout-note style="text-align: justify;"}
 ## 📘 What you'll build
-By the end of this course you won't just know GIS libraries in isolation - you'll have shipped a working, deployable Streamlit application that goes from raw satellite/elevation data to an interactive suitability map.
+
+By the end of this course you won't just know GIS libraries in isolation. You'll have shipped a working, deployable Streamlit application that goes from raw satellite and elevation data to an interactive suitability map.
 :::
 
-::: {.callout-tip}
+::: {.callout-tip style="text-align: justify;"}
 ## 🧩 Who this is for
-This course assumes basic familiarity with Python (variables, loops, functions). **Session 0** is a dedicated refresher covering exactly what's needed before diving into spatial libraries - feel free to skip it if you're already comfortable.
+
+This course assumes basic familiarity with Python (variables, loops, functions). **Session 0** is a dedicated refresher covering exactly what's needed before diving into spatial libraries. Feel free to skip it if you're already comfortable.
 :::
 
 # Contact {.unnumbered}
