@@ -1,0 +1,30 @@
+# Welcome {.unnumbered}
+
+::: {style="margin-top: 40px; margin-bottom: 60px; text-align: center;"}
+![](images/logo.png){width="220px"}
+:::
+
+::: {style="margin-top: 20px; margin-bottom: 80px;"}
+This is the website for **Spatial Python**, a hands-on, project-based course teaching Python for spatial analysis - combining **vector data** (roads, power lines, administrative boundaries) and **raster data** (elevation models, satellite imagery).
+
+Across ten sessions, students build a complete real-world application from scratch: a **Solar Site Suitability** tool that takes a Digital Elevation Model, a Sentinel-2 satellite image, and OpenStreetMap infrastructure layers, and identifies the best areas for solar panel installation — all wrapped in an interactive web app.
+
+The course material has been designed and taught by [Yousef Esmaeili](https://github.com/yousefess).
+:::
+
+::: {.callout-note}
+## 📘 What you'll build
+By the end of this course you won't just know GIS libraries in isolation - you'll have shipped a working, deployable Streamlit application that goes from raw satellite/elevation data to an interactive suitability map.
+:::
+
+::: {.callout-tip}
+## 🧩 Who this is for
+This course assumes basic familiarity with Python (variables, loops, functions). **Session 0** is a dedicated refresher covering exactly what's needed before diving into spatial libraries - feel free to skip it if you're already comfortable.
+:::
+
+# Contact {.unnumbered}
+
+::: {style="margin-top: 40px"}
+:::
+
+> Yousef Esmaeili - [yousefes@stu.nit.ac.ir](mailto:yousefes@stu.nit.ac.ir) - Instructor, Spatial Python - [GitHub](https://github.com/yousefess) · [LinkedIn](https://linkedin.com/in/yousef-esmaeili/)

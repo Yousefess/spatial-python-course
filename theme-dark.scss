@@ -1,0 +1,91 @@
+/*-- scss:defaults --*/
+
+$primary: #5fb4e0;         // lighter sky blue for contrast on dark
+$body-bg: #14181b;
+$body-color: #e6e3da;
+$link-color: #5fb4e0;
+$code-bg: #1e2427;
+$code-color: #e8a15c;
+
+$headings-color: #cfe8e2;
+$headings-font-weight: 700;
+
+$font-family-sans-serif: "Inter", "Segoe UI", -apple-system, sans-serif;
+$font-family-monospace: "JetBrains Mono", "Fira Code", monospace;
+
+/*-- scss:rules --*/
+
+.navbar {
+  background: linear-gradient(90deg, #0f1f21 0%, #163a4d 100%) !important;
+}
+
+.navbar-title, .navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+div.callout-note {
+  border-left-color: #5fb4e0;
+  background-color: #16232a;
+}
+
+div.callout-tip {
+  border-left-color: #5fbf85;
+  background-color: #142420;
+}
+
+div.callout-warning {
+  border-left-color: #e0a233;
+  background-color: #241d13;
+}
+
+pre.sourceCode {
+  border-radius: 8px;
+  border: 1px solid #2a3136;
+}
+
+code {
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+details {
+  background-color: #1a2024;
+  border: 1px solid #2a3136;
+  border-radius: 8px;
+  padding: 0.6em 1em;
+  margin-bottom: 1em;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: $primary;
+}
+
+details[open] summary {
+  margin-bottom: 0.6em;
+}
+
+details details {
+  background-color: #172420;
+  margin-top: 0.5em;
+}
+
+table {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: #1e2b30;
+}
+
+.page-footer {
+  background-color: #0f1f21;
+  color: #cfe8e2;
+}
+
+.page-footer a {
+  color: #5fb4e0;
+}
