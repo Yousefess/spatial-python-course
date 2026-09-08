@@ -1,0 +1,626 @@
+---
+title: "Session 0 — Python Refresher for Spatial Analysis"
+subtitle: "Warm-up before we touch a single raster or shapefile 🗺️"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    number-sections: true
+---
+
+## Welcome 👋
+
+Before we open a single satellite image or elevation model, we need to make sure everyone speaks the same _Python_ language. This session is not about GIS — it's about the small set of Python tools that **every single session in this course will lean on**.
+
+Nothing here is random. Every example was picked because you will see the exact same pattern again later — when you calculate NDVI, slope, or filter road networks.
+
+::: {.callout-note}
+
+## How to use this notebook
+
+Read the explanation, run the example, then try the exercise **before** looking at the solution. Solutions are hidden — click to reveal them only after you've tried.
+:::
+
+---
+
+## 1. Variables, Lists, and Dictionaries
+
+### Why this matters
+
+In this course, almost everything is "a bunch of numbers with a label" — pixel values, band names, coordinate systems, weights for our final model. Lists and dictionaries are how Python organizes that.
+
+### Example 1 — Variables
+
+```python
+# A single weather station reading
+station_name = "Station A"
+temperature_celsius = 21.5
+elevation_m = 1250
+
+print(f"{station_name} is at {elevation_m} m, temperature: {temperature_celsius}°C")
+```
+
+### Example 2 — Lists
+
+```python
+# Elevation readings (in meters) from 5 weather stations
+elevations = [1250, 980, 1430, 1100, 1600]
+
+print("Number of stations:", len(elevations))
+print("Highest station:", max(elevations))
+print("Lowest station:", min(elevations))
+```
+
+### Example 3 — Looping through a list
+
+```python
+# Print each station's elevation with its index
+for index, value in enumerate(elevations):
+    print(f"Station {index + 1}: {value} m")
+```
+
+### Example 4 — Dictionaries
+
+```python
+# A dictionary is perfect for storing metadata — something we'll do A LOT
+raster_metadata = {
+    "filename": "sentinel.tif",
+    "width": 512,
+    "height": 512,
+    "crs": "EPSG:32639",
+    "bands": 4
+}
+
+print("This raster uses CRS:", raster_metadata["crs"])
+```
+
+::: {.callout-tip}
+
+## 💡 Note: Why dictionaries instead of separate variables?
+
+Instead of creating `width`, `height`, `crs`, `bands` as four separate variables, a dictionary keeps everything related **together, under one name**. In Session 3, you'll see `rasterio` return metadata in exactly this dictionary format.
+:::
+
+**📷 Image suggestion:** A simple side-by-side diagram showing a Python list `[1250, 980, 1430]` next to a labeled table (station name → elevation), to visually connect "list" with "column of data." (Search: "python list vs table diagram" or generate a simple flat illustration with 3 boxes labeled with numbers and an arrow to a mini table.)
+
+<details>
+<summary>📝 <b>Exercise 1.1</b> — Click to expand</summary>
+
+Create a dictionary called `image_info` with keys `sensor`, `resolution_m`, and `cloud_cover_percent`. Fill in any realistic values. Then print a sentence using an f-string that reports the sensor name and its resolution.
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+image_info = {
+    "sensor": "Sentinel-2",
+    "resolution_m": 10,
+    "cloud_cover_percent": 5
+}
+
+print(f"{image_info['sensor']} has a resolution of {image_info['resolution_m']} m")
+```
+
+</details>
+</details>
+
+<details>
+<summary>📝 <b>Exercise 1.2</b> — Click to expand</summary>
+
+Given `elevations = [1250, 980, 1430, 1100, 1600]`, write a loop that prints only the stations with elevation **above 1200 m**.
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+elevations = [1250, 980, 1430, 1100, 1600]
+
+for value in elevations:
+    if value > 1200:
+        print(f"{value} m is above 1200 m")
+```
+
+</details>
+</details>
+
+---
+
+## 2. Functions
+
+### Why this matters
+
+Almost every session in this course ends with you writing one function: `calculate_ndvi()`, `calculate_slope()`, `calculate_final_score()`. Getting comfortable with functions now saves a lot of confusion later.
+
+### Example 1 — A basic function
+
+```python
+def celsius_to_fahrenheit(celsius):
+    """Convert a temperature from Celsius to Fahrenheit."""
+    fahrenheit = (celsius * 9 / 5) + 32
+    return fahrenheit
+
+print(celsius_to_fahrenheit(21.5))
+```
+
+### Example 2 — A function with multiple parameters
+
+```python
+def classify_elevation(elevation_m, threshold=1200):
+    """Return 'high' or 'low' depending on a threshold."""
+    if elevation_m > threshold:
+        return "high"
+    else:
+        return "low"
+
+print(classify_elevation(1600))
+print(classify_elevation(900))
+print(classify_elevation(1600, threshold=2000))
+```
+
+::: {.callout-tip}
+
+## 💡 Note: Default parameters
+
+`threshold=1200` means "use 1200 unless the caller says otherwise." You'll use this exact pattern in Session 8, when the suitability function has _default weights_ that a student can later override.
+:::
+
+### Example 3 — A function that works on a whole list at once
+
+```python
+def classify_all(elevation_list, threshold=1200):
+    """Classify every elevation in a list."""
+    results = []
+    for value in elevation_list:
+        results.append(classify_elevation(value, threshold))
+    return results
+
+elevations = [1250, 980, 1430, 1100, 1600]
+print(classify_all(elevations))
+```
+
+**📷 Image suggestion:** A simple flow diagram: box labeled "Input: 21.5°C" → box labeled "function celsius_to_fahrenheit()" → box labeled "Output: 70.7°F". Something like a "function as a machine" illustration. (Search: "function input output diagram machine simple")
+
+<details>
+<summary>📝 <b>Exercise 2.1</b> — Click to expand</summary>
+
+Write a function `meters_to_feet(meters)` that converts meters to feet (1 m = 3.281 ft). Test it with a value of your choice.
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+def meters_to_feet(meters):
+    """Convert meters to feet."""
+    return meters * 3.281
+
+print(meters_to_feet(1250))
+```
+
+</details>
+</details>
+
+<details>
+<summary>📝 <b>Exercise 2.2</b> — Click to expand</summary>
+
+Write a function `average_elevation(elevation_list)` that returns the average of a list of elevations, without using the built-in `sum()`... actually, go ahead and use `sum()` and `len()`. That's the point of built-in functions!
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+def average_elevation(elevation_list):
+    """Return the average value of a list of numbers."""
+    return sum(elevation_list) / len(elevation_list)
+
+elevations = [1250, 980, 1430, 1100, 1600]
+print(average_elevation(elevations))
+```
+
+</details>
+</details>
+
+### 🧠 Quick Quiz
+
+<details>
+<summary><b>Q1.</b> What does a function return if you forget to write a `return` statement? Click for options.</summary>
+
+A. An error, always
+B. `None`
+C. `0`
+D. The last variable defined inside the function
+
+<details>
+<summary>✅ Answer</summary>
+**B. `None`** — Python functions return `None` by default if there's no explicit `return`.
+</details>
+</details>
+
+---
+
+## 3. From Lists to NumPy Arrays
+
+### Why this matters
+
+This is the single most important concept in this session. **A raster (satellite image, elevation model) is nothing more than a big NumPy array of numbers.** Every calculation you do in Sessions 4–8 (NDVI, slope, aspect, suitability score) is just NumPy math on arrays.
+
+### Example 1 — The problem with plain lists
+
+```python
+elevations = [1250, 980, 1430, 1100, 1600]
+
+# I want to convert every value to feet... but this doesn't work the way you'd hope:
+# elevations * 3.281   -> this would repeat the list, not multiply each value!
+
+# With a plain list, you're forced to loop:
+elevations_ft = []
+for value in elevations:
+    elevations_ft.append(value * 3.281)
+
+print(elevations_ft)
+```
+
+### Example 2 — The NumPy way
+
+```python
+import numpy as np
+
+elevations = np.array([1250, 980, 1430, 1100, 1600])
+
+# Now multiplication applies to EVERY value at once — no loop needed
+elevations_ft = elevations * 3.281
+print(elevations_ft)
+```
+
+::: {.callout-tip}
+
+## 💡 Note: "Vectorized" operations
+
+When an operation applies to a whole array at once (no loop), we call it **vectorized**. This is not just shorter code — it's dramatically faster, which matters a lot when your "list" is actually an image with millions of pixels.
+:::
+
+### Example 3 — Filtering with conditions
+
+```python
+elevations = np.array([1250, 980, 1430, 1100, 1600])
+
+# Boolean mask: True/False for each value
+above_1200 = elevations > 1200
+print(above_1200)
+
+# Use the mask to actually pull out the values
+print(elevations[above_1200])
+
+# Or in one line:
+print(elevations[elevations > 1200])
+```
+
+::: {.callout-tip}
+
+## 💡 Note: This is exactly how we'll pick "good" pixels
+
+In Session 5, we'll write something like `slope_array[slope_array < 10]` to find every pixel with a gentle enough slope for solar panels. Same exact pattern you just used.
+:::
+
+### Example 4 — 2D arrays (this is basically a mini raster!)
+
+```python
+# Imagine this 5x5 grid of numbers is a tiny elevation model (DEM)
+dem = np.array([
+    [1200, 1210, 1215, 1220, 1225],
+    [1190, 1195, 1205, 1215, 1230],
+    [1180, 1185, 1190, 1200, 1210],
+    [1150, 1160, 1170, 1180, 1195],
+    [1100, 1120, 1140, 1160, 1175]
+])
+
+print("Shape of this 'DEM':", dem.shape)   # (rows, columns)
+print("Value at row 2, column 3:", dem[2, 3])
+```
+
+### Example 5 — Slicing a 2D array
+
+```python
+# Get the top-left 2x2 corner
+print(dem[0:2, 0:2])
+
+# Get the entire first row
+print(dem[0, :])
+
+# Get the entire last column
+print(dem[:, -1])
+```
+
+### Example 6 — Applying a condition to a 2D array
+
+```python
+# Which pixels are above 1200 m?
+high_pixels = dem > 1200
+print(high_pixels)
+
+# How many pixels are above 1200 m?
+print("Count:", np.sum(high_pixels))
+
+# What's the average elevation of the whole grid?
+print("Mean elevation:", np.mean(dem))
+```
+
+::: {.callout-warning}
+
+## ⚠️ Note: rows vs. columns
+
+In NumPy (and in every raster you'll work with), the **first** index is the row (y-direction, top to bottom) and the **second** index is the column (x-direction, left to right). Mixing these up is one of the most common beginner mistakes — keep it in mind starting from Session 3!
+:::
+
+**📷 Image suggestion:** A labeled grid (5x5) with row/column indices marked on the axes, and one cell highlighted with an arrow showing "`dem[2, 3]`". This should visually look like a tiny raster/heatmap. (Search: "numpy 2d array grid diagram row column" or generate a simple grid illustration with axis labels.)
+
+<details>
+<summary>📝 <b>Exercise 3.1</b> — Click to expand</summary>
+
+Using the `dem` array from Example 4, write code to find:
+
+1. The minimum and maximum elevation in the grid
+2. The number of pixels with elevation **below** 1180 m
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+print("Min:", np.min(dem))
+print("Max:", np.max(dem))
+print("Pixels below 1180:", np.sum(dem < 1180))
+```
+
+</details>
+</details>
+
+<details>
+<summary>📝 <b>Exercise 3.2</b> — Click to expand</summary>
+
+Create a 4x4 NumPy array of your own choosing (any numbers), then print only the values greater than the array's average (`np.mean()`).
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+my_array = np.array([
+    [5, 12, 8, 3],
+    [9, 15, 2, 7],
+    [11, 4, 6, 10],
+    [1, 14, 13, 0]
+])
+
+average = np.mean(my_array)
+print("Average:", average)
+print("Above average:", my_array[my_array > average])
+```
+
+</details>
+</details>
+
+### 🧠 Quick Quiz
+
+<details>
+<summary><b>Q2.</b> Why do we prefer NumPy arrays over plain Python lists for raster data?</summary>
+
+A. NumPy arrays use less disk space than lists
+B. NumPy arrays support fast, vectorized math without writing loops
+C. Lists cannot store numbers, only text
+D. NumPy arrays automatically have a coordinate system
+
+<details>
+<summary>✅ Answer</summary>
+**B.** NumPy's real power for this course is vectorized operations — applying math to millions of pixels at once, no loop required. (D is tempting but wrong — a plain NumPy array has *no* geographic information; that's what `rasterio` adds later!)
+</details>
+</details>
+
+---
+
+## 4. Working with Files and Paths
+
+### Why this matters
+
+Starting from Session 1, your project will have a real folder structure (`data/`, `data/outputs/`, `modules/`). You need a reliable way to build file paths that works on any computer — Windows, Mac, or Linux.
+
+### Example 1 — The problem with hardcoded paths
+
+```python
+# Don't do this — it breaks on other operating systems and is error-prone
+# path = "data\\outputs\\ndvi.tif"   # Windows-style, breaks on Mac/Linux
+# path = "data/outputs/ndvi.tif"     # works on Mac/Linux, awkward on Windows
+```
+
+### Example 2 — The `pathlib` way
+
+```python
+from pathlib import Path
+
+data_folder = Path("data")
+outputs_folder = data_folder / "outputs"
+ndvi_path = outputs_folder / "ndvi.tif"
+
+print(ndvi_path)
+print("Does this file exist?", ndvi_path.exists())
+```
+
+::: {.callout-tip}
+
+## 💡 Note: The `/` operator
+
+Notice `data_folder / "outputs"` — with `pathlib`, the `/` symbol _joins_ path pieces together. It automatically uses the correct separator (`\` on Windows, `/` on Mac/Linux) so your code works everywhere.
+:::
+
+### Example 3 — Listing files in a folder
+
+```python
+data_folder = Path("data")
+
+# List all .tif files in the folder
+if data_folder.exists():
+    for file in data_folder.glob("*.tif"):
+        print(file.name)
+```
+
+### Example 4 — Creating folders safely
+
+```python
+outputs_folder = Path("data/outputs")
+outputs_folder.mkdir(parents=True, exist_ok=True)
+print("Folder ready:", outputs_folder)
+```
+
+::: {.callout-tip}
+
+## 💡 Note: `exist_ok=True`
+
+Without this, Python raises an error if the folder already exists. With it, Python just moves on quietly — very useful when you re-run a notebook multiple times.
+:::
+
+**📷 Image suggestion:** A simple folder-tree illustration matching the course's actual project structure (`project/`, `data/`, `data/outputs/`, `modules/`) with small file icons. (This one is probably easiest to just create yourself as a screenshot of a file explorer, or ask me to generate a clean folder-tree SVG.)
+
+<details>
+<summary>📝 <b>Exercise 4.1</b> — Click to expand</summary>
+
+Using `pathlib`, build a path that points to `data/roads.shp` without typing the slash manually, and print whether it currently exists on your system.
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+from pathlib import Path
+
+roads_path = Path("data") / "roads.shp"
+print(roads_path)
+print(roads_path.exists())
+```
+
+</details>
+</details>
+
+---
+
+## 5. Building and Importing Your Own Module
+
+### Why this matters
+
+Starting in Session 1, every session produces a `.py` file inside a `modules/` folder (`data_loader.py`, `raster_utils.py`, etc). By the end of the course, `main.py` and `app.py` will import and combine all of them. Let's practice that pattern right now, with something simple.
+
+### Example 1 — Creating a small module
+
+Save this code in a file named `unit_converter.py`, in the same folder as your notebook:
+
+```python
+# unit_converter.py
+
+def meters_to_feet(meters):
+    """Convert meters to feet."""
+    return meters * 3.281
+
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit."""
+    return (celsius * 9 / 5) + 32
+```
+
+### Example 2 — Importing it into your notebook
+
+```python
+import unit_converter
+
+print(unit_converter.meters_to_feet(1250))
+print(unit_converter.celsius_to_fahrenheit(21.5))
+```
+
+### Example 3 — Importing specific functions
+
+```python
+from unit_converter import meters_to_feet
+
+print(meters_to_feet(500))
+```
+
+::: {.callout-warning}
+
+## ⚠️ Note: Where should the module file live?
+
+Python looks for `unit_converter.py` in the **same folder** as your notebook (or somewhere on its search path). If you get a `ModuleNotFoundError`, the most common cause is the file being in the wrong folder. Starting Session 1, we'll organize this properly with a `modules/` folder.
+:::
+
+**📷 Image suggestion:** A simple diagram: a file icon labeled `unit_converter.py` with an arrow labeled "import" pointing into a notebook icon labeled `notebook.ipynb`. (Search: "python import module diagram simple" or generate a two-box-and-arrow illustration.)
+
+<details>
+<summary>📝 <b>Exercise 5.1</b> — Click to expand</summary>
+
+Add a new function `classify_elevation(elevation_m, threshold=1200)` (same as Section 2) into `unit_converter.py`. Import it into your notebook and test it with two different elevation values.
+
+<details>
+<summary>✅ Show solution</summary>
+
+```python
+# Add this to unit_converter.py:
+def classify_elevation(elevation_m, threshold=1200):
+    """Return 'high' or 'low' depending on a threshold."""
+    return "high" if elevation_m > threshold else "low"
+```
+
+```python
+# In your notebook:
+from unit_converter import classify_elevation
+
+print(classify_elevation(1600))
+print(classify_elevation(900))
+```
+
+</details>
+</details>
+
+### 🧠 Quick Quiz
+
+<details>
+<summary><b>Q3.</b> If you write <code>from unit_converter import meters_to_feet</code>, how do you call the function afterward?</summary>
+
+A. `unit_converter.meters_to_feet(500)`
+B. `meters_to_feet(500)`
+C. `import.meters_to_feet(500)`
+D. You cannot call it — this import style is only for classes
+
+<details>
+<summary>✅ Answer</summary>
+**B.** When you import a specific function with `from module import function_name`, you call it directly by name — no module prefix needed. (A would be correct only if you used `import unit_converter` instead.)
+</details>
+</details>
+
+---
+
+## Wrap-Up 🎯
+
+You now have every Python tool this course will lean on:
+
+- **Lists & dictionaries** → how we'll store metadata and small collections of values
+- **Functions** → the shape every processing step will take (`calculate_ndvi()`, `calculate_slope()`, ...)
+- **NumPy arrays** → the real structure behind every raster you'll touch
+- **`pathlib`** → how we'll navigate the project's `data/` and `outputs/` folders
+- **Custom modules** → the exact pattern the whole 10-session project is built on
+
+::: {.callout-note}
+
+## 🚀 Coming up in Session 1
+
+We'll open a real satellite image with `rasterio` and see, for the first time, that it really is just a NumPy array with some extra geographic information attached.
+:::
+
+---
+
+## All Exercises — Recap 📋
+
+| #   | Exercise                                                        | Topic          |
+| --- | --------------------------------------------------------------- | -------------- |
+| 1.1 | Build an `image_info` dictionary and print a formatted sentence | Dictionaries   |
+| 1.2 | Loop through elevations, print only those above 1200 m          | Lists & loops  |
+| 2.1 | Write `meters_to_feet(meters)`                                  | Functions      |
+| 2.2 | Write `average_elevation(elevation_list)`                       | Functions      |
+| 3.1 | Find min/max and count of low-elevation pixels in `dem`         | NumPy arrays   |
+| 3.2 | Create your own 4x4 array and filter values above average       | NumPy arrays   |
+| 4.1 | Build a `pathlib` path to `data/roads.shp` and check existence  | File paths     |
+| 5.1 | Add `classify_elevation()` to your own module and import it     | Custom modules |
+
+**Quizzes:** Q1 (functions & `return`), Q2 (why NumPy for rasters), Q3 (import styles)
