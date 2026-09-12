@@ -2,7 +2,7 @@
 title: "python refresher for spatial analysis"
 subtitle: "Warm-up before we touch a single raster or shapefile"
 number-sections: false
-jupyter: spatial-python
+jupyter: python3
 execute:
   enabled: true
 ---
