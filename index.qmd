@@ -25,7 +25,7 @@ By the end of this course you won't just know GIS libraries in isolation. You'll
 ::: {.callout-tip style="text-align: justify;"}
 ## 🧩 Who this is for
 
-This course assumes basic familiarity with Python (variables, loops, functions). **Session 0** is a dedicated refresher covering exactly what's needed before diving into spatial libraries. Feel free to skip it if you're already comfortable.
+This course assumes basic familiarity with Python (variables, loops, functions). [**Python refresher for spatial analysis**](sessions/session-00-python-review.qmd) is a dedicated refresher covering exactly what's needed before diving into spatial libraries. Feel free to skip it if you're already comfortable.
 :::
 
 # Contact {.unnumbered}

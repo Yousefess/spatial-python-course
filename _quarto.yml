@@ -67,6 +67,7 @@ bibliography: sessions/references.bib
 
 format:
   html:
+    jupyter: spatial-python
     theme:
       light:
         - cosmo

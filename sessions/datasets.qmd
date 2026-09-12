@@ -1,0 +1,244 @@
+---
+title: "datasets"
+subtitle: "Every data source used in this course, and why it was chosen"
+number-sections: false
+---
+
+::: {style="text-align: justify;"}
+This page documents every dataset the Solar Site Suitability project relies on: where it comes from, what it actually represents, why it was chosen over alternatives, and how it is downloaded. The code shown here is the exact acquisition script used to prepare the course data before **Session 1**. It is shown for reference and is not executed on this page, since running it requires personal credentials (a Google Earth Engine project) and produces large files that do not belong on a documentation page.
+:::
+
+::: {.callout-note}
+## Before running this yourself
+You will need a free Google Earth Engine account and a Google Cloud project ID, along with the Python packages `earthengine-api`, `geemap`, `geopandas`, `osmnx`, `shapely`, and `python-dotenv`.
+:::
+
+## Study Area Boundary
+
+::: {style="text-align: justify;"}
+Every other dataset in this project is downloaded relative to a single boundary polygon. This boundary can come from a file you already have (a `.gpkg` you drew yourself, for example in [geojson.io](https://geojson.io)), or it can be generated automatically by geocoding a place name through OpenStreetMap's Nominatim service, which OSMnx wraps in a single function call. Using a boundary file gives you precise control over the exact shape and size of the study area. Geocoding a place name is faster to get started with, but returns the official administrative boundary of that place, which can be far larger than what you actually want for a class exercise, so it is worth checking the size before committing to it.
+:::
+
+```python
+from pathlib import Path
+import geopandas as gpd
+import osmnx as ox
+from shapely.ops import unary_union
+
+DATA_DIR = Path("data")
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+BOUNDARY_GPKG_PATH = None
+PLACE_NAME = "Tabernas, Almería, Spain"
+
+if BOUNDARY_GPKG_PATH is not None and Path(BOUNDARY_GPKG_PATH).exists():
+    boundary_gdf = gpd.read_file(BOUNDARY_GPKG_PATH)
+else:
+    boundary_gdf = ox.geocode_to_gdf(PLACE_NAME)
+
+if boundary_gdf.crs is None:
+    boundary_gdf = boundary_gdf.set_crs("EPSG:4326")
+elif boundary_gdf.crs.to_epsg() != 4326:
+    boundary_gdf = boundary_gdf.to_crs("EPSG:4326")
+
+if len(boundary_gdf) > 1:
+    study_polygon = unary_union(boundary_gdf.geometry)
+else:
+    study_polygon = boundary_gdf.geometry.iloc[0]
+
+print("Boundary bounds:", study_polygon.bounds)
+
+boundary_gdf.to_file(DATA_DIR / "boundary.gpkg", driver="GPKG")
+```
+
+::: {.callout-tip}
+## Why EPSG:4326
+The boundary is kept in EPSG:4326 (plain latitude and longitude) because this is the coordinate system that Earth Engine expects when a region is passed to it. Reprojecting into a metric CRS happens later, in Session 3 and Session 7, once we actually need to measure distances or areas in meters.
+:::
+
+## Digital Elevation Model, Copernicus GLO-30
+
+::: {style="text-align: justify;"}
+The DEM provides elevation values across the study area and is the source for two of the four suitability factors used later in the project: slope and aspect. This course uses [Copernicus GLO-30](https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model), a global elevation model at 30 meter resolution, produced from radar data collected during the TanDEM-X mission between 2010 and 2015. It is one of the most widely used free global DEMs available today, alongside alternatives such as SRTM and ALOS World 3D, and is accessible directly through Google Earth Engine under the collection id `COPERNICUS/DEM/GLO30_2024_1`.
+:::
+
+::: {.callout-warning}
+## About the dataset version
+The original Earth Engine collection `COPERNICUS/DEM/GLO30` has been deprecated and replaced by `COPERNICUS/DEM/GLO30_2024_1`. The year in the new name refers to when this edition of the dataset was reprocessed and republished, not to when the elevation was measured. The underlying radar data is still from 2010 to 2015. For natural terrain that has not been reshaped by mining, landslides, or large construction, this age difference has no meaningful effect on slope or aspect calculations. More detail is available on the [Copernicus DEM overview page](https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model).
+:::
+
+::: {style="text-align: justify;"}
+Technically, GLO30 is a Digital Surface Model rather than a Digital Terrain Model, meaning that in areas with buildings or dense vegetation, the elevation includes the height of what sits on top of the ground, not only the bare earth. Since this project specifically targets barren or low vegetation land for solar panel placement, this distinction rarely causes a practical problem.
+:::
+
+```python
+import ee
+import geemap
+
+ee.Authenticate()
+ee.Initialize(project="YOUR-GEE-PROJECT-ID")
+
+aoi = geemap.geopandas_to_ee(boundary_gdf).geometry()
+
+dem_collection = ee.ImageCollection("COPERNICUS/DEM/GLO30_2024_1")
+dem = dem_collection.select("DEM").mosaic().clip(aoi)
+
+dem_output_path = DATA_DIR / "dem.tif"
+
+geemap.ee_export_image(
+    dem,
+    filename=str(dem_output_path),
+    scale=30,
+    region=aoi,
+    crs="EPSG:4326",
+    file_per_band=False,
+)
+```
+
+::: {.callout-tip}
+## Direct download versus Google Drive export
+`geemap.ee_export_image` downloads the raster straight to local disk and works well for small study areas, but Earth Engine limits how large a single direct download can be, roughly a few hundred megabytes. For a study area covering an entire province rather than a few square kilometers, this limit is exceeded and the export must instead go through `ee.batch.Export.image.toDrive`, which has no practical size limit but requires retrieving the finished file from Google Drive afterward, and often splits large exports into several tiles that need to be merged back together with `rasterio.merge`.
+:::
+
+## Sentinel-2 Surface Reflectance Imagery
+
+::: {style="text-align: justify;"}
+Sentinel-2 provides the multispectral imagery used to calculate NDVI, which distinguishes vegetated land from barren or sparsely vegetated land, one of the four suitability factors in this project. This course uses the [Sentinel-2 Level-2A collection](https://sentiwiki.copernicus.eu/web/s2-mission), which is already corrected for atmospheric effects (surface reflectance rather than top-of-atmosphere reflectance), avoiding the need to apply that correction manually. On Earth Engine this is the `COPERNICUS/S2_SR_HARMONIZED` collection.
+:::
+
+::: {style="text-align: justify;"}
+A single Sentinel-2 scene is rarely usable on its own because of cloud cover, so the acquisition script filters the full image collection down to scenes with less than a chosen cloud cover percentage over a date range, masks out any remaining cloud and cloud shadow pixels using the Scene Classification Layer (SCL) band, and then takes the pixel-wise median across all remaining scenes. The result is a single, mostly cloud-free composite image rather than one individual acquisition, which is far more reliable for a fixed teaching dataset than trying to find one perfect scene by hand.
+:::
+
+```python
+def mask_s2_clouds(image):
+    scl = image.select("SCL")
+    mask = scl.neq(3).And(scl.neq(8)).And(scl.neq(9)).And(scl.neq(10))
+    return image.updateMask(mask)
+
+DATE_START = "2024-01-01"
+DATE_END = "2024-12-31"
+MAX_CLOUD_PERCENT = 10
+
+s2_collection = (
+    ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+    .filterBounds(aoi)
+    .filterDate(DATE_START, DATE_END)
+    .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", MAX_CLOUD_PERCENT))
+    .map(mask_s2_clouds)
+)
+
+print("Number of matching scenes:", s2_collection.size().getInfo())
+
+s2_image = s2_collection.median().clip(aoi)
+s2_export = s2_image.select(["B2", "B3", "B4", "B8"])
+
+sentinel_output_path = DATA_DIR / "sentinel.tif"
+
+geemap.ee_export_image(
+    s2_export,
+    filename=str(sentinel_output_path),
+    scale=10,
+    region=aoi,
+    crs="EPSG:4326",
+    file_per_band=False,
+)
+```
+
+::: {style="text-align: justify;"}
+Only four of the twelve available Sentinel-2 bands are exported: B2 (blue), B3 (green), B4 (red), and B8 (near infrared). Red and near infrared are the two bands NDVI actually needs, while blue and green are kept along for true color visualization purposes in later sessions. A full band description is available on the [official Sentinel-2 bands reference](https://sentiwiki.copernicus.eu/web/s2-mission).
+:::
+
+::: {.callout-warning}
+## What the SCL mask numbers mean
+The Scene Classification Layer assigns every pixel a class code. This project excludes class 3 (cloud shadow), class 8 (cloud, medium probability), class 9 (cloud, high probability), and class 10 (thin cirrus). Pixels in any of these classes are set to no data rather than included in the composite, since they do not represent the true reflectance of the ground.
+:::
+
+## Road Network, OpenStreetMap
+
+::: {style="text-align: justify;"}
+Roads represent one half of the infrastructure accessibility factor: land close to existing roads is more practical and less costly to develop for solar installations, since it is easier to reach for construction and maintenance. This course retrieves roads through [OSMnx](https://osmnx.readthedocs.io/), a Python library that queries [OpenStreetMap](https://www.openstreetmap.org/about) data through the Overpass API and returns it directly as a GeoDataFrame, without needing to manually download and clip an extract of an entire country.
+:::
+
+```python
+import osmnx as ox
+
+road_graph = ox.graph_from_polygon(study_polygon, network_type="drive")
+_, roads = ox.graph_to_gdfs(road_graph)
+
+roads_clipped = gpd.clip(roads, boundary_gdf)
+roads_clipped.to_file(DATA_DIR / "roads.gpkg", driver="GPKG")
+
+print("Roads saved:", len(roads_clipped), "segments")
+```
+
+::: {style="text-align: justify;"}
+The `network_type="drive"` argument restricts the result to roads that vehicles can travel on, excluding footpaths, cycleways, and similar minor ways that are irrelevant to construction access. OpenStreetMap coverage quality varies significantly by region: countries with an active mapping community, much of Western Europe among them, tend to have dense and reliable road data, while more remote areas may have gaps. It is worth visually inspecting the downloaded roads before relying on them for analysis.
+:::
+
+::: {.callout-tip}
+## Overpass server availability
+OSMnx queries a public Overpass API server by default, which occasionally becomes temporarily unreachable under heavy load. If a connection error appears, switching to a mirror server, for example by setting `ox.settings.overpass_endpoint = "https://overpass.kumi.systems/api/interpreter"` before making the request, usually resolves it. More endpoints are listed on the [Overpass API wiki page](https://wiki.openstreetmap.org/wiki/Overpass_API).
+:::
+
+## Power Line Network, OpenStreetMap
+
+::: {style="text-align: justify;"}
+Power lines represent the second half of the infrastructure accessibility factor: proximity to existing electrical infrastructure directly affects how expensive it is to connect a new solar installation to the grid. This data also comes from OpenStreetMap, using OSMnx's more general feature query function rather than the road-specific graph function, since power infrastructure is not a routable network but a collection of tagged features.
+:::
+
+```python
+power_tags = {"power": ["line", "minor_line"]}
+power_lines = ox.features_from_polygon(study_polygon, tags=power_tags)
+
+power_lines = power_lines[power_lines.geom_type.isin(["LineString", "MultiLineString"])]
+
+power_clipped = gpd.clip(power_lines, boundary_gdf)
+power_clipped.to_file(DATA_DIR / "power_lines.gpkg", driver="GPKG")
+
+print("Power lines saved:", len(power_clipped), "segments")
+```
+
+::: {style="text-align: justify;"}
+OpenStreetMap tags high voltage transmission lines as `power=line` and lower voltage local distribution lines as `power=minor_line`. Both are retrieved here since either type of line represents a usable grid connection point for this project. The query also returns some point features, such as individual poles or towers tagged with the same `power` key, which are filtered out afterward since only the line geometries themselves are relevant to a distance-based suitability factor. Full tagging conventions for power infrastructure are documented on the [OpenStreetMap power wiki page](https://wiki.openstreetmap.org/wiki/Key:power).
+:::
+
+## Summary of Files Produced
+
+::: {style="text-align: justify;"}
+Running the full acquisition script produces the following files inside the project's `data` folder, all sharing the same study area boundary and coordinate reference system, ready to be used starting in Session 1.
+:::
+
+| File | Source | Format | Resolution |
+|---|---|---|---|
+| `boundary.gpkg` | Local file or OSM geocoding | GeoPackage | Not applicable |
+| `dem.tif` | Copernicus GLO-30 via Earth Engine | GeoTIFF | 30 m |
+| `sentinel.tif` | Sentinel-2 L2A via Earth Engine | GeoTIFF | 10 m |
+| `roads.gpkg` | OpenStreetMap via OSMnx | GeoPackage | Vector |
+| `power_lines.gpkg` | OpenStreetMap via OSMnx | GeoPackage | Vector |
+
+::: {.callout-note}
+## A note on study area size
+The size of the boundary polygon directly determines file size and download time for every dataset above. A boundary covering an entire province can produce a Sentinel-2 export of a gigabyte or more, split across several tiles, while a boundary a few kilometers across produces files of only a few megabytes and downloads in seconds. Keeping the boundary small is not just a matter of convenience, it keeps the whole course repository lightweight and every processing step in later sessions fast enough to run live in class.
+:::
+
+## Going Beyond This Course's Datasets
+
+::: {style="text-align: justify;"}
+The datasets described on this page were deliberately kept simple: a single free elevation model, one cloud-filtered Sentinel-2 composite, and two OpenStreetMap layers. This choice is intentional. The course is meant to be approachable regardless of your background, so every dataset here can be downloaded in minutes, without specialized access requests, licensing negotiations, or heavy preprocessing. None of it requires prior remote sensing expertise to obtain or interpret.
+:::
+
+::: {style="text-align: justify;"}
+That said, this is far from the only reasonable way to build a solar site suitability model. The academic and industry literature on renewable energy site selection uses a considerably richer set of inputs, and if you want to push this project further, it is worth exploring some of them. A few directions to look into:
+:::
+
+- **Solar irradiance data**, such as the [Global Solar Atlas](https://globalsolaratlas.info/) or Copernicus Atmosphere Monitoring Service products, which measure actual sunlight availability rather than assuming it is uniform across the study area.
+- **Higher resolution or radar-derived DEMs**, such as national LiDAR-based elevation datasets where available, which can resolve terrain features far more precisely than a 30 meter global model.
+- **Land cover and land use datasets**, such as ESA WorldCover or Corine Land Cover, which classify land more precisely than an NDVI threshold and can rule out protected areas, agricultural land, or urban zones directly.
+- **Grid capacity and substation data**, which national grid operators sometimes publish, going beyond simple proximity to a power line to also account for whether that line actually has spare capacity.
+- **Multi-criteria decision analysis methods**, such as the Analytic Hierarchy Process (AHP), which are commonly used in the literature to justify the weights assigned to each suitability factor, rather than choosing them by hand as this course does.
+
+::: {.callout-tip}
+## Where to look for more
+A good starting point is searching for terms such as "solar site suitability GIS AHP" or "renewable energy site selection multi-criteria" in [Google Scholar](https://scholar.google.com/), which surfaces a large number of peer-reviewed studies describing exactly which datasets and weighting schemes they used for similar projects in different countries.
+:::
