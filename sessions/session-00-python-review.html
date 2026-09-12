@@ -8,7 +8,7 @@
 
 <meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>Python Review – Spatial Python</title>
+<title>python refresher for spatial analysis – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -292,7 +292,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html">Getting Started</a></li><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html"><span class="chapter-title">Python Review</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html">Getting Started</a></li><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html"><span class="chapter-title">python refresher for spatial analysis</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -339,7 +339,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-00-python-review.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Python Review</span></a>
+  <a href="../sessions/session-00-python-review.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">python refresher for spatial analysis</span></a>
   </div>
 </li>
       </ul>
@@ -416,7 +416,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/datasets.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">datasets.html</span></a>
+  <a href="../sessions/datasets.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">datasets</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -436,52 +436,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a></li>
-  <li><a href="#variables-lists-and-dictionaries" id="toc-variables-lists-and-dictionaries" class="nav-link" data-scroll-target="#variables-lists-and-dictionaries">1. Variables, Lists, and Dictionaries</a>
+  <li><a href="#variables-lists-and-dictionaries" id="toc-variables-lists-and-dictionaries" class="nav-link active" data-scroll-target="#variables-lists-and-dictionaries">Variables, Lists, and Dictionaries</a>
   <ul class="collapse">
-  <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link" data-scroll-target="#why-this-matters">Why this matters</a></li>
-  <li><a href="#example-1.1-variables" id="toc-example-1.1-variables" class="nav-link" data-scroll-target="#example-1.1-variables">Example 1.1 — Variables</a></li>
-  <li><a href="#example-1.2-lists" id="toc-example-1.2-lists" class="nav-link" data-scroll-target="#example-1.2-lists">Example 1.2 — Lists</a></li>
-  <li><a href="#example-1.3-looping-through-a-list" id="toc-example-1.3-looping-through-a-list" class="nav-link" data-scroll-target="#example-1.3-looping-through-a-list">Example 1.3 — Looping through a list</a></li>
-  <li><a href="#example-1.4-dictionaries" id="toc-example-1.4-dictionaries" class="nav-link" data-scroll-target="#example-1.4-dictionaries">Example 1.4 — Dictionaries</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">Variables</a></li>
+  <li><a href="#lists" id="toc-lists" class="nav-link" data-scroll-target="#lists">Lists</a></li>
+  <li><a href="#looping-through-a-list" id="toc-looping-through-a-list" class="nav-link" data-scroll-target="#looping-through-a-list">Looping through a list</a></li>
+  <li><a href="#dictionaries" id="toc-dictionaries" class="nav-link" data-scroll-target="#dictionaries">Dictionaries</a></li>
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
   </ul></li>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">2. Functions</a>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
   <ul class="collapse">
-  <li><a href="#why-this-matters-1" id="toc-why-this-matters-1" class="nav-link" data-scroll-target="#why-this-matters-1">Why this matters</a></li>
-  <li><a href="#example-2.1-a-basic-function" id="toc-example-2.1-a-basic-function" class="nav-link" data-scroll-target="#example-2.1-a-basic-function">Example 2.1 — A basic function</a></li>
-  <li><a href="#example-2.2-a-function-with-multiple-parameters" id="toc-example-2.2-a-function-with-multiple-parameters" class="nav-link" data-scroll-target="#example-2.2-a-function-with-multiple-parameters">Example 2.2 — A function with multiple parameters</a></li>
-  <li><a href="#example-2.3-a-function-that-works-on-a-whole-list-at-once" id="toc-example-2.3-a-function-that-works-on-a-whole-list-at-once" class="nav-link" data-scroll-target="#example-2.3-a-function-that-works-on-a-whole-list-at-once">Example 2.3 — A function that works on a whole list at once</a></li>
-  <li><a href="#example-2.4-function-with-multiple-return-values" id="toc-example-2.4-function-with-multiple-return-values" class="nav-link" data-scroll-target="#example-2.4-function-with-multiple-return-values">Example 2.4 — Function with multiple return values</a></li>
+  <li><a href="#a-basic-function" id="toc-a-basic-function" class="nav-link" data-scroll-target="#a-basic-function">A basic function</a></li>
+  <li><a href="#functions-with-default-parameters" id="toc-functions-with-default-parameters" class="nav-link" data-scroll-target="#functions-with-default-parameters">Functions with default parameters</a></li>
+  <li><a href="#functions-that-return-multiple-values" id="toc-functions-that-return-multiple-values" class="nav-link" data-scroll-target="#functions-that-return-multiple-values">Functions that return multiple values</a></li>
+  <li><a href="#functions-that-call-other-functions" id="toc-functions-that-call-other-functions" class="nav-link" data-scroll-target="#functions-that-call-other-functions">Functions that call other functions</a></li>
+  <li><a href="#applying-a-function-to-a-whole-list" id="toc-applying-a-function-to-a-whole-list" class="nav-link" data-scroll-target="#applying-a-function-to-a-whole-list">Applying a function to a whole list</a></li>
+  <li><a href="#quick-quiz-1" id="toc-quick-quiz-1" class="nav-link" data-scroll-target="#quick-quiz-1">Quick quiz</a></li>
   </ul></li>
-  <li><a href="#from-lists-to-numpy-arrays" id="toc-from-lists-to-numpy-arrays" class="nav-link" data-scroll-target="#from-lists-to-numpy-arrays">3. From Lists to NumPy Arrays</a>
+  <li><a href="#from-lists-to-numpy-arrays" id="toc-from-lists-to-numpy-arrays" class="nav-link" data-scroll-target="#from-lists-to-numpy-arrays">From Lists to NumPy Arrays</a>
   <ul class="collapse">
-  <li><a href="#why-this-matters-2" id="toc-why-this-matters-2" class="nav-link" data-scroll-target="#why-this-matters-2">Why this matters</a></li>
-  <li><a href="#example-3.1-the-problem-with-plain-lists" id="toc-example-3.1-the-problem-with-plain-lists" class="nav-link" data-scroll-target="#example-3.1-the-problem-with-plain-lists">Example 3.1 — The problem with plain lists</a></li>
-  <li><a href="#example-3.2-the-numpy-way" id="toc-example-3.2-the-numpy-way" class="nav-link" data-scroll-target="#example-3.2-the-numpy-way">Example 3.2 — The NumPy way</a></li>
-  <li><a href="#example-3.3-filtering-with-conditions" id="toc-example-3.3-filtering-with-conditions" class="nav-link" data-scroll-target="#example-3.3-filtering-with-conditions">Example 3.3 — Filtering with conditions</a></li>
-  <li><a href="#example-3.4-2d-arrays-this-is-basically-a-mini-raster" id="toc-example-3.4-2d-arrays-this-is-basically-a-mini-raster" class="nav-link" data-scroll-target="#example-3.4-2d-arrays-this-is-basically-a-mini-raster">Example 3.4 — 2D arrays (this is basically a mini raster)</a></li>
-  <li><a href="#example-3.5-slicing-a-2d-array" id="toc-example-3.5-slicing-a-2d-array" class="nav-link" data-scroll-target="#example-3.5-slicing-a-2d-array">Example 3.5 — Slicing a 2D array</a></li>
-  <li><a href="#example-3.6-applying-a-condition-to-a-2d-array" id="toc-example-3.6-applying-a-condition-to-a-2d-array" class="nav-link" data-scroll-target="#example-3.6-applying-a-condition-to-a-2d-array">Example 3.6 — Applying a condition to a 2D array</a></li>
-  <li><a href="#example-3.7-basic-array-math" id="toc-example-3.7-basic-array-math" class="nav-link" data-scroll-target="#example-3.7-basic-array-math">Example 3.7 — Basic array math</a></li>
+  <li><a href="#the-problem-with-plain-lists" id="toc-the-problem-with-plain-lists" class="nav-link" data-scroll-target="#the-problem-with-plain-lists">The problem with plain lists</a></li>
+  <li><a href="#the-numpy-way" id="toc-the-numpy-way" class="nav-link" data-scroll-target="#the-numpy-way">The NumPy way</a></li>
+  <li><a href="#creating-arrays-with-built-in-functions" id="toc-creating-arrays-with-built-in-functions" class="nav-link" data-scroll-target="#creating-arrays-with-built-in-functions">Creating arrays with built-in functions</a></li>
+  <li><a href="#filtering-with-conditions" id="toc-filtering-with-conditions" class="nav-link" data-scroll-target="#filtering-with-conditions">Filtering with conditions</a></li>
+  <li><a href="#basic-statistics" id="toc-basic-statistics" class="nav-link" data-scroll-target="#basic-statistics">Basic statistics</a></li>
+  <li><a href="#two-dimensional-arrays" id="toc-two-dimensional-arrays" class="nav-link" data-scroll-target="#two-dimensional-arrays">Two dimensional arrays</a></li>
+  <li><a href="#slicing-a-two-dimensional-array" id="toc-slicing-a-two-dimensional-array" class="nav-link" data-scroll-target="#slicing-a-two-dimensional-array">Slicing a two dimensional array</a></li>
+  <li><a href="#applying-conditions-to-a-two-dimensional-array" id="toc-applying-conditions-to-a-two-dimensional-array" class="nav-link" data-scroll-target="#applying-conditions-to-a-two-dimensional-array">Applying conditions to a two dimensional array</a></li>
+  <li><a href="#reshaping-and-combining-arrays" id="toc-reshaping-and-combining-arrays" class="nav-link" data-scroll-target="#reshaping-and-combining-arrays">Reshaping and combining arrays</a></li>
+  <li><a href="#quick-quiz-2" id="toc-quick-quiz-2" class="nav-link" data-scroll-target="#quick-quiz-2">Quick quiz</a></li>
   </ul></li>
-  <li><a href="#working-with-files-and-paths" id="toc-working-with-files-and-paths" class="nav-link" data-scroll-target="#working-with-files-and-paths">4. Working with Files and Paths</a>
+  <li><a href="#working-with-files-and-paths" id="toc-working-with-files-and-paths" class="nav-link" data-scroll-target="#working-with-files-and-paths">Working with Files and Paths</a>
   <ul class="collapse">
-  <li><a href="#why-this-matters-3" id="toc-why-this-matters-3" class="nav-link" data-scroll-target="#why-this-matters-3">Why this matters</a></li>
-  <li><a href="#example-4.1-the-problem-with-hardcoded-paths" id="toc-example-4.1-the-problem-with-hardcoded-paths" class="nav-link" data-scroll-target="#example-4.1-the-problem-with-hardcoded-paths">Example 4.1 — The problem with hardcoded paths</a></li>
-  <li><a href="#example-4.2-the-pathlib-way" id="toc-example-4.2-the-pathlib-way" class="nav-link" data-scroll-target="#example-4.2-the-pathlib-way">Example 4.2 — The pathlib way</a></li>
-  <li><a href="#example-4.3-listing-files-in-a-folder" id="toc-example-4.3-listing-files-in-a-folder" class="nav-link" data-scroll-target="#example-4.3-listing-files-in-a-folder">Example 4.3 — Listing files in a folder</a></li>
-  <li><a href="#example-4.4-creating-folders-safely" id="toc-example-4.4-creating-folders-safely" class="nav-link" data-scroll-target="#example-4.4-creating-folders-safely">Example 4.4 — Creating folders safely</a></li>
-  <li><a href="#example-4.5-getting-file-information" id="toc-example-4.5-getting-file-information" class="nav-link" data-scroll-target="#example-4.5-getting-file-information">Example 4.5 — Getting file information</a></li>
+  <li><a href="#the-pathlib-way" id="toc-the-pathlib-way" class="nav-link" data-scroll-target="#the-pathlib-way">The pathlib way</a></li>
+  <li><a href="#useful-path-attributes-and-methods" id="toc-useful-path-attributes-and-methods" class="nav-link" data-scroll-target="#useful-path-attributes-and-methods">Useful path attributes and methods</a></li>
+  <li><a href="#listing-and-creating-folders" id="toc-listing-and-creating-folders" class="nav-link" data-scroll-target="#listing-and-creating-folders">Listing and creating folders</a></li>
+  <li><a href="#checking-file-type" id="toc-checking-file-type" class="nav-link" data-scroll-target="#checking-file-type">Checking file type</a></li>
   </ul></li>
-  <li><a href="#building-and-importing-your-own-module" id="toc-building-and-importing-your-own-module" class="nav-link" data-scroll-target="#building-and-importing-your-own-module">5. Building and Importing Your Own Module</a>
+  <li><a href="#building-and-importing-your-own-module" id="toc-building-and-importing-your-own-module" class="nav-link" data-scroll-target="#building-and-importing-your-own-module">Building and Importing Your Own Module</a>
   <ul class="collapse">
-  <li><a href="#why-this-matters-4" id="toc-why-this-matters-4" class="nav-link" data-scroll-target="#why-this-matters-4">Why this matters</a></li>
-  <li><a href="#example-5.1-creating-a-small-module" id="toc-example-5.1-creating-a-small-module" class="nav-link" data-scroll-target="#example-5.1-creating-a-small-module">Example 5.1 — Creating a small module</a></li>
-  <li><a href="#example-5.2-importing-it-into-your-notebook" id="toc-example-5.2-importing-it-into-your-notebook" class="nav-link" data-scroll-target="#example-5.2-importing-it-into-your-notebook">Example 5.2 — Importing it into your notebook</a></li>
-  <li><a href="#example-5.3-importing-specific-functions" id="toc-example-5.3-importing-specific-functions" class="nav-link" data-scroll-target="#example-5.3-importing-specific-functions">Example 5.3 — Importing specific functions</a></li>
-  <li><a href="#example-5.4-importing-with-an-alias" id="toc-example-5.4-importing-with-an-alias" class="nav-link" data-scroll-target="#example-5.4-importing-with-an-alias">Example 5.4 — Importing with an alias</a></li>
+  <li><a href="#creating-a-small-module" id="toc-creating-a-small-module" class="nav-link" data-scroll-target="#creating-a-small-module">Creating a small module</a></li>
+  <li><a href="#importing-the-whole-module" id="toc-importing-the-whole-module" class="nav-link" data-scroll-target="#importing-the-whole-module">Importing the whole module</a></li>
+  <li><a href="#importing-specific-functions" id="toc-importing-specific-functions" class="nav-link" data-scroll-target="#importing-specific-functions">Importing specific functions</a></li>
+  <li><a href="#quick-quiz-3" id="toc-quick-quiz-3" class="nav-link" data-scroll-target="#quick-quiz-3">Quick quiz</a></li>
   </ul></li>
-  <li><a href="#wrap-up" id="toc-wrap-up" class="nav-link" data-scroll-target="#wrap-up">Wrap-Up</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-00-python-review.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -489,9 +488,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html">Getting Started</a></li><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html"><span class="chapter-title">Python Review</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html">Getting Started</a></li><li class="breadcrumb-item"><a href="../sessions/session-00-python-review.html"><span class="chapter-title">python refresher for spatial analysis</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Python Review</span></h1>
+<h1 class="title"><span class="chapter-title">python refresher for spatial analysis</span></h1>
+<p class="subtitle lead">Warm-up before we touch a single raster or shapefile</p>
 </div>
 
 
@@ -508,10 +508,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="welcome" class="level2">
-<h2 class="anchored" data-anchor-id="welcome">Welcome</h2>
-<p>Before we open a single satellite image or elevation model, we need to make sure everyone speaks the same Python language. This session is not about GIS — it is about the small set of Python tools that every single session in this course will lean on.</p>
-<p>Nothing here is random. Every example was picked because you will see the exact same pattern again later — when you calculate NDVI, slope, or filter road networks.</p>
+<div style="text-align: justify;">
+<p>Before we open a single satellite image or elevation model, we need to make sure everyone speaks the same Python language. This session is not about GIS itself. It is about the small set of Python tools that every single session in this course will lean on. Nothing here is random. Every example was picked because you will see the exact same pattern again later, when you calculate NDVI, slope, camera parameters, or filter road networks.</p>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -522,616 +521,1093 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Read the explanation, run the example, then try the exercise before looking at the solution. Solutions are hidden — click to reveal them only after you have tried.</p>
+<p>Read the explanation, run the example, then try the exercise before looking at the solution. Solutions are hidden inside a collapsible box. Click to reveal them only after you have tried on your own.</p>
 </div>
 </div>
-<hr>
-</section>
 <section id="variables-lists-and-dictionaries" class="level2">
-<h2 class="anchored" data-anchor-id="variables-lists-and-dictionaries">1. Variables, Lists, and Dictionaries</h2>
-<section id="why-this-matters" class="level3">
-<h3 class="anchored" data-anchor-id="why-this-matters">Why this matters</h3>
-<p>In this course, almost everything is “a bunch of numbers with a label” — pixel values, band names, coordinate systems, weights for our final model. Lists and dictionaries are how Python organizes that.</p>
-</section>
-<section id="example-1.1-variables" class="level3">
-<h3 class="anchored" data-anchor-id="example-1.1-variables">Example 1.1 — Variables</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A single weather station reading</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>station_name <span class="op">=</span> <span class="st">"Station A"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>temperature_celsius <span class="op">=</span> <span class="fl">21.5</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>elevation_m <span class="op">=</span> <span class="dv">1250</span></span>
+<h2 class="anchored" data-anchor-id="variables-lists-and-dictionaries">Variables, Lists, and Dictionaries</h2>
+<div style="text-align: justify;">
+<p>In spatial work, almost everything is a bunch of numbers with a label attached to it: pixel values, band names, coordinate systems, ground control point coordinates, weights used in a model. Lists and dictionaries are the two basic Python structures used to organize that kind of information.</p>
+</div>
+<section id="variables" class="level3">
+<h3 class="anchored" data-anchor-id="variables">Variables</h3>
+<div style="text-align: justify;">
+<p>A variable is simply a name that points to a value. The value can be a number, text, or something more complex. Let’s start with something familiar from surveying: a single ground control point (GCP) used in photogrammetry to align an aerial photo with real world coordinates.</p>
+</div>
+<div id="dc727283" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>gcp_name <span class="op">=</span> <span class="st">"GCP-01"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gcp_x <span class="op">=</span> <span class="fl">512340.25</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>gcp_y <span class="op">=</span> <span class="fl">3891220.10</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>gcp_elevation <span class="op">=</span> <span class="fl">812.4</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>station_name<span class="sc">}</span><span class="ss"> is at </span><span class="sc">{</span>elevation_m<span class="sc">}</span><span class="ss"> m, temperature: </span><span class="sc">{</span>temperature_celsius<span class="sc">}</span><span class="ss">°C"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gcp_name, <span class="st">"is located at elevation"</span>, gcp_elevation, <span class="st">"meters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>GCP-01 is located at elevation 812.4 meters</code></pre>
+</div>
+</div>
+<div id="b63d66ae" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 2: a camera parameter used in photogrammetry</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>focal_length_mm <span class="op">=</span> <span class="dv">35</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>sensor_width_mm <span class="op">=</span> <span class="fl">23.5</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>image_width_px <span class="op">=</span> <span class="dv">6000</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ground sample distance depends on all three parameters</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>flying_height_m <span class="op">=</span> <span class="dv">1200</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>gsd_cm <span class="op">=</span> (sensor_width_mm <span class="op">*</span> flying_height_m <span class="op">*</span> <span class="dv">100</span>) <span class="op">/</span> (focal_length_mm <span class="op">*</span> image_width_px)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ground sample distance:"</span>, <span class="bu">round</span>(gsd_cm, <span class="dv">2</span>), <span class="st">"cm/pixel"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ground sample distance: 13.43 cm/pixel</code></pre>
+</div>
+</div>
 </section>
-<section id="example-1.2-lists" class="level3">
-<h3 class="anchored" data-anchor-id="example-1.2-lists">Example 1.2 — Lists</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Elevation readings (in meters) from 5 weather stations</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of stations:"</span>, <span class="bu">len</span>(elevations))</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Highest station:"</span>, <span class="bu">max</span>(elevations))</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Lowest station:"</span>, <span class="bu">min</span>(elevations))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="lists" class="level3">
+<h3 class="anchored" data-anchor-id="lists">Lists</h3>
+<div style="text-align: justify;">
+<p>A list stores an ordered collection of values. This is the natural way to represent a series of readings, such as elevation values collected at several ground control points, or NDVI values from a set of field plots.</p>
+</div>
+<div id="35f6bf7c" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Elevation readings (in meters) from 6 ground control points</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of GCPs:"</span>, <span class="bu">len</span>(elevations))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Highest point:"</span>, <span class="bu">max</span>(elevations))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Lowest point:"</span>, <span class="bu">min</span>(elevations))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total:"</span>, <span class="bu">sum</span>(elevations))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of GCPs: 6
+Highest point: 860
+Lowest point: 790
+Total: 4908</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>Lists come with several built-in methods that you will use constantly. Below are the ones that matter most for this course.</p>
+</div>
+<div id="85b580c1" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>band_names <span class="op">=</span> [<span class="st">"red"</span>, <span class="st">"nir"</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># add a single item</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>band_names.append(<span class="st">"swir"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(band_names)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># add several items at once</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>band_names.extend([<span class="st">"blue"</span>, <span class="st">"green"</span>])</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(band_names)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># remove a specific value</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>band_names.remove(<span class="st">"swir"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(band_names)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># sort alphabetically</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>band_names.sort()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(band_names)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># check whether a value exists</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"red"</span> <span class="kw">in</span> band_names)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># find the position of a value</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(band_names.index(<span class="st">"nir"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['red', 'nir', 'swir']
+['red', 'nir', 'swir', 'blue', 'green']
+['red', 'nir', 'blue', 'green']
+['blue', 'green', 'nir', 'red']
+True
+2</code></pre>
+</div>
+</div>
+<div id="b5831ba7" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Slicing: getting a subset of a list</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>flight_line_ids <span class="op">=</span> [<span class="st">"L01"</span>, <span class="st">"L02"</span>, <span class="st">"L03"</span>, <span class="st">"L04"</span>, <span class="st">"L05"</span>, <span class="st">"L06"</span>]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(flight_line_ids[<span class="dv">0</span>])      <span class="co"># first item</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(flight_line_ids[<span class="op">-</span><span class="dv">1</span>])     <span class="co"># last item</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(flight_line_ids[<span class="dv">1</span>:<span class="dv">4</span>])    <span class="co"># items 1 to 3</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(flight_line_ids[::<span class="dv">2</span>])    <span class="co"># every second item</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>L01
+L06
+['L02', 'L03', 'L04']
+['L01', 'L03', 'L05']</code></pre>
+</div>
+</div>
 </section>
-<section id="example-1.3-looping-through-a-list" class="level3">
-<h3 class="anchored" data-anchor-id="example-1.3-looping-through-a-list">Example 1.3 — Looping through a list</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print each station's elevation with its index</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> index, value <span class="kw">in</span> <span class="bu">enumerate</span>(elevations):</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Station </span><span class="sc">{</span>index <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>value<span class="sc">}</span><span class="ss"> m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="looping-through-a-list" class="level3">
+<h3 class="anchored" data-anchor-id="looping-through-a-list">Looping through a list</h3>
+<div id="e585efc1" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> index, value <span class="kw">in</span> <span class="bu">enumerate</span>(elevations):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"GCP </span><span class="sc">{</span>index <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>value<span class="sc">}</span><span class="ss"> m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>GCP 1: 812 m
+GCP 2: 790 m
+GCP 3: 845 m
+GCP 4: 803 m
+GCP 5: 860 m
+GCP 6: 798 m</code></pre>
+</div>
+</div>
+<div id="8668159c" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A second example, from remote sensing: cloud cover percentage per scene</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cloud_cover <span class="op">=</span> [<span class="dv">12</span>, <span class="dv">45</span>, <span class="dv">3</span>, <span class="dv">67</span>, <span class="dv">8</span>, <span class="dv">30</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>scene_ids <span class="op">=</span> [<span class="st">"S01"</span>, <span class="st">"S02"</span>, <span class="st">"S03"</span>, <span class="st">"S04"</span>, <span class="st">"S05"</span>, <span class="st">"S06"</span>]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>usable_scenes <span class="op">=</span> []</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> scene_id, cover <span class="kw">in</span> <span class="bu">zip</span>(scene_ids, cloud_cover):</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> cover <span class="op">&lt;</span> <span class="dv">20</span>:</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        usable_scenes.append(scene_id)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Usable scenes (cloud cover below 20 percent):"</span>, usable_scenes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Usable scenes (cloud cover below 20 percent): ['S01', 'S03', 'S05']</code></pre>
+</div>
+</div>
 </section>
-<section id="example-1.4-dictionaries" class="level3">
-<h3 class="anchored" data-anchor-id="example-1.4-dictionaries">Example 1.4 — Dictionaries</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A dictionary is perfect for storing metadata — something we will do a lot</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>raster_metadata <span class="op">=</span> {</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"filename"</span>: <span class="st">"sentinel.tif"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"width"</span>: <span class="dv">512</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"height"</span>: <span class="dv">512</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"crs"</span>: <span class="st">"EPSG:32639"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bands"</span>: <span class="dv">4</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"This raster uses CRS:"</span>, raster_metadata[<span class="st">"crs"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="dictionaries" class="level3">
+<h3 class="anchored" data-anchor-id="dictionaries">Dictionaries</h3>
+<div style="text-align: justify;">
+<p>A dictionary stores key and value pairs. Instead of creating several separate variables, a dictionary keeps related information together under one name. In Session 3, rasterio will return raster metadata in exactly this format.</p>
+</div>
+<div id="538bd85f" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>raster_metadata <span class="op">=</span> {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"filename"</span>: <span class="st">"sentinel.tif"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"width"</span>: <span class="dv">512</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"height"</span>: <span class="dv">512</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"crs"</span>: <span class="st">"EPSG:32639"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bands"</span>: <span class="dv">4</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"This raster uses CRS:"</span>, raster_metadata[<span class="st">"crs"</span>])</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensions:"</span>, raster_metadata[<span class="st">"width"</span>], <span class="st">"x"</span>, raster_metadata[<span class="st">"height"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>This raster uses CRS: EPSG:32639
+Dimensions: 512 x 512</code></pre>
+</div>
+</div>
+<div id="1d0e3686" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dictionary methods that matter most</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raster_metadata.keys())</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raster_metadata.values())</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raster_metadata.items())</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># safely get a value that might not exist</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raster_metadata.get(<span class="st">"nodata"</span>, <span class="st">"not specified"</span>))</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># update or add a key</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>raster_metadata[<span class="st">"nodata"</span>] <span class="op">=</span> <span class="op">-</span><span class="dv">9999</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raster_metadata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>dict_keys(['filename', 'width', 'height', 'crs', 'bands'])
+dict_values(['sentinel.tif', 512, 512, 'EPSG:32639', 4])
+dict_items([('filename', 'sentinel.tif'), ('width', 512), ('height', 512), ('crs', 'EPSG:32639'), ('bands', 4)])
+not specified
+{'filename': 'sentinel.tif', 'width': 512, 'height': 512, 'crs': 'EPSG:32639', 'bands': 4, 'nodata': -9999}</code></pre>
+</div>
+</div>
+<div id="9837c12c" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A nested dictionary example: metadata for several photogrammetry cameras</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cameras <span class="op">=</span> {</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"camera_A"</span>: {<span class="st">"focal_length_mm"</span>: <span class="dv">35</span>, <span class="st">"sensor_width_mm"</span>: <span class="fl">23.5</span>},</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"camera_B"</span>: {<span class="st">"focal_length_mm"</span>: <span class="dv">50</span>, <span class="st">"sensor_width_mm"</span>: <span class="fl">36.0</span>}</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> camera_name, specs <span class="kw">in</span> cameras.items():</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>camera_name<span class="sc">}</span><span class="ss">: focal length </span><span class="sc">{</span>specs[<span class="st">'focal_length_mm'</span>]<span class="sc">}</span><span class="ss"> mm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>camera_A: focal length 35 mm
+camera_B: focal length 50 mm</code></pre>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Why dictionaries instead of separate variables?
+<span class="screen-reader-only">Tip</span>Note: dictionaries versus lists
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Instead of creating <code>width</code>, <code>height</code>, <code>crs</code>, <code>bands</code> as four separate variables, a dictionary keeps everything related together, under one name. In Session 3, you will see <code>rasterio</code> return metadata in exactly this dictionary format.</p>
+<p>Use a list when order matters and items are of the same kind, such as a series of elevation readings. Use a dictionary when you need to label each value, such as raster metadata or camera specifications.</p>
 </div>
 </div>
-<p><strong>Exercise 1.1</strong></p>
-<p>Create a dictionary called <code>image_info</code> with keys <code>sensor</code>, <code>resolution_m</code>, and <code>cloud_cover_percent</code>. Fill in any realistic values. Then print a sentence using an f-string that reports the sensor name and its resolution.</p>
+<details>
+<summary>
+Exercise 1.1
+</summary>
+<div style="text-align: justify;">
+<p>Create a dictionary called <code>image_info</code> with keys <code>sensor</code>, <code>resolution_m</code>, and <code>cloud_cover_percent</code>. Fill in realistic values. Then print a sentence reporting the sensor name and its resolution using an f-string.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>image_info <span class="op">=</span> {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sensor"</span>: <span class="st">"Sentinel-2"</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"resolution_m"</span>: <span class="dv">10</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"cloud_cover_percent"</span>: <span class="dv">5</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>image_info[<span class="st">'sensor'</span>]<span class="sc">}</span><span class="ss"> has a resolution of </span><span class="sc">{</span>image_info[<span class="st">'resolution_m'</span>]<span class="sc">}</span><span class="ss"> m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="daf1aa7f" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>image_info <span class="op">=</span> {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sensor"</span>: <span class="st">"Sentinel-2"</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"resolution_m"</span>: <span class="dv">10</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"cloud_cover_percent"</span>: <span class="dv">5</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>image_info[<span class="st">'sensor'</span>]<span class="sc">}</span><span class="ss"> has a resolution of </span><span class="sc">{</span>image_info[<span class="st">'resolution_m'</span>]<span class="sc">}</span><span class="ss"> m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sentinel-2 has a resolution of 10 m</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 1.2</strong></p>
-<p>Given <code>elevations = [1250, 980, 1430, 1100, 1600]</code>, write a loop that prints only the stations with elevation above 1200 m.</p>
+</details>
+<details>
+<summary>
+Exercise 1.2
+</summary>
+<div style="text-align: justify;">
+<p>Given <code>elevations = [812, 790, 845, 803, 860, 798]</code>, write a loop that prints only the ground control points with elevation above 800 m, along with their index in the list.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> elevations:</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> value <span class="op">&gt;</span> <span class="dv">1200</span>:</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>value<span class="sc">}</span><span class="ss"> m is above 1200 m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="721588c7" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>]</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> index, value <span class="kw">in</span> <span class="bu">enumerate</span>(elevations):</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> value <span class="op">&gt;</span> <span class="dv">800</span>:</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"GCP </span><span class="sc">{</span>index <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>value<span class="sc">}</span><span class="ss"> m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>GCP 1: 812 m
+GCP 3: 845 m
+GCP 4: 803 m
+GCP 5: 860 m</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 1.3</strong></p>
-<p>Create a list of 5 different city names. Then create a dictionary where each city name is a key and its approximate population is the value. Write a loop that prints each city and its population.</p>
+</details>
+<details>
+<summary>
+Exercise 1.3
+</summary>
+<div style="text-align: justify;">
+<p>Starting from <code>band_names = ["blue", "green", "red"]</code>, add <code>"nir"</code> and <code>"swir"</code> using two different list methods, then sort the final list and print it.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cities <span class="op">=</span> [<span class="st">"Tehran"</span>, <span class="st">"Mashhad"</span>, <span class="st">"Isfahan"</span>, <span class="st">"Shiraz"</span>, <span class="st">"Tabriz"</span>]</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>populations <span class="op">=</span> {</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tehran"</span>: <span class="dv">8690000</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mashhad"</span>: <span class="dv">3000000</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Isfahan"</span>: <span class="dv">1960000</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Shiraz"</span>: <span class="dv">1565000</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tabriz"</span>: <span class="dv">1558000</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> city <span class="kw">in</span> cities:</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>city<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>populations[city]<span class="sc">:,}</span><span class="ss"> people"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="656a9b81" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>band_names <span class="op">=</span> [<span class="st">"blue"</span>, <span class="st">"green"</span>, <span class="st">"red"</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>band_names.append(<span class="st">"nir"</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>band_names.extend([<span class="st">"swir"</span>])</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>band_names.sort()</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(band_names)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['blue', 'green', 'nir', 'red', 'swir']</code></pre>
+</div>
+</div>
 </details>
-<hr>
+</details>
+</section>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Which method would you use to safely retrieve a value from a dictionary without raising an error if the key does not exist?</p>
+</div>
+<p>A. <code>dictionary.keys()</code></p>
+<p>B. <code>dictionary.get()</code></p>
+<p>C. <code>dictionary.values()</code></p>
+<p>D. <code>dictionary.items()</code></p>
+<details>
+<summary>
+Answer
+</summary>
+B. The <code>.get()</code> method returns a default value instead of raising an error when the key is missing, which is exactly what <code>raster_metadata.get("nodata", "not specified")</code> did above.
+</details>
+</details>
 </section>
 </section>
 <section id="functions" class="level2">
-<h2 class="anchored" data-anchor-id="functions">2. Functions</h2>
-<section id="why-this-matters-1" class="level3">
-<h3 class="anchored" data-anchor-id="why-this-matters-1">Why this matters</h3>
-<p>Almost every session in this course ends with you writing one function: <code>calculate_ndvi()</code>, <code>calculate_slope()</code>, <code>calculate_final_score()</code>. Getting comfortable with functions now saves a lot of confusion later.</p>
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<div style="text-align: justify;">
+<p>Almost every session in this course ends with writing one function, such as <code>calculate_ndvi</code>, <code>calculate_slope</code>, or <code>calculate_final_score</code>. Becoming comfortable with functions now will remove a lot of confusion later.</p>
+</div>
+<section id="a-basic-function" class="level3">
+<h3 class="anchored" data-anchor-id="a-basic-function">A basic function</h3>
+<div id="fed03737" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> celsius_to_fahrenheit(celsius):</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert a temperature from Celsius to Fahrenheit."""</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    fahrenheit <span class="op">=</span> (celsius <span class="op">*</span> <span class="dv">9</span> <span class="op">/</span> <span class="dv">5</span>) <span class="op">+</span> <span class="dv">32</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fahrenheit</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(celsius_to_fahrenheit(<span class="fl">21.5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>70.7</code></pre>
+</div>
+</div>
 </section>
-<section id="example-2.1-a-basic-function" class="level3">
-<h3 class="anchored" data-anchor-id="example-2.1-a-basic-function">Example 2.1 — A basic function</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> celsius_to_fahrenheit(celsius):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert a temperature from Celsius to Fahrenheit."""</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    fahrenheit <span class="op">=</span> (celsius <span class="op">*</span> <span class="dv">9</span> <span class="op">/</span> <span class="dv">5</span>) <span class="op">+</span> <span class="dv">32</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fahrenheit</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(celsius_to_fahrenheit(<span class="fl">21.5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="example-2.2-a-function-with-multiple-parameters" class="level3">
-<h3 class="anchored" data-anchor-id="example-2.2-a-function-with-multiple-parameters">Example 2.2 — A function with multiple parameters</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_elevation(elevation_m, threshold<span class="op">=</span><span class="dv">1200</span>):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return 'high' or 'low' depending on a threshold."""</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> elevation_m <span class="op">&gt;</span> threshold:</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"high"</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"low"</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">1600</span>))</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">900</span>))</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">1600</span>, threshold<span class="op">=</span><span class="dv">2000</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="functions-with-default-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="functions-with-default-parameters">Functions with default parameters</h3>
+<div id="c5943958" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_elevation(elevation_m, threshold<span class="op">=</span><span class="dv">800</span>):</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return 'high' or 'low' depending on a threshold."""</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> elevation_m <span class="op">&gt;</span> threshold:</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"high"</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"low"</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">860</span>))</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">790</span>))</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">860</span>, threshold<span class="op">=</span><span class="dv">900</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>high
+low
+low</code></pre>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Default parameters
+<span class="screen-reader-only">Tip</span>Note: default parameters
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>threshold=1200</code> means “use 1200 unless the caller says otherwise.” You will use this exact pattern in Session 8, when the suitability function has default weights that a student can later override.</p>
+<p><code>threshold=800</code> means use 800 unless the caller specifies otherwise. This exact pattern appears again in Session 8, where the suitability function has default weights that a student can later override.</p>
 </div>
 </div>
 </section>
-<section id="example-2.3-a-function-that-works-on-a-whole-list-at-once" class="level3">
-<h3 class="anchored" data-anchor-id="example-2.3-a-function-that-works-on-a-whole-list-at-once">Example 2.3 — A function that works on a whole list at once</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_all(elevation_list, threshold<span class="op">=</span><span class="dv">1200</span>):</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Classify every elevation in a list."""</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> []</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> value <span class="kw">in</span> elevation_list:</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        results.append(classify_elevation(value, threshold))</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>]</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_all(elevations))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="functions-that-return-multiple-values" class="level3">
+<h3 class="anchored" data-anchor-id="functions-that-return-multiple-values">Functions that return multiple values</h3>
+<div id="978890f0" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_stats(pixel_values):</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return the minimum, maximum, and average of a list of pixel values."""</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    minimum <span class="op">=</span> <span class="bu">min</span>(pixel_values)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    maximum <span class="op">=</span> <span class="bu">max</span>(pixel_values)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    average <span class="op">=</span> <span class="bu">sum</span>(pixel_values) <span class="op">/</span> <span class="bu">len</span>(pixel_values)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> minimum, maximum, average</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>pixels <span class="op">=</span> [<span class="dv">120</span>, <span class="dv">98</span>, <span class="dv">145</span>, <span class="dv">132</span>, <span class="dv">110</span>, <span class="dv">156</span>]</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>low, high, avg <span class="op">=</span> image_stats(pixels)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Min:"</span>, low, <span class="st">"Max:"</span>, high, <span class="st">"Average:"</span>, <span class="bu">round</span>(avg, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Min: 98 Max: 156 Average: 126.83</code></pre>
+</div>
+</div>
 </section>
-<section id="example-2.4-function-with-multiple-return-values" class="level3">
-<h3 class="anchored" data-anchor-id="example-2.4-function-with-multiple-return-values">Example 2.4 — Function with multiple return values</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> elevation_stats(elevation_list):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return min, max, and mean of a list of elevations."""</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">min</span>(elevation_list), <span class="bu">max</span>(elevation_list), <span class="bu">sum</span>(elevation_list) <span class="op">/</span> <span class="bu">len</span>(elevation_list)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>]</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>min_elev, max_elev, mean_elev <span class="op">=</span> elevation_stats(elevations)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Min: </span><span class="sc">{</span>min_elev<span class="sc">}</span><span class="ss">, Max: </span><span class="sc">{</span>max_elev<span class="sc">}</span><span class="ss">, Mean: </span><span class="sc">{</span>mean_elev<span class="sc">:.1f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Exercise 2.1</strong></p>
-<p>Write a function <code>meters_to_feet(meters)</code> that converts meters to feet (1 m = 3.281 ft). Test it with a value of your choice.</p>
+<section id="functions-that-call-other-functions" class="level3">
+<h3 class="anchored" data-anchor-id="functions-that-call-other-functions">Functions that call other functions</h3>
+<div id="49661e29" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dn_to_reflectance(dn_value, gain<span class="op">=</span><span class="fl">0.0001</span>, offset<span class="op">=</span><span class="fl">0.0</span>):</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert a digital number to reflectance using a linear model."""</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dn_value <span class="op">*</span> gain <span class="op">+</span> offset</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_reflectance(reflectance, threshold<span class="op">=</span><span class="fl">0.2</span>):</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Classify a reflectance value as vegetation or non-vegetation."""</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> reflectance <span class="op">&gt;</span> threshold:</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"vegetation"</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"non-vegetation"</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>digital_number <span class="op">=</span> <span class="dv">2500</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>reflectance_value <span class="op">=</span> dn_to_reflectance(digital_number)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> classify_reflectance(reflectance_value)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"DN </span><span class="sc">{</span>digital_number<span class="sc">}</span><span class="ss"> corresponds to reflectance </span><span class="sc">{</span>reflectance_value<span class="sc">:.3f}</span><span class="ss">, classified as </span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DN 2500 corresponds to reflectance 0.250, classified as vegetation</code></pre>
+</div>
+</div>
+</section>
+<section id="applying-a-function-to-a-whole-list" class="level3">
+<h3 class="anchored" data-anchor-id="applying-a-function-to-a-whole-list">Applying a function to a whole list</h3>
+<div id="1f09456b" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_all(elevation_list, threshold<span class="op">=</span><span class="dv">800</span>):</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Classify every elevation value in a list."""</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> []</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> value <span class="kw">in</span> elevation_list:</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>        results.append(classify_elevation(value, threshold))</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>]</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_all(elevations))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>['high', 'low', 'high', 'high', 'high', 'low']</code></pre>
+</div>
+</div>
+<details>
+<summary>
+Exercise 2.1
+</summary>
+<div style="text-align: justify;">
+<p>Write a function <code>meters_to_feet(meters)</code> that converts meters to feet, using the fact that 1 meter equals 3.281 feet. Test it with the flying height used earlier in this session.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> meters_to_feet(meters):</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert meters to feet."""</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> meters <span class="op">*</span> <span class="fl">3.281</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(meters_to_feet(<span class="dv">1250</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7e8576e5" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> meters_to_feet(meters):</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert meters to feet."""</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> meters <span class="op">*</span> <span class="fl">3.281</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(meters_to_feet(<span class="dv">1200</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3937.2000000000003</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 2.2</strong></p>
-<p>Write a function <code>average_elevation(elevation_list)</code> that returns the average of a list of elevations. Use <code>sum()</code> and <code>len()</code>.</p>
+</details>
+<details>
+<summary>
+Exercise 2.2
+</summary>
+<div style="text-align: justify;">
+<p>Write a function <code>average_elevation(elevation_list)</code> that returns the average of a list of elevation values, then test it on the <code>elevations</code> list used above.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> average_elevation(elevation_list):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return the average value of a list of numbers."""</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(elevation_list) <span class="op">/</span> <span class="bu">len</span>(elevation_list)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>]</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(average_elevation(elevations))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="1e09193a" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> average_elevation(elevation_list):</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return the average value of a list of numbers."""</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(elevation_list) <span class="op">/</span> <span class="bu">len</span>(elevation_list)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>]</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(average_elevation(elevations))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>818.0</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 2.3</strong></p>
-<p>Write a function <code>filter_by_threshold(values, threshold)</code> that takes a list of numbers and a threshold, and returns a new list containing only the numbers greater than the threshold.</p>
+</details>
+<details>
+<summary>
+Exercise 2.3
+</summary>
+<div style="text-align: justify;">
+<p>Write a function <code>gsd_from_flight(focal_length_mm, sensor_width_mm, image_width_px, flying_height_m)</code> that returns the ground sample distance in centimeters, based on the formula used at the start of this session. Test it with two different flying heights.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filter_by_threshold(values, threshold):</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return values greater than threshold."""</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [v <span class="cf">for</span> v <span class="kw">in</span> values <span class="cf">if</span> v <span class="op">&gt;</span> threshold]</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>numbers <span class="op">=</span> [<span class="dv">5</span>, <span class="dv">12</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">15</span>, <span class="dv">7</span>, <span class="dv">10</span>]</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(filter_by_threshold(numbers, <span class="dv">8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="4a7ce033" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gsd_from_flight(focal_length_mm, sensor_width_mm, image_width_px, flying_height_m):</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return ground sample distance in cm per pixel."""</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (sensor_width_mm <span class="op">*</span> flying_height_m <span class="op">*</span> <span class="dv">100</span>) <span class="op">/</span> (focal_length_mm <span class="op">*</span> image_width_px)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsd_from_flight(<span class="dv">35</span>, <span class="fl">23.5</span>, <span class="dv">6000</span>, <span class="dv">1200</span>))</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsd_from_flight(<span class="dv">35</span>, <span class="fl">23.5</span>, <span class="dv">6000</span>, <span class="dv">800</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>13.428571428571429
+8.952380952380953</code></pre>
+</div>
+</div>
 </details>
-<hr>
+</details>
+</section>
+<section id="quick-quiz-1" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz-1">Quick quiz</h3>
+<details>
+<summary>
+Question 2
+</summary>
+<div style="text-align: justify;">
+<p>What does a function return if there is no explicit <code>return</code> statement inside it?</p>
+</div>
+<p>A. An error, always</p>
+<p>B. <code>None</code></p>
+<p>C. <code>0</code></p>
+<p>D. The last variable defined inside the function</p>
+<details>
+<summary>
+Answer
+</summary>
+B. Python functions return <code>None</code> by default when there is no explicit <code>return</code> statement.
+</details>
+</details>
 </section>
 </section>
 <section id="from-lists-to-numpy-arrays" class="level2">
-<h2 class="anchored" data-anchor-id="from-lists-to-numpy-arrays">3. From Lists to NumPy Arrays</h2>
-<section id="why-this-matters-2" class="level3">
-<h3 class="anchored" data-anchor-id="why-this-matters-2">Why this matters</h3>
-<p>This is the single most important concept in this session. A raster (satellite image, elevation model) is nothing more than a big NumPy array of numbers. Every calculation you do in Sessions 4 to 8 (NDVI, slope, aspect, suitability score) is just NumPy math on arrays.</p>
+<h2 class="anchored" data-anchor-id="from-lists-to-numpy-arrays">From Lists to NumPy Arrays</h2>
+<div style="text-align: justify;">
+<p>This is the single most important concept in this session. A raster, whether it is a satellite image or an elevation model, is nothing more than a large NumPy array of numbers. Every calculation performed in later sessions, including NDVI, slope, aspect, and the final suitability score, is simply NumPy math applied to arrays.</p>
+</div>
+<section id="the-problem-with-plain-lists" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem-with-plain-lists">The problem with plain lists</h3>
+<div id="b9fec9b6" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>]</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co"># converting every value to feet forces a manual loop with a plain list</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>elevations_ft <span class="op">=</span> []</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> elevations:</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    elevations_ft.append(value <span class="op">*</span> <span class="fl">3.281</span>)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations_ft)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[2664.172, 2591.9900000000002, 2772.445, 2634.643, 2821.6600000000003, 2618.2380000000003]</code></pre>
+</div>
+</div>
 </section>
-<section id="example-3.1-the-problem-with-plain-lists" class="level3">
-<h3 class="anchored" data-anchor-id="example-3.1-the-problem-with-plain-lists">Example 3.1 — The problem with plain lists</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> [<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>]</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># With a plain list, you are forced to loop:</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>elevations_ft <span class="op">=</span> []</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> value <span class="kw">in</span> elevations:</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    elevations_ft.append(value <span class="op">*</span> <span class="fl">3.281</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations_ft)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="example-3.2-the-numpy-way" class="level3">
-<h3 class="anchored" data-anchor-id="example-3.2-the-numpy-way">Example 3.2 — The NumPy way</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> np.array([<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>])</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Now multiplication applies to every value at once — no loop needed</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>elevations_ft <span class="op">=</span> elevations <span class="op">*</span> <span class="fl">3.281</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations_ft)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="the-numpy-way" class="level3">
+<h3 class="anchored" data-anchor-id="the-numpy-way">The NumPy way</h3>
+<div id="b410808c" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> np.array([<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>])</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># multiplication now applies to every value at once, no loop needed</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>elevations_ft <span class="op">=</span> elevations <span class="op">*</span> <span class="fl">3.281</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations_ft)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[2664.172 2591.99  2772.445 2634.643 2821.66  2618.238]</code></pre>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Vectorized operations
+<span class="screen-reader-only">Tip</span>Note: vectorized operations
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>When an operation applies to a whole array at once (no loop), we call it <strong>vectorized</strong>. This is not just shorter code — it is dramatically faster, which matters a lot when your “list” is actually an image with millions of pixels.</p>
+<p>When an operation applies to a whole array at once, without an explicit loop, this is called a vectorized operation. This is not only shorter code, it is dramatically faster, which matters when the array is an image with millions of pixels.</p>
 </div>
 </div>
 </section>
-<section id="example-3.3-filtering-with-conditions" class="level3">
-<h3 class="anchored" data-anchor-id="example-3.3-filtering-with-conditions">Example 3.3 — Filtering with conditions</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> np.array([<span class="dv">1250</span>, <span class="dv">980</span>, <span class="dv">1430</span>, <span class="dv">1100</span>, <span class="dv">1600</span>])</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Boolean mask: True/False for each value</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>above_1200 <span class="op">=</span> elevations <span class="op">&gt;</span> <span class="dv">1200</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(above_1200)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the mask to actually pull out the values</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations[above_1200])</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Or in one line:</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations[elevations <span class="op">&gt;</span> <span class="dv">1200</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="creating-arrays-with-built-in-functions" class="level3">
+<h3 class="anchored" data-anchor-id="creating-arrays-with-built-in-functions">Creating arrays with built-in functions</h3>
+<div id="b154ede8" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>zeros_array <span class="op">=</span> np.zeros(<span class="dv">5</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>ones_array <span class="op">=</span> np.ones(<span class="dv">5</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>sequence_array <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">10</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>even_spacing <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Zeros:"</span>, zeros_array)</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ones:"</span>, ones_array)</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Arange:"</span>, sequence_array)</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Linspace:"</span>, even_spacing)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Zeros: [0. 0. 0. 0. 0.]
+Ones: [1. 1. 1. 1. 1.]
+Arange: [ 0 10 20 30 40]
+Linspace: [0.   0.25 0.5  0.75 1.  ]</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>These functions are commonly used to create placeholder arrays before filling them with real raster values, or to generate evenly spaced coordinates along a flight line.</p>
+</div>
+</section>
+<section id="filtering-with-conditions" class="level3">
+<h3 class="anchored" data-anchor-id="filtering-with-conditions">Filtering with conditions</h3>
+<div id="91897776" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>elevations <span class="op">=</span> np.array([<span class="dv">812</span>, <span class="dv">790</span>, <span class="dv">845</span>, <span class="dv">803</span>, <span class="dv">860</span>, <span class="dv">798</span>])</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co"># boolean mask: True or False for each value</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>above_800 <span class="op">=</span> elevations <span class="op">&gt;</span> <span class="dv">800</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(above_800)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co"># use the mask to pull out the matching values</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations[above_800])</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co"># equivalent one line version</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(elevations[elevations <span class="op">&gt;</span> <span class="dv">800</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[ True False  True  True  True False]
+[812 845 803 860]
+[812 845 803 860]</code></pre>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>This is exactly how we will pick “good” pixels
+<span class="screen-reader-only">Tip</span>Note: this is exactly how we will pick suitable pixels
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In Session 5, we will write something like <code>slope_array[slope_array &lt; 10]</code> to find every pixel with a gentle enough slope for solar panels. Same exact pattern you just used.</p>
+<p>In Session 5, code very similar to <code>slope_array[slope_array &lt; 10]</code> will be used to find every pixel with a gentle enough slope for solar panel installation. It is the same pattern used above.</p>
 </div>
 </div>
 </section>
-<section id="example-3.4-2d-arrays-this-is-basically-a-mini-raster" class="level3">
-<h3 class="anchored" data-anchor-id="example-3.4-2d-arrays-this-is-basically-a-mini-raster">Example 3.4 — 2D arrays (this is basically a mini raster)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imagine this 5x5 grid of numbers is a tiny elevation model (DEM)</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>dem <span class="op">=</span> np.array([</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1200</span>, <span class="dv">1210</span>, <span class="dv">1215</span>, <span class="dv">1220</span>, <span class="dv">1225</span>],</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1190</span>, <span class="dv">1195</span>, <span class="dv">1205</span>, <span class="dv">1215</span>, <span class="dv">1230</span>],</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1180</span>, <span class="dv">1185</span>, <span class="dv">1190</span>, <span class="dv">1200</span>, <span class="dv">1210</span>],</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1150</span>, <span class="dv">1160</span>, <span class="dv">1170</span>, <span class="dv">1180</span>, <span class="dv">1195</span>],</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1100</span>, <span class="dv">1120</span>, <span class="dv">1140</span>, <span class="dv">1160</span>, <span class="dv">1175</span>]</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of this 'DEM':"</span>, dem.shape)</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Value at row 2, column 3:"</span>, dem[<span class="dv">2</span>, <span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="basic-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="basic-statistics">Basic statistics</h3>
+<div id="3bb0fe0f" class="cell" data-execution_count="26">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>ndvi_values <span class="op">=</span> np.array([<span class="fl">0.1</span>, <span class="fl">0.65</span>, <span class="fl">0.72</span>, <span class="fl">0.05</span>, <span class="fl">0.55</span>, <span class="fl">0.68</span>])</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean:"</span>, np.mean(ndvi_values))</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Median:"</span>, np.median(ndvi_values))</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Standard deviation:"</span>, np.std(ndvi_values))</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Minimum:"</span>, np.<span class="bu">min</span>(ndvi_values))</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Maximum:"</span>, np.<span class="bu">max</span>(ndvi_values))</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Sum:"</span>, np.<span class="bu">sum</span>(ndvi_values))</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Count above 0.5:"</span>, np.<span class="bu">sum</span>(ndvi_values <span class="op">&gt;</span> <span class="fl">0.5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean: 0.4583333333333334
+Median: 0.6000000000000001
+Standard deviation: 0.2762496857715659
+Minimum: 0.05
+Maximum: 0.72
+Sum: 2.7500000000000004
+Count above 0.5: 4</code></pre>
+</div>
+</div>
 </section>
-<section id="example-3.5-slicing-a-2d-array" class="level3">
-<h3 class="anchored" data-anchor-id="example-3.5-slicing-a-2d-array">Example 3.5 — Slicing a 2D array</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the top-left 2x2 corner</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem[<span class="dv">0</span>:<span class="dv">2</span>, <span class="dv">0</span>:<span class="dv">2</span>])</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the entire first row</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem[<span class="dv">0</span>, :])</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the entire last column</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem[:, <span class="op">-</span><span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="example-3.6-applying-a-condition-to-a-2d-array" class="level3">
-<h3 class="anchored" data-anchor-id="example-3.6-applying-a-condition-to-a-2d-array">Example 3.6 — Applying a condition to a 2D array</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Which pixels are above 1200 m?</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>high_pixels <span class="op">=</span> dem <span class="op">&gt;</span> <span class="dv">1200</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(high_pixels)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># How many pixels are above 1200 m?</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Count:"</span>, np.<span class="bu">sum</span>(high_pixels))</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># What is the average elevation of the whole grid?</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean elevation:"</span>, np.mean(dem))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="example-3.7-basic-array-math" class="level3">
-<h3 class="anchored" data-anchor-id="example-3.7-basic-array-math">Example 3.7 — Basic array math</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create two arrays and perform element-wise operations</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>array1 <span class="op">=</span> np.array([<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>])</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>array2 <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>])</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Addition:"</span>, array1 <span class="op">+</span> array2)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Multiplication:"</span>, array1 <span class="op">*</span> array2)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Power:"</span>, array1 <span class="op">**</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="two-dimensional-arrays" class="level3">
+<h3 class="anchored" data-anchor-id="two-dimensional-arrays">Two dimensional arrays</h3>
+<div style="text-align: justify;">
+<p>A raster is a grid of numbers, which in NumPy is represented as a two dimensional array. Imagine the grid below as a small elevation model.</p>
+</div>
+<div id="d2cf3317" class="cell" data-execution_count="27">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>dem <span class="op">=</span> np.array([</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">812</span>, <span class="dv">815</span>, <span class="dv">818</span>, <span class="dv">820</span>, <span class="dv">825</span>],</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">805</span>, <span class="dv">808</span>, <span class="dv">812</span>, <span class="dv">818</span>, <span class="dv">822</span>],</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">795</span>, <span class="dv">798</span>, <span class="dv">802</span>, <span class="dv">808</span>, <span class="dv">815</span>],</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">780</span>, <span class="dv">785</span>, <span class="dv">790</span>, <span class="dv">796</span>, <span class="dv">805</span>],</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">760</span>, <span class="dv">770</span>, <span class="dv">775</span>, <span class="dv">782</span>, <span class="dv">790</span>]</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of this DEM:"</span>, dem.shape)</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Value at row 2, column 3:"</span>, dem[<span class="dv">2</span>, <span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shape of this DEM: (5, 5)
+Value at row 2, column 3: 808</code></pre>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Rows vs.&nbsp;columns
+<span class="screen-reader-only">Warning</span>Note: rows versus columns
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In NumPy (and in every raster you will work with), the <strong>first</strong> index is the row (y-direction, top to bottom) and the <strong>second</strong> index is the column (x-direction, left to right). Mixing these up is one of the most common beginner mistakes.</p>
+<p>In NumPy, and in every raster used later, the first index is the row (the y direction, top to bottom) and the second index is the column (the x direction, left to right). This is one of the most common beginner mistakes, so keep it in mind starting from Session 3.</p>
 </div>
 </div>
-<p><strong>Exercise 3.1</strong></p>
-<p>Using the <code>dem</code> array from Example 3.4, find:</p>
-<ol type="1">
-<li>The minimum and maximum elevation in the grid</li>
-<li>The number of pixels with elevation below 1180 m</li>
-</ol>
+</section>
+<section id="slicing-a-two-dimensional-array" class="level3">
+<h3 class="anchored" data-anchor-id="slicing-a-two-dimensional-array">Slicing a two dimensional array</h3>
+<div id="dd935db3" class="cell" data-execution_count="28">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem[<span class="dv">0</span>:<span class="dv">2</span>, <span class="dv">0</span>:<span class="dv">2</span>])   <span class="co"># top-left 2x2 corner</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem[<span class="dv">0</span>, :])        <span class="co"># entire first row</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem[:, <span class="op">-</span><span class="dv">1</span>])       <span class="co"># entire last column</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem[<span class="op">-</span><span class="dv">1</span>, :])       <span class="co"># entire last row</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[812 815]
+ [805 808]]
+[812 815 818 820 825]
+[825 822 815 805 790]
+[760 770 775 782 790]</code></pre>
+</div>
+</div>
+</section>
+<section id="applying-conditions-to-a-two-dimensional-array" class="level3">
+<h3 class="anchored" data-anchor-id="applying-conditions-to-a-two-dimensional-array">Applying conditions to a two dimensional array</h3>
+<div id="36e21ef8" class="cell" data-execution_count="29">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>high_pixels <span class="op">=</span> dem <span class="op">&gt;</span> <span class="dv">800</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(high_pixels)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Count of pixels above 800 m:"</span>, np.<span class="bu">sum</span>(high_pixels))</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean elevation of the whole grid:"</span>, np.mean(dem))</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean elevation of only the high pixels:"</span>, np.mean(dem[high_pixels]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ True  True  True  True  True]
+ [ True  True  True  True  True]
+ [False False  True  True  True]
+ [False False False False  True]
+ [False False False False False]]
+Count of pixels above 800 m: 14
+Mean elevation of the whole grid: 800.24
+Mean elevation of only the high pixels: 813.2142857142857</code></pre>
+</div>
+</div>
+</section>
+<section id="reshaping-and-combining-arrays" class="level3">
+<h3 class="anchored" data-anchor-id="reshaping-and-combining-arrays">Reshaping and combining arrays</h3>
+<div id="96a5716e" class="cell" data-execution_count="30">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>flat_values <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>])</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> flat_values.reshape(<span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grid)</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>back_to_flat <span class="op">=</span> grid.flatten()</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(back_to_flat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1 2 3]
+ [4 5 6]
+ [7 8 9]]
+[1 2 3 4 5 6 7 8 9]</code></pre>
+</div>
+</div>
+<div id="bf4a1297" class="cell" data-execution_count="31">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A remote sensing example: combining two bands into one array</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>red_band <span class="op">=</span> np.array([[<span class="dv">80</span>, <span class="dv">85</span>], [<span class="dv">90</span>, <span class="dv">95</span>]])</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>nir_band <span class="op">=</span> np.array([[<span class="dv">150</span>, <span class="dv">160</span>], [<span class="dv">140</span>, <span class="dv">130</span>]])</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>stacked <span class="op">=</span> np.stack([red_band, nir_band])</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stacked shape:"</span>, stacked.shape)</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(stacked)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stacked shape: (2, 2, 2)
+[[[ 80  85]
+  [ 90  95]]
+
+ [[150 160]
+  [140 130]]]</code></pre>
+</div>
+</div>
+<details>
+<summary>
+Exercise 3.1
+</summary>
+<div style="text-align: justify;">
+<p>Using the <code>dem</code> array defined above, find the minimum and maximum elevation in the grid, and count how many pixels have elevation below 790 m.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Min:"</span>, np.<span class="bu">min</span>(dem))</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Max:"</span>, np.<span class="bu">max</span>(dem))</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pixels below 1180:"</span>, np.<span class="bu">sum</span>(dem <span class="op">&lt;</span> <span class="dv">1180</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b8c3ebe8" class="cell" data-execution_count="32">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Min:"</span>, np.<span class="bu">min</span>(dem))</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Max:"</span>, np.<span class="bu">max</span>(dem))</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pixels below 790:"</span>, np.<span class="bu">sum</span>(dem <span class="op">&lt;</span> <span class="dv">790</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Min: 760
+Max: 825
+Pixels below 790: 6</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 3.2</strong></p>
-<p>Create a 4x4 NumPy array of your own choosing (any numbers), then print only the values greater than the array’s average (<code>np.mean()</code>).</p>
+</details>
+<details>
+<summary>
+Exercise 3.2
+</summary>
+<div style="text-align: justify;">
+<p>Create a NumPy array from the NDVI values <code>[0.12, 0.58, 0.61, 0.09, 0.70, 0.33]</code>. Print only the values that represent healthy vegetation, using a threshold of 0.5, and print how many values passed the threshold.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>my_array <span class="op">=</span> np.array([</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">5</span>, <span class="dv">12</span>, <span class="dv">8</span>, <span class="dv">3</span>],</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">9</span>, <span class="dv">15</span>, <span class="dv">2</span>, <span class="dv">7</span>],</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">11</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">10</span>],</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1</span>, <span class="dv">14</span>, <span class="dv">13</span>, <span class="dv">0</span>]</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>average <span class="op">=</span> np.mean(my_array)</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Average:"</span>, average)</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Above average:"</span>, my_array[my_array <span class="op">&gt;</span> average])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="7d637aa2" class="cell" data-execution_count="33">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>ndvi <span class="op">=</span> np.array([<span class="fl">0.12</span>, <span class="fl">0.58</span>, <span class="fl">0.61</span>, <span class="fl">0.09</span>, <span class="fl">0.70</span>, <span class="fl">0.33</span>])</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>healthy <span class="op">=</span> ndvi[ndvi <span class="op">&gt;</span> <span class="fl">0.5</span>]</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(healthy)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Count:"</span>, <span class="bu">len</span>(healthy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.58 0.61 0.7 ]
+Count: 3</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 3.3</strong></p>
-<p>Create a 1D NumPy array of 20 random integers between 0 and 100. Then: - Find the maximum value and its index - Calculate the standard deviation - Count how many values are above 50</p>
+</details>
+<details>
+<summary>
+Exercise 3.3
+</summary>
+<div style="text-align: justify;">
+<p>Create a one dimensional array with <code>np.arange</code> containing the numbers from 0 to 15, reshape it into a 4 by 4 grid, then print only the last column of that grid.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create array of 20 random integers between 0 and 100</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">101</span>, <span class="dv">20</span>)</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Data:"</span>, data)</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Maximum:"</span>, np.<span class="bu">max</span>(data))</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Index of maximum:"</span>, np.argmax(data))</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Standard deviation:"</span>, np.std(data))</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Values above 50:"</span>, np.<span class="bu">sum</span>(data <span class="op">&gt;</span> <span class="dv">50</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b8d38e71" class="cell" data-execution_count="34">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>values <span class="op">=</span> np.arange(<span class="dv">16</span>)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> values.reshape(<span class="dv">4</span>, <span class="dv">4</span>)</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grid)</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grid[:, <span class="op">-</span><span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]
+ [12 13 14 15]]
+[ 3  7 11 15]</code></pre>
+</div>
+</div>
 </details>
-<hr>
+</details>
+</section>
+<section id="quick-quiz-2" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz-2">Quick quiz</h3>
+<details>
+<summary>
+Question 3
+</summary>
+<div style="text-align: justify;">
+<p>Why are NumPy arrays preferred over plain Python lists when working with raster data?</p>
+</div>
+<p>A. NumPy arrays use less disk space than lists</p>
+<p>B. NumPy arrays support fast, vectorized math without explicit loops</p>
+<p>C. Lists cannot store numbers, only text</p>
+<p>D. NumPy arrays automatically carry a coordinate system</p>
+<details>
+<summary>
+Answer
+</summary>
+B. The real power of NumPy for this course is vectorized operations: applying math to millions of pixels at once with no loop required. Option D is tempting but incorrect. A plain NumPy array has no geographic information attached; that is what a library such as rasterio adds later.
+</details>
+</details>
 </section>
 </section>
 <section id="working-with-files-and-paths" class="level2">
-<h2 class="anchored" data-anchor-id="working-with-files-and-paths">4. Working with Files and Paths</h2>
-<section id="why-this-matters-3" class="level3">
-<h3 class="anchored" data-anchor-id="why-this-matters-3">Why this matters</h3>
-<p>Starting from Session 1, your project will have a real folder structure (<code>data/</code>, <code>data/outputs/</code>, <code>modules/</code>). You need a reliable way to build file paths that works on any computer — Windows, Mac, or Linux.</p>
-</section>
-<section id="example-4.1-the-problem-with-hardcoded-paths" class="level3">
-<h3 class="anchored" data-anchor-id="example-4.1-the-problem-with-hardcoded-paths">Example 4.1 — The problem with hardcoded paths</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Do not do this — it breaks on other operating systems</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># path = "data\\outputs\\ndvi.tif"   # Windows-style, breaks on Mac/Linux</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># path = "data/outputs/ndvi.tif"     # works on Mac/Linux, awkward on Windows</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="example-4.2-the-pathlib-way" class="level3">
-<h3 class="anchored" data-anchor-id="example-4.2-the-pathlib-way">Example 4.2 — The pathlib way</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>data_folder <span class="op">=</span> Path(<span class="st">"data"</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>outputs_folder <span class="op">=</span> data_folder <span class="op">/</span> <span class="st">"outputs"</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>ndvi_path <span class="op">=</span> outputs_folder <span class="op">/</span> <span class="st">"ndvi.tif"</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ndvi_path)</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Does this file exist?"</span>, ndvi_path.exists())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<h2 class="anchored" data-anchor-id="working-with-files-and-paths">Working with Files and Paths</h2>
+<div style="text-align: justify;">
+<p>Starting from Session 1, the project will have a real folder structure, including <code>data</code>, <code>data/outputs</code>, and <code>modules</code>. A reliable way of building file paths is needed that works the same way on Windows, Mac, and Linux.</p>
+</div>
+<section id="the-pathlib-way" class="level3">
+<h3 class="anchored" data-anchor-id="the-pathlib-way">The pathlib way</h3>
+<div id="f78827ec" class="cell" data-execution_count="35">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>data_folder <span class="op">=</span> Path(<span class="st">"data"</span>)</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>outputs_folder <span class="op">=</span> data_folder <span class="op">/</span> <span class="st">"outputs"</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>ndvi_path <span class="op">=</span> outputs_folder <span class="op">/</span> <span class="st">"ndvi.tif"</span></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ndvi_path)</span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Does this file exist:"</span>, ndvi_path.exists())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>data/outputs/ndvi.tif
+Does this file exist: False</code></pre>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>The <code>/</code> operator
+<span class="screen-reader-only">Tip</span>Note: the slash operator
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Notice <code>data_folder / "outputs"</code> — with <code>pathlib</code>, the <code>/</code> symbol joins path pieces together. It automatically uses the correct separator (<code>\</code> on Windows, <code>/</code> on Mac/Linux) so your code works everywhere.</p>
+<p>The <code>/</code> symbol joins path pieces together when used with <code>pathlib</code>. It automatically uses the correct separator for the operating system, so the same code works on any computer.</p>
 </div>
 </div>
 </section>
-<section id="example-4.3-listing-files-in-a-folder" class="level3">
-<h3 class="anchored" data-anchor-id="example-4.3-listing-files-in-a-folder">Example 4.3 — Listing files in a folder</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>data_folder <span class="op">=</span> Path(<span class="st">"data"</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># List all .tif files in the folder</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> data_folder.exists():</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> data_folder.glob(<span class="st">"*.tif"</span>):</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="bu">file</span>.name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="useful-path-attributes-and-methods" class="level3">
+<h3 class="anchored" data-anchor-id="useful-path-attributes-and-methods">Useful path attributes and methods</h3>
+<div id="ea3f1ba9" class="cell" data-execution_count="36">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>image_path <span class="op">=</span> Path(<span class="st">"data/sentinel_scene_01.tif"</span>)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Name:"</span>, image_path.name)</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stem (name without extension):"</span>, image_path.stem)</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Suffix (extension):"</span>, image_path.suffix)</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Parent folder:"</span>, image_path.parent)</span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Is this an absolute path:"</span>, image_path.is_absolute())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Name: sentinel_scene_01.tif
+Stem (name without extension): sentinel_scene_01
+Suffix (extension): .tif
+Parent folder: data
+Is this an absolute path: False</code></pre>
+</div>
+</div>
 </section>
-<section id="example-4.4-creating-folders-safely" class="level3">
-<h3 class="anchored" data-anchor-id="example-4.4-creating-folders-safely">Example 4.4 — Creating folders safely</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>outputs_folder <span class="op">=</span> Path(<span class="st">"data/outputs"</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>outputs_folder.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Folder ready:"</span>, outputs_folder)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="listing-and-creating-folders" class="level3">
+<h3 class="anchored" data-anchor-id="listing-and-creating-folders">Listing and creating folders</h3>
+<div id="6aafb3d0" class="cell" data-execution_count="37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>data_folder <span class="op">=</span> Path(<span class="st">"data"</span>)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> data_folder.exists():</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> data_folder.glob(<span class="st">"*.tif"</span>):</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="bu">file</span>.name)</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Folder 'data' does not exist yet in this environment"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Folder 'data' does not exist yet in this environment</code></pre>
+</div>
+</div>
+<div id="c212999a" class="cell" data-execution_count="38">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>outputs_folder <span class="op">=</span> Path(<span class="st">"data/outputs"</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>outputs_folder.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Folder ready:"</span>, outputs_folder)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Folder ready: data/outputs</code></pre>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>exist_ok=True
+<span class="screen-reader-only">Tip</span>Note: exist_ok=True
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Without this, Python raises an error if the folder already exists. With it, Python just moves on quietly — very useful when you re-run a notebook multiple times.</p>
+<p>Without this argument, Python raises an error if the folder already exists. With it, Python continues without complaining, which is useful when a notebook is run more than once.</p>
 </div>
 </div>
 </section>
-<section id="example-4.5-getting-file-information" class="level3">
-<h3 class="anchored" data-anchor-id="example-4.5-getting-file-information">Example 4.5 — Getting file information</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>file_path <span class="op">=</span> Path(<span class="st">"data/sample.txt"</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Get file name, extension, and parent folder</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"File name:"</span>, file_path.name)</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stem (name without extension):"</span>, file_path.stem)</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Extension:"</span>, file_path.suffix)</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Parent folder:"</span>, file_path.parent)</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Check file properties if it exists</span></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> file_path.exists():</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Size (bytes):"</span>, file_path.stat().st_size)</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Last modified:"</span>, datetime.fromtimestamp(file_path.stat().st_mtime))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Exercise 4.1</strong></p>
-<p>Using <code>pathlib</code>, build a path that points to <code>data/roads.shp</code> without typing the slash manually, and print whether it currently exists on your system.</p>
+<section id="checking-file-type" class="level3">
+<h3 class="anchored" data-anchor-id="checking-file-type">Checking file type</h3>
+<div id="7bef688e" class="cell" data-execution_count="39">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>sample_paths <span class="op">=</span> [</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>    Path(<span class="st">"data/sentinel.tif"</span>),</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>    Path(<span class="st">"data/roads.shp"</span>),</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    Path(<span class="st">"data/notes.txt"</span>)</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> path <span class="kw">in</span> sample_paths:</span>
+<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(path.name, <span class="st">"-&gt;"</span>, path.suffix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>sentinel.tif -&gt; .tif
+roads.shp -&gt; .shp
+notes.txt -&gt; .txt</code></pre>
+</div>
+</div>
+<details>
+<summary>
+Exercise 4.1
+</summary>
+<div style="text-align: justify;">
+<p>Using <code>pathlib</code>, build a path pointing to <code>data/roads.shp</code> without typing the slash character manually, then print its stem and suffix.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>roads_path <span class="op">=</span> Path(<span class="st">"data"</span>) <span class="op">/</span> <span class="st">"roads.shp"</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(roads_path)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(roads_path.exists())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="3aadf909" class="cell" data-execution_count="40">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>roads_path <span class="op">=</span> Path(<span class="st">"data"</span>) <span class="op">/</span> <span class="st">"roads.shp"</span></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(roads_path)</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(roads_path.stem)</span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(roads_path.suffix)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>data/roads.shp
+roads
+.shp</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 4.2</strong></p>
-<p>Create a path to a file called <code>output.tif</code> inside a folder named <code>results</code>. Create the folder safely (only if it does not exist) and then print the full path.</p>
-<details>
-<summary>
-Show solution
-</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>results_folder <span class="op">=</span> Path(<span class="st">"results"</span>)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>results_folder.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>output_path <span class="op">=</span> results_folder <span class="op">/</span> <span class="st">"output.tif"</span></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Output path:"</span>, output_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<hr>
 </section>
 </section>
 <section id="building-and-importing-your-own-module" class="level2">
-<h2 class="anchored" data-anchor-id="building-and-importing-your-own-module">5. Building and Importing Your Own Module</h2>
-<section id="why-this-matters-4" class="level3">
-<h3 class="anchored" data-anchor-id="why-this-matters-4">Why this matters</h3>
-<p>Starting in Session 1, every session produces a <code>.py</code> file inside a <code>modules/</code> folder (<code>data_loader.py</code>, <code>raster_utils.py</code>, etc). By the end of the course, <code>main.py</code> and <code>app.py</code> will import and combine all of them. Let us practice that pattern right now, with something simple.</p>
+<h2 class="anchored" data-anchor-id="building-and-importing-your-own-module">Building and Importing Your Own Module</h2>
+<div style="text-align: justify;">
+<p>Starting in Session 1, every session produces a <code>.py</code> file inside a <code>modules</code> folder, such as <code>data_loader.py</code> or <code>raster_utils.py</code>. By the end of the course, <code>main.py</code> and <code>app.py</code> import and combine all of them. This section practices the same pattern with something simple.</p>
+</div>
+<section id="creating-a-small-module" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-small-module">Creating a small module</h3>
+<div style="text-align: justify;">
+<p>Save the code below in a file named <code>unit_converter.py</code>, in the same folder as this notebook.</p>
+</div>
+<div id="902a01f4" class="cell" data-execution_count="41">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unit_converter.py</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> meters_to_feet(meters):</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert meters to feet."""</span></span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> meters <span class="op">*</span> <span class="fl">3.281</span></span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> celsius_to_fahrenheit(celsius):</span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert Celsius to Fahrenheit."""</span></span>
+<span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (celsius <span class="op">*</span> <span class="dv">9</span> <span class="op">/</span> <span class="dv">5</span>) <span class="op">+</span> <span class="dv">32</span></span>
+<span id="cb81-10"><a href="#cb81-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-11"><a href="#cb81-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_elevation(elevation_m, threshold<span class="op">=</span><span class="dv">800</span>):</span>
+<span id="cb81-12"><a href="#cb81-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return 'high' or 'low' depending on a threshold."""</span></span>
+<span id="cb81-13"><a href="#cb81-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> elevation_m <span class="op">&gt;</span> threshold:</span>
+<span id="cb81-14"><a href="#cb81-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"high"</span></span>
+<span id="cb81-15"><a href="#cb81-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"low"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
-<section id="example-5.1-creating-a-small-module" class="level3">
-<h3 class="anchored" data-anchor-id="example-5.1-creating-a-small-module">Example 5.1 — Creating a small module</h3>
-<p>Save this code in a file named <code>unit_converter.py</code>, in the same folder as your notebook:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unit_converter.py</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> meters_to_feet(meters):</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert meters to feet."""</span></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> meters <span class="op">*</span> <span class="fl">3.281</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> celsius_to_fahrenheit(celsius):</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert Celsius to Fahrenheit."""</span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (celsius <span class="op">*</span> <span class="dv">9</span> <span class="op">/</span> <span class="dv">5</span>) <span class="op">+</span> <span class="dv">32</span></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kilometers_to_miles(km):</span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert kilometers to miles."""</span></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> km <span class="op">*</span> <span class="fl">0.621371</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="importing-the-whole-module" class="level3">
+<h3 class="anchored" data-anchor-id="importing-the-whole-module">Importing the whole module</h3>
+<div id="ab543492" class="cell" data-execution_count="42">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> unit_converter</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(unit_converter.meters_to_feet(<span class="dv">1200</span>))</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(unit_converter.celsius_to_fahrenheit(<span class="fl">21.5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
-<section id="example-5.2-importing-it-into-your-notebook" class="level3">
-<h3 class="anchored" data-anchor-id="example-5.2-importing-it-into-your-notebook">Example 5.2 — Importing it into your notebook</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> unit_converter</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(unit_converter.meters_to_feet(<span class="dv">1250</span>))</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(unit_converter.celsius_to_fahrenheit(<span class="fl">21.5</span>))</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(unit_converter.kilometers_to_miles(<span class="dv">100</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="example-5.3-importing-specific-functions" class="level3">
-<h3 class="anchored" data-anchor-id="example-5.3-importing-specific-functions">Example 5.3 — Importing specific functions</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unit_converter <span class="im">import</span> meters_to_feet, kilometers_to_miles</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(meters_to_feet(<span class="dv">500</span>))</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(kilometers_to_miles(<span class="dv">42</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="example-5.4-importing-with-an-alias" class="level3">
-<h3 class="anchored" data-anchor-id="example-5.4-importing-with-an-alias">Example 5.4 — Importing with an alias</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> unit_converter <span class="im">as</span> uc</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(uc.meters_to_feet(<span class="dv">1000</span>))</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(uc.celsius_to_fahrenheit(<span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="importing-specific-functions" class="level3">
+<h3 class="anchored" data-anchor-id="importing-specific-functions">Importing specific functions</h3>
+<div id="999b490f" class="cell" data-execution_count="43">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unit_converter <span class="im">import</span> meters_to_feet, classify_elevation</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(meters_to_feet(<span class="dv">500</span>))</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">860</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Where should the module file live?
+<span class="screen-reader-only">Warning</span>Note: where the module file should live
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Python looks for <code>unit_converter.py</code> in the <strong>same folder</strong> as your notebook (or somewhere on its search path). If you get a <code>ModuleNotFoundError</code>, the most common cause is the file being in the wrong folder. Starting Session 1, we will organize this properly with a <code>modules/</code> folder.</p>
+<p>Python looks for <code>unit_converter.py</code> in the same folder as the notebook, or somewhere on its search path. If a <code>ModuleNotFoundError</code> appears, the most common cause is the file being in the wrong folder. Starting Session 1, this will be organized properly with a dedicated <code>modules</code> folder.</p>
 </div>
 </div>
-<p><strong>Exercise 5.1</strong></p>
-<p>Add a new function <code>classify_elevation(elevation_m, threshold=1200)</code> (same as Section 2) into <code>unit_converter.py</code>. Import it into your notebook and test it with two different elevation values.</p>
+<details>
+<summary>
+Exercise 5.1
+</summary>
+<div style="text-align: justify;">
+<p>Add a new function <code>dn_to_reflectance(dn_value, gain=0.0001, offset=0.0)</code> into <code>unit_converter.py</code>, matching the one defined earlier in this session. Import it and test it with two different digital number values.</p>
+</div>
 <details>
 <summary>
 Show solution
 </summary>
-<p>Add this to <code>unit_converter.py</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_elevation(elevation_m, threshold<span class="op">=</span><span class="dv">1200</span>):</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return 'high' or 'low' depending on a threshold."""</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"high"</span> <span class="cf">if</span> elevation_m <span class="op">&gt;</span> threshold <span class="cf">else</span> <span class="st">"low"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>In your notebook:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> unit_converter <span class="im">import</span> classify_elevation</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">1600</span>))</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classify_elevation(<span class="dv">900</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="e8d54c0a" class="cell" data-execution_count="44">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dn_to_reflectance(dn_value, gain<span class="op">=</span><span class="fl">0.0001</span>, offset<span class="op">=</span><span class="fl">0.0</span>):</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert a digital number to reflectance using a linear model."""</span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dn_value <span class="op">*</span> gain <span class="op">+</span> offset</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dn_to_reflectance(<span class="dv">2500</span>))</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dn_to_reflectance(<span class="dv">1800</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.25
+0.18000000000000002</code></pre>
+</div>
+</div>
 </details>
-<p><strong>Exercise 5.2</strong></p>
-<p>Create a new module called <code>stats_utils.py</code> with two functions: - <code>mean(numbers)</code>: returns the average of a list - <code>median(numbers)</code>: returns the median of a list</p>
-<p>Import and test both functions in your notebook.</p>
+</details>
+</section>
+<section id="quick-quiz-3" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz-3">Quick quiz</h3>
 <details>
 <summary>
-Show solution
+Question 4
 </summary>
-<p>Create <code>stats_utils.py</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean(numbers):</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return the mean of a list of numbers."""</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(numbers) <span class="op">/</span> <span class="bu">len</span>(numbers)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> median(numbers):</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return the median of a list of numbers."""</span></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    sorted_nums <span class="op">=</span> <span class="bu">sorted</span>(numbers)</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(sorted_nums)</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> n <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sorted_nums[n <span class="op">//</span> <span class="dv">2</span>]</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (sorted_nums[n <span class="op">//</span> <span class="dv">2</span> <span class="op">-</span> <span class="dv">1</span>] <span class="op">+</span> sorted_nums[n <span class="op">//</span> <span class="dv">2</span>]) <span class="op">/</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>In your notebook:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> stats_utils <span class="im">import</span> mean, median</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>]</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean:"</span>, mean(data))</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Median:"</span>, median(data))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p>If the statement <code>from unit_converter import meters_to_feet</code> is used, how is the function called afterward?</p>
+</div>
+<p>A. <code>unit_converter.meters_to_feet(500)</code></p>
+<p>B. <code>meters_to_feet(500)</code></p>
+<p>C. <code>import.meters_to_feet(500)</code></p>
+<p>D. It cannot be called this way, this import style is only for classes</p>
+<details>
+<summary>
+Answer
+</summary>
+B. When a specific function is imported with <code>from module import function_name</code>, it is called directly by name, with no module prefix needed. Option A would be correct only if <code>import unit_converter</code> had been used instead.
 </details>
-<hr>
+</details>
 </section>
 </section>
-<section id="wrap-up" class="level2">
-<h2 class="anchored" data-anchor-id="wrap-up">Wrap-Up</h2>
-<p>You now have every Python tool this course will lean on:</p>
-<ul>
-<li>Lists and dictionaries → how we will store metadata and small collections of values</li>
-<li>Functions → the shape every processing step will take (<code>calculate_ndvi()</code>, <code>calculate_slope()</code>, …)</li>
-<li>NumPy arrays → the real structure behind every raster you will touch</li>
-<li><code>pathlib</code> → how we will navigate the project’s <code>data/</code> and <code>outputs/</code> folders</li>
-<li>Custom modules → the exact pattern the whole 10-session project is built on</li>
-</ul>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session covered every Python tool the rest of the course will lean on: lists and dictionaries for storing metadata and small collections of values, functions as the shape every processing step will take, NumPy arrays as the real structure behind every raster, pathlib for navigating the project folders, and custom modules as the pattern the entire ten session project is built on.</p>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1142,7 +1618,7 @@ Show solution
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>We will open a real satellite image with <code>rasterio</code> and see, for the first time, that it really is just a NumPy array with some extra geographic information attached.</p>
+<p>A real satellite image will be opened with rasterio, showing for the first time that it really is just a NumPy array with extra geographic information attached.</p>
 </div>
 </div>
 

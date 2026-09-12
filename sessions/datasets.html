@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
 <title>datasets – Spatial Python</title>
 <style>
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -256,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/datasets.html">Epilogue</a></li><li class="breadcrumb-item"><a href="../sessions/datasets.html"><span class="chapter-title">datasets.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/datasets.html">Epilogue</a></li><li class="breadcrumb-item"><a href="../sessions/datasets.html"><span class="chapter-title">datasets</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -303,7 +339,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-00-python-review.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Python Review</span></a>
+  <a href="../sessions/session-00-python-review.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">python refresher for spatial analysis</span></a>
   </div>
 </li>
       </ul>
@@ -380,7 +416,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/datasets.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">datasets.html</span></a>
+  <a href="../sessions/datasets.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">datasets</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -395,18 +431,369 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#study-area-boundary" id="toc-study-area-boundary" class="nav-link active" data-scroll-target="#study-area-boundary">Study Area Boundary</a></li>
+  <li><a href="#digital-elevation-model-copernicus-glo-30" id="toc-digital-elevation-model-copernicus-glo-30" class="nav-link" data-scroll-target="#digital-elevation-model-copernicus-glo-30">Digital Elevation Model, Copernicus GLO-30</a></li>
+  <li><a href="#sentinel-2-surface-reflectance-imagery" id="toc-sentinel-2-surface-reflectance-imagery" class="nav-link" data-scroll-target="#sentinel-2-surface-reflectance-imagery">Sentinel-2 Surface Reflectance Imagery</a></li>
+  <li><a href="#road-network-openstreetmap" id="toc-road-network-openstreetmap" class="nav-link" data-scroll-target="#road-network-openstreetmap">Road Network, OpenStreetMap</a></li>
+  <li><a href="#power-line-network-openstreetmap" id="toc-power-line-network-openstreetmap" class="nav-link" data-scroll-target="#power-line-network-openstreetmap">Power Line Network, OpenStreetMap</a></li>
+  <li><a href="#summary-of-files-produced" id="toc-summary-of-files-produced" class="nav-link" data-scroll-target="#summary-of-files-produced">Summary of Files Produced</a></li>
+  <li><a href="#going-beyond-this-courses-datasets" id="toc-going-beyond-this-courses-datasets" class="nav-link" data-scroll-target="#going-beyond-this-courses-datasets">Going Beyond This Course’s Datasets</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/datasets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/datasets.html">Epilogue</a></li><li class="breadcrumb-item"><a href="../sessions/datasets.html"><span class="chapter-title">datasets.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/datasets.html">Epilogue</a></li><li class="breadcrumb-item"><a href="../sessions/datasets.html"><span class="chapter-title">datasets</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">datasets</span></h1>
+<p class="subtitle lead">Every data source used in this course, and why it was chosen</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<div style="text-align: justify;">
+<p>This page documents every dataset the Solar Site Suitability project relies on: where it comes from, what it actually represents, why it was chosen over alternatives, and how it is downloaded. The code shown here is the exact acquisition script used to prepare the course data before <strong>Session 1</strong>. It is shown for reference and is not executed on this page, since running it requires personal credentials (a Google Earth Engine project) and produces large files that do not belong on a documentation page.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Before running this yourself
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You will need a free Google Earth Engine account and a Google Cloud project ID, along with the Python packages <code>earthengine-api</code>, <code>geemap</code>, <code>geopandas</code>, <code>osmnx</code>, <code>shapely</code>, and <code>python-dotenv</code>.</p>
+</div>
+</div>
+<section id="study-area-boundary" class="level2">
+<h2 class="anchored" data-anchor-id="study-area-boundary">Study Area Boundary</h2>
+<div style="text-align: justify;">
+<p>Every other dataset in this project is downloaded relative to a single boundary polygon. This boundary can come from a file you already have (a <code>.gpkg</code> you drew yourself, for example in <a href="https://geojson.io">geojson.io</a>), or it can be generated automatically by geocoding a place name through OpenStreetMap’s Nominatim service, which OSMnx wraps in a single function call. Using a boundary file gives you precise control over the exact shape and size of the study area. Geocoding a place name is faster to get started with, but returns the official administrative boundary of that place, which can be far larger than what you actually want for a class exercise, so it is worth checking the size before committing to it.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> osmnx <span class="im">as</span> ox</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.ops <span class="im">import</span> unary_union</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="st">"data"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>DATA_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>BOUNDARY_GPKG_PATH <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>PLACE_NAME <span class="op">=</span> <span class="st">"Tabernas, Almería, Spain"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> BOUNDARY_GPKG_PATH <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> Path(BOUNDARY_GPKG_PATH).exists():</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    boundary_gdf <span class="op">=</span> gpd.read_file(BOUNDARY_GPKG_PATH)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    boundary_gdf <span class="op">=</span> ox.geocode_to_gdf(PLACE_NAME)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> boundary_gdf.crs <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    boundary_gdf <span class="op">=</span> boundary_gdf.set_crs(<span class="st">"EPSG:4326"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> boundary_gdf.crs.to_epsg() <span class="op">!=</span> <span class="dv">4326</span>:</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    boundary_gdf <span class="op">=</span> boundary_gdf.to_crs(<span class="st">"EPSG:4326"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(boundary_gdf) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    study_polygon <span class="op">=</span> unary_union(boundary_gdf.geometry)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    study_polygon <span class="op">=</span> boundary_gdf.geometry.iloc[<span class="dv">0</span>]</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Boundary bounds:"</span>, study_polygon.bounds)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>boundary_gdf.to_file(DATA_DIR <span class="op">/</span> <span class="st">"boundary.gpkg"</span>, driver<span class="op">=</span><span class="st">"GPKG"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Why EPSG:4326
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The boundary is kept in EPSG:4326 (plain latitude and longitude) because this is the coordinate system that Earth Engine expects when a region is passed to it. Reprojecting into a metric CRS happens later, in Session 3 and Session 7, once we actually need to measure distances or areas in meters.</p>
+</div>
+</div>
+</section>
+<section id="digital-elevation-model-copernicus-glo-30" class="level2">
+<h2 class="anchored" data-anchor-id="digital-elevation-model-copernicus-glo-30">Digital Elevation Model, Copernicus GLO-30</h2>
+<div style="text-align: justify;">
+<p>The DEM provides elevation values across the study area and is the source for two of the four suitability factors used later in the project: slope and aspect. This course uses <a href="https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model">Copernicus GLO-30</a>, a global elevation model at 30 meter resolution, produced from radar data collected during the TanDEM-X mission between 2010 and 2015. It is one of the most widely used free global DEMs available today, alongside alternatives such as SRTM and ALOS World 3D, and is accessible directly through Google Earth Engine under the collection id <code>COPERNICUS/DEM/GLO30_2024_1</code>.</p>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>About the dataset version
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The original Earth Engine collection <code>COPERNICUS/DEM/GLO30</code> has been deprecated and replaced by <code>COPERNICUS/DEM/GLO30_2024_1</code>. The year in the new name refers to when this edition of the dataset was reprocessed and republished, not to when the elevation was measured. The underlying radar data is still from 2010 to 2015. For natural terrain that has not been reshaped by mining, landslides, or large construction, this age difference has no meaningful effect on slope or aspect calculations. More detail is available on the <a href="https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model">Copernicus DEM overview page</a>.</p>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>Technically, GLO30 is a Digital Surface Model rather than a Digital Terrain Model, meaning that in areas with buildings or dense vegetation, the elevation includes the height of what sits on top of the ground, not only the bare earth. Since this project specifically targets barren or low vegetation land for solar panel placement, this distinction rarely causes a practical problem.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ee</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geemap</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ee.Authenticate()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ee.Initialize(project<span class="op">=</span><span class="st">"YOUR-GEE-PROJECT-ID"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>aoi <span class="op">=</span> geemap.geopandas_to_ee(boundary_gdf).geometry()</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>dem_collection <span class="op">=</span> ee.ImageCollection(<span class="st">"COPERNICUS/DEM/GLO30_2024_1"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>dem <span class="op">=</span> dem_collection.select(<span class="st">"DEM"</span>).mosaic().clip(aoi)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>dem_output_path <span class="op">=</span> DATA_DIR <span class="op">/</span> <span class="st">"dem.tif"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>geemap.ee_export_image(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    dem,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    filename<span class="op">=</span><span class="bu">str</span>(dem_output_path),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    region<span class="op">=</span>aoi,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    crs<span class="op">=</span><span class="st">"EPSG:4326"</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    file_per_band<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Direct download versus Google Drive export
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>geemap.ee_export_image</code> downloads the raster straight to local disk and works well for small study areas, but Earth Engine limits how large a single direct download can be, roughly a few hundred megabytes. For a study area covering an entire province rather than a few square kilometers, this limit is exceeded and the export must instead go through <code>ee.batch.Export.image.toDrive</code>, which has no practical size limit but requires retrieving the finished file from Google Drive afterward, and often splits large exports into several tiles that need to be merged back together with <code>rasterio.merge</code>.</p>
+</div>
+</div>
+</section>
+<section id="sentinel-2-surface-reflectance-imagery" class="level2">
+<h2 class="anchored" data-anchor-id="sentinel-2-surface-reflectance-imagery">Sentinel-2 Surface Reflectance Imagery</h2>
+<div style="text-align: justify;">
+<p>Sentinel-2 provides the multispectral imagery used to calculate NDVI, which distinguishes vegetated land from barren or sparsely vegetated land, one of the four suitability factors in this project. This course uses the <a href="https://sentiwiki.copernicus.eu/web/s2-mission">Sentinel-2 Level-2A collection</a>, which is already corrected for atmospheric effects (surface reflectance rather than top-of-atmosphere reflectance), avoiding the need to apply that correction manually. On Earth Engine this is the <code>COPERNICUS/S2_SR_HARMONIZED</code> collection.</p>
+</div>
+<div style="text-align: justify;">
+<p>A single Sentinel-2 scene is rarely usable on its own because of cloud cover, so the acquisition script filters the full image collection down to scenes with less than a chosen cloud cover percentage over a date range, masks out any remaining cloud and cloud shadow pixels using the Scene Classification Layer (SCL) band, and then takes the pixel-wise median across all remaining scenes. The result is a single, mostly cloud-free composite image rather than one individual acquisition, which is far more reliable for a fixed teaching dataset than trying to find one perfect scene by hand.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mask_s2_clouds(image):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    scl <span class="op">=</span> image.select(<span class="st">"SCL"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> scl.neq(<span class="dv">3</span>).And(scl.neq(<span class="dv">8</span>)).And(scl.neq(<span class="dv">9</span>)).And(scl.neq(<span class="dv">10</span>))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image.updateMask(mask)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>DATE_START <span class="op">=</span> <span class="st">"2024-01-01"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>DATE_END <span class="op">=</span> <span class="st">"2024-12-31"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>MAX_CLOUD_PERCENT <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>s2_collection <span class="op">=</span> (</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    ee.ImageCollection(<span class="st">"COPERNICUS/S2_SR_HARMONIZED"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    .filterBounds(aoi)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    .filterDate(DATE_START, DATE_END)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(ee.Filter.lt(<span class="st">"CLOUDY_PIXEL_PERCENTAGE"</span>, MAX_CLOUD_PERCENT))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">map</span>(mask_s2_clouds)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of matching scenes:"</span>, s2_collection.size().getInfo())</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>s2_image <span class="op">=</span> s2_collection.median().clip(aoi)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>s2_export <span class="op">=</span> s2_image.select([<span class="st">"B2"</span>, <span class="st">"B3"</span>, <span class="st">"B4"</span>, <span class="st">"B8"</span>])</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>sentinel_output_path <span class="op">=</span> DATA_DIR <span class="op">/</span> <span class="st">"sentinel.tif"</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>geemap.ee_export_image(</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    s2_export,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    filename<span class="op">=</span><span class="bu">str</span>(sentinel_output_path),</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    region<span class="op">=</span>aoi,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    crs<span class="op">=</span><span class="st">"EPSG:4326"</span>,</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    file_per_band<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p>Only four of the twelve available Sentinel-2 bands are exported: B2 (blue), B3 (green), B4 (red), and B8 (near infrared). Red and near infrared are the two bands NDVI actually needs, while blue and green are kept along for true color visualization purposes in later sessions. A full band description is available on the <a href="https://sentiwiki.copernicus.eu/web/s2-mission">official Sentinel-2 bands reference</a>.</p>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>What the SCL mask numbers mean
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Scene Classification Layer assigns every pixel a class code. This project excludes class 3 (cloud shadow), class 8 (cloud, medium probability), class 9 (cloud, high probability), and class 10 (thin cirrus). Pixels in any of these classes are set to no data rather than included in the composite, since they do not represent the true reflectance of the ground.</p>
+</div>
+</div>
+</section>
+<section id="road-network-openstreetmap" class="level2">
+<h2 class="anchored" data-anchor-id="road-network-openstreetmap">Road Network, OpenStreetMap</h2>
+<div style="text-align: justify;">
+<p>Roads represent one half of the infrastructure accessibility factor: land close to existing roads is more practical and less costly to develop for solar installations, since it is easier to reach for construction and maintenance. This course retrieves roads through <a href="https://osmnx.readthedocs.io/">OSMnx</a>, a Python library that queries <a href="https://www.openstreetmap.org/about">OpenStreetMap</a> data through the Overpass API and returns it directly as a GeoDataFrame, without needing to manually download and clip an extract of an entire country.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> osmnx <span class="im">as</span> ox</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>road_graph <span class="op">=</span> ox.graph_from_polygon(study_polygon, network_type<span class="op">=</span><span class="st">"drive"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>_, roads <span class="op">=</span> ox.graph_to_gdfs(road_graph)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>roads_clipped <span class="op">=</span> gpd.clip(roads, boundary_gdf)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>roads_clipped.to_file(DATA_DIR <span class="op">/</span> <span class="st">"roads.gpkg"</span>, driver<span class="op">=</span><span class="st">"GPKG"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Roads saved:"</span>, <span class="bu">len</span>(roads_clipped), <span class="st">"segments"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p>The <code>network_type="drive"</code> argument restricts the result to roads that vehicles can travel on, excluding footpaths, cycleways, and similar minor ways that are irrelevant to construction access. OpenStreetMap coverage quality varies significantly by region: countries with an active mapping community, much of Western Europe among them, tend to have dense and reliable road data, while more remote areas may have gaps. It is worth visually inspecting the downloaded roads before relying on them for analysis.</p>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Overpass server availability
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>OSMnx queries a public Overpass API server by default, which occasionally becomes temporarily unreachable under heavy load. If a connection error appears, switching to a mirror server, for example by setting <code>ox.settings.overpass_endpoint = "https://overpass.kumi.systems/api/interpreter"</code> before making the request, usually resolves it. More endpoints are listed on the <a href="https://wiki.openstreetmap.org/wiki/Overpass_API">Overpass API wiki page</a>.</p>
+</div>
+</div>
+</section>
+<section id="power-line-network-openstreetmap" class="level2">
+<h2 class="anchored" data-anchor-id="power-line-network-openstreetmap">Power Line Network, OpenStreetMap</h2>
+<div style="text-align: justify;">
+<p>Power lines represent the second half of the infrastructure accessibility factor: proximity to existing electrical infrastructure directly affects how expensive it is to connect a new solar installation to the grid. This data also comes from OpenStreetMap, using OSMnx’s more general feature query function rather than the road-specific graph function, since power infrastructure is not a routable network but a collection of tagged features.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>power_tags <span class="op">=</span> {<span class="st">"power"</span>: [<span class="st">"line"</span>, <span class="st">"minor_line"</span>]}</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>power_lines <span class="op">=</span> ox.features_from_polygon(study_polygon, tags<span class="op">=</span>power_tags)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>power_lines <span class="op">=</span> power_lines[power_lines.geom_type.isin([<span class="st">"LineString"</span>, <span class="st">"MultiLineString"</span>])]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>power_clipped <span class="op">=</span> gpd.clip(power_lines, boundary_gdf)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>power_clipped.to_file(DATA_DIR <span class="op">/</span> <span class="st">"power_lines.gpkg"</span>, driver<span class="op">=</span><span class="st">"GPKG"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Power lines saved:"</span>, <span class="bu">len</span>(power_clipped), <span class="st">"segments"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p>OpenStreetMap tags high voltage transmission lines as <code>power=line</code> and lower voltage local distribution lines as <code>power=minor_line</code>. Both are retrieved here since either type of line represents a usable grid connection point for this project. The query also returns some point features, such as individual poles or towers tagged with the same <code>power</code> key, which are filtered out afterward since only the line geometries themselves are relevant to a distance-based suitability factor. Full tagging conventions for power infrastructure are documented on the <a href="https://wiki.openstreetmap.org/wiki/Key:power">OpenStreetMap power wiki page</a>.</p>
+</div>
+</section>
+<section id="summary-of-files-produced" class="level2">
+<h2 class="anchored" data-anchor-id="summary-of-files-produced">Summary of Files Produced</h2>
+<div style="text-align: justify;">
+<p>Running the full acquisition script produces the following files inside the project’s <code>data</code> folder, all sharing the same study area boundary and coordinate reference system, ready to be used starting in Session 1.</p>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Source</th>
+<th>Format</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>boundary.gpkg</code></td>
+<td>Local file or OSM geocoding</td>
+<td>GeoPackage</td>
+<td>Not applicable</td>
+</tr>
+<tr class="even">
+<td><code>dem.tif</code></td>
+<td>Copernicus GLO-30 via Earth Engine</td>
+<td>GeoTIFF</td>
+<td>30 m</td>
+</tr>
+<tr class="odd">
+<td><code>sentinel.tif</code></td>
+<td>Sentinel-2 L2A via Earth Engine</td>
+<td>GeoTIFF</td>
+<td>10 m</td>
+</tr>
+<tr class="even">
+<td><code>roads.gpkg</code></td>
+<td>OpenStreetMap via OSMnx</td>
+<td>GeoPackage</td>
+<td>Vector</td>
+</tr>
+<tr class="odd">
+<td><code>power_lines.gpkg</code></td>
+<td>OpenStreetMap via OSMnx</td>
+<td>GeoPackage</td>
+<td>Vector</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A note on study area size
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The size of the boundary polygon directly determines file size and download time for every dataset above. A boundary covering an entire province can produce a Sentinel-2 export of a gigabyte or more, split across several tiles, while a boundary a few kilometers across produces files of only a few megabytes and downloads in seconds. Keeping the boundary small is not just a matter of convenience, it keeps the whole course repository lightweight and every processing step in later sessions fast enough to run live in class.</p>
+</div>
+</div>
+</section>
+<section id="going-beyond-this-courses-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="going-beyond-this-courses-datasets">Going Beyond This Course’s Datasets</h2>
+<div style="text-align: justify;">
+<p>The datasets described on this page were deliberately kept simple: a single free elevation model, one cloud-filtered Sentinel-2 composite, and two OpenStreetMap layers. This choice is intentional. The course is meant to be approachable regardless of your background, so every dataset here can be downloaded in minutes, without specialized access requests, licensing negotiations, or heavy preprocessing. None of it requires prior remote sensing expertise to obtain or interpret.</p>
+</div>
+<div style="text-align: justify;">
+<p>That said, this is far from the only reasonable way to build a solar site suitability model. The academic and industry literature on renewable energy site selection uses a considerably richer set of inputs, and if you want to push this project further, it is worth exploring some of them. A few directions to look into:</p>
+</div>
+<ul>
+<li><strong>Solar irradiance data</strong>, such as the <a href="https://globalsolaratlas.info/">Global Solar Atlas</a> or Copernicus Atmosphere Monitoring Service products, which measure actual sunlight availability rather than assuming it is uniform across the study area.</li>
+<li><strong>Higher resolution or radar-derived DEMs</strong>, such as national LiDAR-based elevation datasets where available, which can resolve terrain features far more precisely than a 30 meter global model.</li>
+<li><strong>Land cover and land use datasets</strong>, such as ESA WorldCover or Corine Land Cover, which classify land more precisely than an NDVI threshold and can rule out protected areas, agricultural land, or urban zones directly.</li>
+<li><strong>Grid capacity and substation data</strong>, which national grid operators sometimes publish, going beyond simple proximity to a power line to also account for whether that line actually has spare capacity.</li>
+<li><strong>Multi-criteria decision analysis methods</strong>, such as the Analytic Hierarchy Process (AHP), which are commonly used in the literature to justify the weights assigned to each suitability factor, rather than choosing them by hand as this course does.</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Where to look for more
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A good starting point is searching for terms such as “solar site suitability GIS AHP” or “renewable energy site selection multi-criteria” in <a href="https://scholar.google.com/">Google Scholar</a>, which surfaces a large number of peer-reviewed studies describing exactly which datasets and weighting schemes they used for similar projects in different countries.</p>
+</div>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -847,7 +1234,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/datasets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/datasets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>
