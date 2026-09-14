@@ -26,6 +26,11 @@ jobs:
       - name: Install Python dependencies
         run: pip install jupyter numpy rasterio geopandas matplotlib
 
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
       - name: Render website
         uses: quarto-dev/quarto-actions/render@v2
 
