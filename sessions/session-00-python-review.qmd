@@ -11,7 +11,7 @@ execute:
 Before we open a single satellite image or elevation model, we need to make sure everyone speaks the same Python language. This session is not about GIS itself. It is about the small set of Python tools that every single session in this course will lean on. Nothing here is random. Every example was picked because you will see the exact same pattern again later, when you calculate NDVI, slope, camera parameters, or filter road networks.
 :::
 
-::: {.callout-note}
+::: {.callout-note style="text-align: justify;"}
 ## How to use this notebook
 Read the explanation, run the example, then try the exercise before looking at the solution. Solutions are hidden inside a collapsible box. Click to reveal them only after you have tried on your own.
 :::
@@ -171,7 +171,7 @@ for camera_name, specs in cameras.items():
     print(f"{camera_name}: focal length {specs['focal_length_mm']} mm")
 ```
 
-::: {.callout-tip}
+::: {.callout-tip style="text-align: justify;"}
 ## Note: dictionaries versus lists
 Use a list when order matters and items are of the same kind, such as a series of elevation readings. Use a dictionary when you need to label each value, such as raster metadata or camera specifications.
 :::
@@ -289,7 +289,7 @@ print(classify_elevation(790))
 print(classify_elevation(860, threshold=900))
 ```
 
-::: {.callout-tip}
+::: {.callout-tip style="text-align: justify;"}
 ## Note: default parameters
 `threshold=800` means use 800 unless the caller specifies otherwise. This exact pattern appears again in Session 8, where the suitability function has default weights that a student can later override.
 :::
@@ -456,7 +456,7 @@ elevations_ft = elevations * 3.281
 print(elevations_ft)
 ```
 
-::: {.callout-tip}
+::: {.callout-tip style="text-align: justify;"}
 ## Note: vectorized operations
 When an operation applies to a whole array at once, without an explicit loop, this is called a vectorized operation. This is not only shorter code, it is dramatically faster, which matters when the array is an image with millions of pixels.
 :::
@@ -495,7 +495,7 @@ print(elevations[above_800])
 print(elevations[elevations > 800])
 ```
 
-::: {.callout-tip}
+::: {.callout-tip style="text-align: justify;"}
 ## Note: this is exactly how we will pick suitable pixels
 In Session 5, code very similar to `slope_array[slope_array < 10]` will be used to find every pixel with a gentle enough slope for solar panel installation. It is the same pattern used above.
 :::
@@ -533,7 +533,7 @@ print("Shape of this DEM:", dem.shape)
 print("Value at row 2, column 3:", dem[2, 3])
 ```
 
-::: {.callout-warning}
+::: {.callout-warning style="text-align: justify;"}
 ## Note: rows versus columns
 In NumPy, and in every raster used later, the first index is the row (the y direction, top to bottom) and the second index is the column (the x direction, left to right). This is one of the most common beginner mistakes, so keep it in mind starting from Session 3.
 :::
@@ -675,7 +675,7 @@ print(ndvi_path)
 print("Does this file exist:", ndvi_path.exists())
 ```
 
-::: {.callout-tip}
+::: {.callout-tip style="text-align: justify;"}
 ## Note: the slash operator
 The `/` symbol joins path pieces together when used with `pathlib`. It automatically uses the correct separator for the operating system, so the same code works on any computer.
 :::
@@ -710,7 +710,7 @@ outputs_folder.mkdir(parents=True, exist_ok=True)
 print("Folder ready:", outputs_folder)
 ```
 
-::: {.callout-tip}
+::: {.callout-tip style="text-align: justify;"}
 ## Note: exist_ok=True
 Without this argument, Python raises an error if the folder already exists. With it, Python continues without complaining, which is useful when a notebook is run more than once.
 :::
@@ -751,7 +751,7 @@ print(roads_path.suffix)
 ## Building and Importing Your Own Module
 
 ::: {style="text-align: justify;"}
-Starting in Session 1, every session produces a `.py` file inside a `modules` folder, such as `data_loader.py` or `raster_utils.py`. By the end of the course, `main.py` and `app.py` import and combine all of them. This section practices the same pattern with something simple.
+Every session produces a `.py` file inside a `modules` folder, such as `data_loader.py` or `raster_utils.py`. By the end of the course, `main.py` and `app.py` import and combine all of them. This section practices the same pattern with something simple.
 :::
 
 ### Creating a small module
@@ -799,7 +799,7 @@ print(meters_to_feet(500))
 print(classify_elevation(860))
 ```
 
-::: {.callout-warning}
+::: {.callout-warning style="text-align: justify;"}
 ## Note: where the module file should live
 Python looks for `unit_converter.py` in the same folder as the notebook, or somewhere on its search path. If a `ModuleNotFoundError` appears, the most common cause is the file being in the wrong folder. Starting Session 1, this will be organized properly with a dedicated `modules` folder.
 :::
@@ -853,7 +853,7 @@ B. When a specific function is imported with `from module import function_name`,
 This session covered every Python tool the rest of the course will lean on: lists and dictionaries for storing metadata and small collections of values, functions as the shape every processing step will take, NumPy arrays as the real structure behind every raster, pathlib for navigating the project folders, and custom modules as the pattern the entire ten session project is built on.
 :::
 
-::: {.callout-note}
-## Coming up in Session 1
+::: {.callout-note style="text-align: justify;"}
+## Coming up in [**Session 01**]((sessions/session-01-intro-loading-data.qmd))
 A real satellite image will be opened with rasterio, showing for the first time that it really is just a NumPy array with extra geographic information attached.
 :::
