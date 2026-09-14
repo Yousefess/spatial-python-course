@@ -78,6 +78,11 @@ format:
 
     toc: true
     toc-depth: 3
+    grid:
+      sidebar-width: 300px
+      body-width: 1300px
+      margin-width: 300px
+      gutter-width: 1.5rem
 
     number-sections: false
 
