@@ -68,3 +68,5 @@ desktop.ini
 !data/**
 
 **/*.quarto_ipynb
+
+sessions/cache/*
