@@ -12,8 +12,10 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out repository (with LFS)
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -24,12 +26,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install Python dependencies
-        run: pip install jupyter numpy rasterio geopandas matplotlib
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
+        run: pip install jupyter numpy rasterio geopandas matplotlib osmnx "folium>=0.12" mapclassify  
 
       - name: Render website
         uses: quarto-dev/quarto-actions/render@v2
