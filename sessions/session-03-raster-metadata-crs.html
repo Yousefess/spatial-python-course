@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>session-03-raster-metadata-crs – Spatial Python</title>
+<title>session 03: raster metadata and CRS – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -256,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-03-raster-metadata-crs.html"><span class="chapter-title">session-03-raster-metadata-crs.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-03-raster-metadata-crs.html"><span class="chapter-title">session 03: raster metadata and CRS</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -329,17 +365,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-03-raster-metadata-crs.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session-03-raster-metadata-crs.html</span></a>
+  <a href="../sessions/session-03-raster-metadata-crs.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session 03: raster metadata and CRS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-04-ndvi.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-04-ndvi.html</span></a>
+  <a href="../sessions/session-04-ndvi.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-05-slope-aspect.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-05-slope-aspect.html</span></a>
+  <a href="../sessions/session-05-slope-aspect.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 05: terrain analysis, slope, aspect, and hillshade</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -395,18 +431,762 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#full-raster-metadata" id="toc-full-raster-metadata" class="nav-link" data-scroll-target="#full-raster-metadata">Full Raster Metadata</a>
+  <ul class="collapse">
+  <li><a href="#comparing-bounds-between-our-two-rasters" id="toc-comparing-bounds-between-our-two-rasters" class="nav-link" data-scroll-target="#comparing-bounds-between-our-two-rasters">Comparing Bounds Between Our Two Rasters</a></li>
+  </ul></li>
+  <li><a href="#the-affine-transform" id="toc-the-affine-transform" class="nav-link" data-scroll-target="#the-affine-transform">The Affine Transform</a>
+  <ul class="collapse">
+  <li><a href="#converting-between-pixels-and-coordinates" id="toc-converting-between-pixels-and-coordinates" class="nav-link" data-scroll-target="#converting-between-pixels-and-coordinates">Converting Between Pixels and Coordinates</a></li>
+  </ul></li>
+  <li><a href="#crs-with-pyproj" id="toc-crs-with-pyproj" class="nav-link" data-scroll-target="#crs-with-pyproj">CRS with <code>pyproj</code></a>
+  <ul class="collapse">
+  <li><a href="#checking-every-file-against-every-other-file" id="toc-checking-every-file-against-every-other-file" class="nav-link" data-scroll-target="#checking-every-file-against-every-other-file">Checking Every File Against Every Other File</a></li>
+  <li><a href="#transforming-a-single-point-with-pyproj.transformer" id="toc-transforming-a-single-point-with-pyproj.transformer" class="nav-link" data-scroll-target="#transforming-a-single-point-with-pyproj.transformer">Transforming a Single Point with <code>pyproj.Transformer</code></a></li>
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#multi-band-inspection" id="toc-multi-band-inspection" class="nav-link" data-scroll-target="#multi-band-inspection">Multi-band Inspection</a></li>
+  <li><a href="#plotting-dem-and-sentinel-side-by-side" id="toc-plotting-dem-and-sentinel-side-by-side" class="nav-link" data-scroll-target="#plotting-dem-and-sentinel-side-by-side">Plotting DEM and Sentinel Side by Side</a></li>
+  <li><a href="#writing-a-raster" id="toc-writing-a-raster" class="nav-link" data-scroll-target="#writing-a-raster">Writing a Raster</a></li>
+  <li><a href="#building-raster_utils.py" id="toc-building-raster_utils.py" class="nav-link" data-scroll-target="#building-raster_utils.py">Building <code>raster_utils.py</code></a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-03-raster-metadata-crs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-03-raster-metadata-crs.html"><span class="chapter-title">session-03-raster-metadata-crs.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-03-raster-metadata-crs.html"><span class="chapter-title">session 03: raster metadata and CRS</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">session 03: raster metadata and CRS</span></h1>
+<p class="subtitle lead">Affine transforms, pyproj, and aligning our two rasters</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div style="text-align: justify;">
+<p>In <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a> we opened <code>dem.tif</code> and <code>sentinel.tif</code> for the first time, and mentioned that every raster carries geographic metadata beyond its pixel values: a coordinate reference system and an affine transform. We deferred that metadata so we could focus on simply getting a raster on screen. This session is where we stop deferring it. We look closely at <code>.meta</code>, the affine transform, and the CRS itself, this time reaching for <code>pyproj</code> directly rather than only through <code>rasterio</code>’s convenience wrappers. By the end of this session we will know, precisely, whether our DEM, our Sentinel image, and our vector boundary actually agree on where they are in the world, and we will have a <code>raster_utils.py</code> module that can answer that question for any two files we hand it.</p>
+</div>
+<div style="text-align: justify;">
+<p>This matters for the solar suitability project specifically because every later factor, slope and aspect from the DEM, land cover from Sentinel, access from the road and power layers, eventually has to be combined pixel by pixel into one suitability map. That is only possible if every layer agrees on where each pixel actually sits on the ground. Getting comfortable with metadata now is what makes <a href="session-07-resampling-alignment.qmd"><strong>Session 07</strong></a>, where we actually force every layer into agreement, make sense later.</p>
+</div>
+</section>
+<section id="full-raster-metadata" class="level2">
+<h2 class="anchored" data-anchor-id="full-raster-metadata">Full Raster Metadata</h2>
+<div style="text-align: justify;">
+<p><code>rasterio</code> exposes a dataset’s core metadata as individual attributes, <code>src.width</code>, <code>src.count</code>, and so on, as we already used in Session 01. It also exposes the same information bundled together as a single dictionary, <code>src.meta</code>, which is the form we will reuse most going forward, since it can be passed directly to <code>rasterio.open()</code> when writing a new file, as we will do later in this session.</p>
+</div>
+<div id="e3a8bcbf" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>dem_path <span class="op">=</span> <span class="st">"data/dem.tif"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    meta <span class="op">=</span> src.meta</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(meta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'driver': 'GTiff', 'dtype': 'float32', 'nodata': None, 'width': 610, 'height': 605, 'count': 1, 'crs': CRS.from_wkt('GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]]'), 'transform': Affine(0.00026949458523585647, 0.0, -2.5874175128494583,
+       0.0, -0.00026949458523585647, 37.14928958559234)}</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>Each key in this dictionary matters for a different reason. <code>driver</code> identifies the file format, almost always <code>"GTiff"</code> in this course. <code>dtype</code> is the numeric type each pixel is stored as, such as <code>float32</code> for a DEM with fractional elevation values, or <code>uint16</code> for raw Sentinel digital numbers. <code>nodata</code> is the value used to mark pixels with no valid data, for example areas outside a sensor’s swath; if this is set incorrectly, or ignored, those pixels will silently pollute any statistic computed later, such as a mean slope. <code>width</code>, <code>height</code>, and <code>count</code> describe the grid shape and number of bands. <code>crs</code> and <code>transform</code> describe where the grid sits on Earth, which is the focus of the rest of this session.</p>
+</div>
+<div id="20706b00" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Data type:"</span>, src.dtypes)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Nodata value:"</span>, src.nodata)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Bounds:"</span>, src.bounds)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Data type: ('float32',)
+Nodata value: None
+Bounds: BoundingBox(left=-2.5874175128494583, bottom=36.98624536152465, right=-2.4230258158555857, top=37.14928958559234)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>src.bounds</code> returns the geographic extent of the raster as <code>(left, bottom, right, top)</code>, in the units of the raster’s own CRS. This is different from <code>src.width</code> and <code>src.height</code>, which are pixel counts, not ground distances. A raster can have the same bounds as another raster while having a completely different width and height, if the two use a different resolution.</p>
+</div>
+</div>
+<section id="comparing-bounds-between-our-two-rasters" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-bounds-between-our-two-rasters">Comparing Bounds Between Our Two Rasters</h3>
+<div style="text-align: justify;">
+<p>Since the solar suitability project eventually combines the DEM and the Sentinel image, it is worth checking early whether their extents actually overlap in the first place, before worrying about anything more subtle. We can compare bounds directly, as long as both rasters share the same CRS; if they do not, this comparison is meaningless, which is exactly why the CRS check later in this session has to come first in practice.</p>
+</div>
+<div id="896dbc75" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sentinel_path <span class="op">=</span> <span class="st">"data/sentinel.tif"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> dem_src, rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> sen_src:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"DEM bounds:"</span>, dem_src.bounds)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Sentinel bounds:"</span>, sen_src.bounds)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"DEM CRS:"</span>, dem_src.crs)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Sentinel CRS:"</span>, sen_src.crs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DEM bounds: BoundingBox(left=-2.5874175128494583, bottom=36.98624536152465, right=-2.4230258158555857, top=37.14928958559234)
+Sentinel bounds: BoundingBox(left=-2.587417512849458, bottom=36.986245361524645, right=-2.423115647383997, top=37.14919975406393)
+DEM CRS: EPSG:4326
+Sentinel CRS: EPSG:4326</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Opening two files at once inside a single <code>with</code> statement, separated by a comma, is a common and convenient pattern. Both <code>dem_src</code> and <code>sen_src</code> close automatically together once the block ends.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-affine-transform" class="level2">
+<h2 class="anchored" data-anchor-id="the-affine-transform">The Affine Transform</h2>
+<div style="text-align: justify;">
+<p>The affine transform is the piece of metadata that turns a pixel’s row and column index into a real-world coordinate, and back. It is stored as six numbers, and <code>rasterio</code> represents it as an <code>Affine</code> object.</p>
+</div>
+<div id="313a9dc8" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    transform <span class="op">=</span> src.transform</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(transform)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>| 0.00, 0.00,-2.59|
+| 0.00,-0.00, 37.15|
+| 0.00, 0.00, 1.00|</code></pre>
+</div>
+</div>
+<div style="margin-top: 30px; margin-bottom: 45px; text-align: center;">
+<p><img src="../images/session_03_affine_matrix.webp" class="img-fluid" style="width:100.0%" alt="a diagram showing the six affine transform coefficients laid out as a small matrix, with labeled arrows to pixel size, rotation, and top-left corner coordinate, next to a small pixel grid showing how row/column maps to x/y"></p>
+</div>
+<div style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;">
+<p><em>Image generated with GPT Image 2.5.</em></p>
+</div>
+<div style="text-align: justify;">
+<p>Printed out, an <code>Affine</code> object shows six values, conventionally labeled <code>a</code> through <code>f</code>. <code>a</code> is the pixel width, how many CRS units wide each pixel is in the x direction. <code>e</code> is the pixel height, almost always negative, since raster rows increase downward while y coordinates increase upward. <code>c</code> and <code>f</code> are the x and y coordinates of the top-left corner of the raster. <code>b</code> and <code>d</code> handle rotation, and are <code>0</code> for almost every raster we will encounter in this course, including all of ours, since our data is not rotated relative to north.</p>
+</div>
+<div id="f07b2a00" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    transform <span class="op">=</span> src.transform</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Pixel width:"</span>, transform.a)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Pixel height:"</span>, transform.e)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Top-left x:"</span>, transform.c)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Top-left y:"</span>, transform.f)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pixel width: 0.00026949458523585647
+Pixel height: -0.00026949458523585647
+Top-left x: -2.5874175128494583
+Top-left y: 37.14928958559234</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: resolution from the transform
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>transform.a</code> and <code>abs(transform.e)</code> give the raster’s spatial resolution directly, the same concept introduced in Session 01. This is a more reliable way to check resolution than assuming it from the file name or documentation, since it comes straight from the file itself.</p>
+</div>
+</div>
+<section id="converting-between-pixels-and-coordinates" class="level3">
+<h3 class="anchored" data-anchor-id="converting-between-pixels-and-coordinates">Converting Between Pixels and Coordinates</h3>
+<div style="text-align: justify;">
+<p><code>rasterio</code> provides two small functions that do this conversion for us, so we rarely need to do the underlying algebra by hand: <code>src.xy()</code> converts a row and column into a real-world coordinate, and <code>src.index()</code> does the reverse, converting a coordinate into the row and column of the pixel that contains it.</p>
+</div>
+<div id="8135b4b0" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> src.xy(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Coordinate of pixel (row 0, col 0):"</span>, x, y)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    row, col <span class="op">=</span> src.index(x, y)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Pixel containing that coordinate:"</span>, row, col)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate of pixel (row 0, col 0): -2.5872827655568402 37.14915483829972
+Pixel containing that coordinate: 0 0</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>src.xy()</code> returns the coordinate of the <em>center</em> of a pixel, not its corner, by default. This distinction matters when precisely comparing a pixel location against a vector feature, such as checking whether a specific point falls inside a specific DEM cell.</p>
+</div>
+</div>
+<details>
+<summary>
+Exercise 1: Locate the center pixel
+</summary>
+<div style="text-align: justify;">
+<p>Open <code>data/dem.tif</code>, find the row and column at the exact center of the raster using <code>src.width</code> and <code>src.height</code>, and print the real-world coordinate of that center pixel using <code>.xy()</code>.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="e9ba5a35" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    center_row <span class="op">=</span> src.height <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    center_col <span class="op">=</span> src.width <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    center_x, center_y <span class="op">=</span> src.xy(center_row, center_col)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Center pixel (row </span><span class="sc">{</span>center_row<span class="sc">}</span><span class="ss">, col </span><span class="sc">{</span>center_col<span class="sc">}</span><span class="ss">) is at: </span><span class="sc">{</span>center_x<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>center_y<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Center pixel (row 302, col 305) is at: -2.505086917059904, 37.0677674735585</code></pre>
+</div>
+</div>
+</details>
+</details>
+</section>
+</section>
+<section id="crs-with-pyproj" class="level2">
+<h2 class="anchored" data-anchor-id="crs-with-pyproj">CRS with <code>pyproj</code></h2>
+<div style="text-align: justify;">
+<p><code>src.crs</code>, which we already used in Sessions 01 and 02, is actually a <code>rasterio</code> wrapper class, <code>CRS</code>, rather than a raw <code>pyproj</code> object. It behaves similarly for most purposes, but <code>pyproj</code> is the library actually doing the coordinate system work underneath, in <code>rasterio</code>, <code>geopandas</code>, and most of the Python geospatial stack. From this session on, we work with <code>pyproj.CRS</code> directly, since it gives us more detail and is the same object we will need in <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> to reproject rasters.</p>
+</div>
+<div id="0af334d4" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyproj <span class="im">import</span> CRS</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    dem_crs <span class="op">=</span> CRS(src.crs)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dem_crs)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"EPSG code:"</span>, dem_crs.to_epsg())</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Is geographic:"</span>, dem_crs.is_geographic)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Is projected:"</span>, dem_crs.is_projected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]]
+EPSG code: 4326
+Is geographic: True
+Is projected: False</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>A geographic CRS, such as <code>EPSG:4326</code>, expresses coordinates as longitude and latitude, in degrees, measured on a curved model of the Earth. A projected CRS, such as a UTM zone, flattens that curved surface onto a plane, expressing coordinates in a linear unit, almost always meters. This distinction is the deeper reason <code>.length</code> and <code>.area</code> returned meaningless-looking numbers back in Session 02, when we computed them on geometries built directly in longitude and latitude: those values were in <em>degrees</em>, not meters. Distances and areas are only physically meaningful in a projected CRS.</p>
+</div>
+<div id="05380a92" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>CRS.from_epsg(<span class="dv">4326</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>&lt;Geographic 2D CRS: EPSG:4326&gt;
+Name: WGS 84
+Axis Info [ellipsoidal]:
+- Lat[north]: Geodetic latitude (degree)
+- Lon[east]: Geodetic longitude (degree)
+Area of Use:
+- name: World.
+- bounds: (-180.0, -90.0, 180.0, 90.0)
+Datum: World Geodetic System 1984 ensemble
+- Ellipsoid: WGS 84
+- Prime Meridian: Greenwich</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>CRS.from_epsg()</code> builds a CRS object directly from a known EPSG code, without needing an open file. This is useful any time we need to construct a target CRS by hand, such as when reprojecting a vector layer, as we already did in Sessions 01 and 02 with <code>.to_crs()</code>.</p>
+</div>
+</div>
+<section id="checking-every-file-against-every-other-file" class="level3">
+<h3 class="anchored" data-anchor-id="checking-every-file-against-every-other-file">Checking Every File Against Every Other File</h3>
+<div style="text-align: justify;">
+<p>We now have three files that all need to agree eventually: <code>dem.tif</code>, <code>sentinel.tif</code>, and <code>Desierto_de_Tabernas.gpkg</code>. We already saw, in Session 02, that <code>road.gpkg</code> and <code>power.gpkg</code> did not initially match <code>boundary.crs</code>. It is worth checking our full set of files properly here, rather than assuming.</p>
+</div>
+<div id="fd379e81" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    dem_crs <span class="op">=</span> CRS(src.crs)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    sentinel_crs <span class="op">=</span> CRS(src.crs)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>boundary <span class="op">=</span> gpd.read_file(<span class="st">"data/Desierto_de_Tabernas.gpkg"</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>boundary_crs <span class="op">=</span> CRS(boundary.crs)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"DEM:"</span>, dem_crs.to_epsg())</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Sentinel:"</span>, sentinel_crs.to_epsg())</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Boundary:"</span>, boundary_crs.to_epsg())</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"DEM matches Sentinel:"</span>, dem_crs <span class="op">==</span> sentinel_crs)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"DEM matches boundary:"</span>, dem_crs <span class="op">==</span> boundary_crs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DEM: 4326
+Sentinel: 4326
+Boundary: 3857
+DEM matches Sentinel: True
+DEM matches boundary: False</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: comparing CRS objects directly
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Two <code>CRS</code> objects can be compared with <code>==</code> directly, as shown above, and this is generally more reliable than comparing EPSG codes, since not every CRS has a clean EPSG code. Comparing the raw <code>.to_epsg()</code> values is fine here since both of ours have one, but get in the habit of comparing the <code>CRS</code> objects themselves.</p>
+</div>
+</div>
+</section>
+<section id="transforming-a-single-point-with-pyproj.transformer" class="level3">
+<h3 class="anchored" data-anchor-id="transforming-a-single-point-with-pyproj.transformer">Transforming a Single Point with <code>pyproj.Transformer</code></h3>
+<div style="text-align: justify;">
+<p>Sometimes we need to convert a single coordinate from one CRS to another, without reprojecting an entire file. <code>Transformer.from_crs()</code> builds a reusable converter between two coordinate systems, and its <code>.transform()</code> method converts one coordinate at a time.</p>
+</div>
+<div id="f95e3e85" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyproj <span class="im">import</span> Transformer</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>transformer <span class="op">=</span> Transformer.from_crs(dem_crs, <span class="st">"EPSG:4326"</span>, always_xy<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> src.xy(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>lon, lat <span class="op">=</span> transformer.transform(x, y)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Pixel (0, 0) is at </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y<span class="sc">}</span><span class="ss"> in the DEM's CRS"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"That is longitude </span><span class="sc">{</span>lon<span class="sc">}</span><span class="ss">, latitude </span><span class="sc">{</span>lat<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pixel (0, 0) is at -2.5872827655568402, 37.14915483829972 in the DEM's CRS
+That is longitude -2.5872827655568402, latitude 37.14915483829972</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: <code>always_xy=True</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Some CRS definitions traditionally order coordinates as latitude, longitude rather than longitude, latitude. Passing <code>always_xy=True</code> forces <code>pyproj</code> to consistently expect and return coordinates in x, y order, which for a geographic CRS means longitude, latitude. Leaving this out is a common source of coordinates that look plausible but are silently swapped.</p>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>This is only a preview. Converting a single point this way is useful for quick checks, such as confirming a pixel’s location on a normal longitude and latitude map, but it is not how we reproject an entire raster. Reprojecting the full DEM or Sentinel image, resampling every pixel onto a new grid, is a more involved operation that we deliberately save for <a href="session-07-resampling-alignment.qmd"><strong>Session 07</strong></a>, once every layer in the project is ready to be aligned at once.</p>
+</div>
+<details>
+<summary>
+Exercise 2: Where is the DEM’s center pixel, really?
+</summary>
+<div style="text-align: justify;">
+<p>Using the center pixel coordinate you found in Exercise 1, build a <code>Transformer</code> from the DEM’s CRS to <code>EPSG:4326</code>, and print the resulting longitude and latitude.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="96d57993" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    dem_crs <span class="op">=</span> CRS(src.crs)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    center_row <span class="op">=</span> src.height <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    center_col <span class="op">=</span> src.width <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    center_x, center_y <span class="op">=</span> src.xy(center_row, center_col)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>transformer <span class="op">=</span> Transformer.from_crs(dem_crs, <span class="st">"EPSG:4326"</span>, always_xy<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>center_lon, center_lat <span class="op">=</span> transformer.transform(center_x, center_y)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"DEM center pixel: longitude </span><span class="sc">{</span>center_lon<span class="sc">}</span><span class="ss">, latitude </span><span class="sc">{</span>center_lat<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DEM center pixel: longitude -2.505086917059904, latitude 37.0677674735585</code></pre>
+</div>
+</div>
+</details>
+</details>
+</section>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Why do <code>.length</code> and <code>.area</code> return meaningless values for a geometry built directly in longitude and latitude coordinates?</p>
+</div>
+<p>A. <code>shapely</code> does not support geographic coordinates at all</p>
+<p>B. The values are returned in degrees, not meters, since a geographic CRS is not a linear unit</p>
+<p>C. <code>shapely</code> always assumes UTM internally</p>
+<p>D. The geometry must be invalid</p>
+<details>
+<summary>
+Answer
+</summary>
+B. A geographic CRS such as <code>EPSG:4326</code> measures coordinates in degrees. <code>shapely</code> and <code>geopandas</code> compute <code>.length</code> and <code>.area</code> purely from the numbers they are given, with no awareness of the CRS, so the result is technically correct but expressed in degrees, a unit with no consistent physical length. A projected CRS, in meters, is required for a physically meaningful distance or area.
+</details>
+</details>
+</section>
+</section>
+<section id="multi-band-inspection" class="level2">
+<h2 class="anchored" data-anchor-id="multi-band-inspection">Multi-band Inspection</h2>
+<div style="text-align: justify;">
+<p><code>sentinel.tif</code> holds several bands stacked together, as introduced in Session 01. Before we calculate anything from them, such as NDVI in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, it helps to inspect each band individually: its description, if the file provides one, and basic statistics.</p>
+</div>
+<div id="643d7cd5" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> band_index <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, src.count <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        description <span class="op">=</span> src.descriptions[band_index <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Band </span><span class="sc">{</span>band_index<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>description<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Band 1: None
+Band 2: None
+Band 3: None
+Band 4: None</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Not every GeoTIFF stores band descriptions; when a file does not, <code>src.descriptions</code> returns <code>None</code> for each band, and the only way to identify a band is by its position, or by comparing basic statistics against known expectations, as we do next.</p>
+</div>
+</div>
+<div id="581b4c4a" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> band_index <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, src.count <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>        band <span class="op">=</span> src.read(band_index)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Band </span><span class="sc">{</span>band_index<span class="sc">}</span><span class="ss">: min=</span><span class="sc">{</span>band<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss">, max=</span><span class="sc">{</span>band<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">, mean=</span><span class="sc">{</span>band<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Band 1: min=0.0, max=5860.0, mean=984.57
+Band 2: min=0.0, max=6160.0, mean=1287.08
+Band 3: min=0.0, max=6082.0, mean=1539.70
+Band 4: min=0.0, max=5826.0, mean=1971.04</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>This is the same technique introduced briefly in Session 01, now applied deliberately to every band at once. A near-infrared band, for example, typically has noticeably higher reflectance over vegetation than a red or blue band, which is a useful sanity check for confirming band order before relying on it in Session 04.</p>
+</div>
+</section>
+<section id="plotting-dem-and-sentinel-side-by-side" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-dem-and-sentinel-side-by-side">Plotting DEM and Sentinel Side by Side</h2>
+<div style="text-align: justify;">
+<p>Session 01 plotted the Sentinel image and the DEM separately, each with the study boundary drawn on top. Now that we understand bounds and CRS properly, it is worth placing both rasters side by side in a single figure, which makes any mismatch between them, in extent or in CRS, immediately visible.</p>
+</div>
+<div style="text-align: justify;">
+<p><code>rasterio.plot.show</code>, passed a multi-band dataset directly, builds its composite from the raw values of the first three bands with no adjustment. Sentinel-2 reflectance values are naturally low and concentrated in a narrow range, which is exactly why the raw composite in Session 01 looked almost black. A gamma correction stretches that narrow range of dark values back out into something the eye can actually distinguish, without changing the underlying data on disk, only how it is displayed here.</p>
+</div>
+<div id="d211b99c" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.plot <span class="im">import</span> show</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>boundary <span class="op">=</span> gpd.read_file(<span class="st">"data/Desierto_de_Tabernas.gpkg"</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gamma_stretch(band, gamma<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize a band to 0-1 using percentile clipping, then apply gamma correction for display."""</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    band <span class="op">=</span> band.astype(<span class="st">"float32"</span>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    low, high <span class="op">=</span> np.percentile(band, (<span class="dv">2</span>, <span class="dv">98</span>))</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    stretched <span class="op">=</span> np.clip((band <span class="op">-</span> low) <span class="op">/</span> (high <span class="op">-</span> low), <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> stretched <span class="op">**</span> gamma</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">7</span>))</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    boundary_sen <span class="op">=</span> boundary.to_crs(src.crs) <span class="cf">if</span> boundary.crs <span class="op">!=</span> src.crs <span class="cf">else</span> boundary</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    rgb <span class="op">=</span> np.dstack([gamma_stretch(src.read(band)) <span class="cf">for</span> band <span class="kw">in</span> (<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)])</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].imshow(rgb, extent<span class="op">=</span>rasterio.plot.plotting_extent(src))</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    boundary_sen.boundary.plot(ax<span class="op">=</span>axes[<span class="dv">0</span>], edgecolor<span class="op">=</span><span class="st">"red"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_title(<span class="st">"Sentinel-2 (gamma corrected)"</span>)</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>    boundary_dem <span class="op">=</span> boundary.to_crs(src.crs) <span class="cf">if</span> boundary.crs <span class="op">!=</span> src.crs <span class="cf">else</span> boundary</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>    dem_plot <span class="op">=</span> show(src, ax<span class="op">=</span>axes[<span class="dv">1</span>], cmap<span class="op">=</span><span class="st">"terrain"</span>)</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>    boundary_dem.boundary.plot(ax<span class="op">=</span>axes[<span class="dv">1</span>], edgecolor<span class="op">=</span><span class="st">"red"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].set_title(<span class="st">"DEM"</span>)</span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-03-raster-metadata-crs_files/figure-html/cell-16-output-1.png" width="1201" height="662" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: <code>gamma_stretch</code> is a display helper, not a saved product
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>gamma_stretch</code> only reshapes values for this plot; it is never written back to a GeoTIFF, and nothing about <code>sentinel.tif</code> itself changes. <code>rasterio.plot.plotting_extent(src)</code> gives <code>imshow</code> the same geographic extent <code>show()</code> would have used automatically, which is why the boundary still lines up correctly on top of it.</p>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>A colorbar is often expected alongside a DEM plot, since, unlike a natural color Sentinel composite, the colors carry no intuitive meaning on their own; a reader needs the scale to know what elevation a given shade of green or brown represents. <code>rasterio.plot.show</code> returns the underlying <code>matplotlib</code> image object, which we can pass directly to <code>plt.colorbar()</code>.</p>
+</div>
+<div id="7786ed84" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    dem_image <span class="op">=</span> show(src, ax<span class="op">=</span>ax, cmap<span class="op">=</span><span class="st">"terrain"</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> dem_image.get_images()[<span class="dv">0</span>]</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>plt.colorbar(im, ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">"Elevation (m)"</span>, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"DEM with Elevation Colorbar"</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-03-raster-metadata-crs_files/figure-html/cell-17-output-1.png" width="655" height="534" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<details>
+<summary>
+Exercise 3: Add a colorbar to a single band
+</summary>
+<div style="text-align: justify;">
+<p>Read only the first band of <code>sentinel.tif</code> as a single 2D array with <code>src.read(1)</code>, display it with <code>plt.imshow()</code> using the colormap <code>"viridis"</code>, and attach a colorbar labeled <code>"Reflectance"</code>.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="9f8e157d" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    band_1 <span class="op">=</span> src.read(<span class="dv">1</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> ax.imshow(band_1, cmap<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>plt.colorbar(im, ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">"Reflectance"</span>, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Sentinel-2, Band 1"</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-03-raster-metadata-crs_files/figure-html/cell-18-output-1.png" width="585" height="475" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+</details>
+</section>
+<section id="writing-a-raster" class="level2">
+<h2 class="anchored" data-anchor-id="writing-a-raster">Writing a Raster</h2>
+<div style="text-align: justify;">
+<p>Every session from Session 04 onward produces a new raster: <code>ndvi.tif</code>, <code>slope.tif</code>, <code>aspect.tif</code>, and eventually <code>suitability.tif</code>. This is the right moment to learn the write side of <code>rasterio</code>, on a small, low-stakes example, before we depend on it for a real output.</p>
+</div>
+<div style="text-align: justify;">
+<p>The general pattern is to start from an existing file’s <code>.meta</code>, update only the keys that change, such as <code>dtype</code> or <code>count</code> if needed, and pass the result to <code>rasterio.open()</code> in write mode.</p>
+</div>
+<div id="01480f61" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    dem_array <span class="op">=</span> src.read(<span class="dv">1</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    profile <span class="op">=</span> src.profile</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>cropped <span class="op">=</span> dem_array[:<span class="dv">100</span>, :<span class="dv">100</span>]</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>crop_window <span class="op">=</span> rasterio.windows.Window(<span class="dv">0</span>, <span class="dv">0</span>, cropped.shape[<span class="dv">1</span>], cropped.shape[<span class="dv">0</span>])</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>profile.update({</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"height"</span>: cropped.shape[<span class="dv">0</span>],</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"width"</span>: cropped.shape[<span class="dv">1</span>],</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"transform"</span>: rasterio.windows.transform(crop_window, profile[<span class="st">"transform"</span>]),</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/dem_crop_test.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>profile) <span class="im">as</span> dst:</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    dst.write(cropped, <span class="dv">1</span>)</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Saved cropped test raster to data/outputs/dem_crop_test.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved cropped test raster to data/outputs/dem_crop_test.tif</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: <code>profile</code> versus <code>meta</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>src.profile</code> is almost identical to <code>src.meta</code>, with a couple of extra keys geared toward writing, such as compression settings. Either works as a starting point; this course uses <code>profile</code> specifically when writing a file, and <code>meta</code> when only inspecting one, purely as a readability convention.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cropping an array with slicing, as done above, changes its shape, which means the transform must be updated to match, or every pixel in the new file will report the wrong coordinates. <code>rasterio.windows.transform()</code> computes the correct new transform for a given pixel window. We use this pattern properly, cropping to the full study boundary rather than an arbitrary corner, once we reach clipping in a later session.</p>
+</div>
+</div>
+<details>
+<summary>
+Exercise 4: Verify the written file
+</summary>
+<div style="text-align: justify;">
+<p>Open <code>data/outputs/dem_crop_test.tif</code>, the file just written, and print its width, height, and CRS, to confirm it was saved correctly.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="7117eb83" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/dem_crop_test.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Width:"</span>, src.width)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Height:"</span>, src.height)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"CRS:"</span>, src.crs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Width: 100
+Height: 100
+CRS: EPSG:4326</code></pre>
+</div>
+</div>
+</details>
+</details>
+</section>
+<section id="building-raster_utils.py" class="level2">
+<h2 class="anchored" data-anchor-id="building-raster_utils.py">Building <code>raster_utils.py</code></h2>
+<div style="text-align: justify;">
+<p>This session’s module wraps the metadata and CRS checks above into reusable functions, saved into <code>modules/raster_utils.py</code>. Later sessions, starting with <code>indices.py</code> in Session 04, will <code>import</code> from both <code>data_loader.py</code> and <code>raster_utils.py</code> rather than repeating these steps.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modules/raster_utils.py</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyproj <span class="im">import</span> CRS</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_raster_info(path):</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return a dictionary of key metadata for a raster file."""</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(path) <span class="im">as</span> src:</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>        info <span class="op">=</span> {</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"width"</span>: src.width,</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"height"</span>: src.height,</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"count"</span>: src.count,</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"dtype"</span>: src.dtypes[<span class="dv">0</span>],</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">"nodata"</span>: src.nodata,</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"crs"</span>: CRS(src.crs),</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"bounds"</span>: src.bounds,</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"transform"</span>: src.transform,</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>path<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>info[<span class="st">'width'</span>]<span class="sc">}</span><span class="ss">x</span><span class="sc">{</span>info[<span class="st">'height'</span>]<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>info[<span class="st">'count'</span>]<span class="sc">}</span><span class="ss"> band(s), CRS </span><span class="sc">{</span>info[<span class="st">'crs'</span>]<span class="sc">.</span>to_epsg()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> info</span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_crs_match(path1, path2):</span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compare the CRS of two raster files and report whether they match."""</span></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(path1) <span class="im">as</span> src1:</span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>        crs1 <span class="op">=</span> CRS(src1.crs)</span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(path2) <span class="im">as</span> src2:</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>        crs2 <span class="op">=</span> CRS(src2.crs)</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> crs1 <span class="op">==</span> crs2</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> <span class="st">"match"</span> <span class="cf">if</span> match <span class="cf">else</span> <span class="st">"DO NOT match"</span></span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>path1<span class="sc">}</span><span class="ss"> and </span><span class="sc">{</span>path2<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>status<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>crs1<span class="sc">.</span>to_epsg()<span class="sc">}</span><span class="ss"> vs </span><span class="sc">{</span>crs2<span class="sc">.</span>to_epsg()<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> match</span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_raster(array, profile, path):</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Write a NumPy array to disk as a raster, using a given rasterio profile."""</span></span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>    updated_profile <span class="op">=</span> profile.copy()</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>    updated_profile.update({</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>        <span class="st">"height"</span>: array.shape[<span class="dv">0</span>],</span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>        <span class="st">"width"</span>: array.shape[<span class="dv">1</span>],</span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(path, <span class="st">"w"</span>, <span class="op">**</span>updated_profile) <span class="im">as</span> dst:</span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a>        dst.write(array, <span class="dv">1</span>)</span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Saved raster to </span><span class="sc">{</span>path<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>save_raster</code> assumes a single-band array, which matches every output the rest of this course produces: <code>ndvi.tif</code>, <code>slope.tif</code>, <code>aspect.tif</code>, and <code>suitability.tif</code> are all single-band rasters. It intentionally does not update <code>transform</code>, since it assumes the array has the same extent as the original file the profile was taken from; a cropped array, as in the example earlier in this session, needs its transform corrected separately first.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session went beneath the surface of the raster metadata we glossed over in Session 01: the full <code>.meta</code> dictionary, the affine transform and what its six values mean, converting between pixel indices and real-world coordinates, and <code>pyproj.CRS</code> as the library actually responsible for coordinate systems underneath <code>rasterio</code> and <code>geopandas</code>. We confirmed how our DEM, Sentinel image, and study boundary relate to one another in CRS terms, previewed converting a single coordinate between CRS with <code>pyproj.Transformer</code>, inspected each Sentinel band individually, improved our raster plots with colorbars and side-by-side comparisons, and wrote our first raster to disk. We also built <code>modules/raster_utils.py</code>, which the rest of the course will rely on. <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a> puts all of this to use, calculating NDVI from the Sentinel bands we inspected here and saving it as <code>ndvi.tif</code> with the exact write pattern practiced in this session.</p>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -834,8 +1614,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../sessions/session-04-ndvi.html" class="pagination-link" aria-label="session-04-ndvi.html">
-        <span class="nav-page-text"><span class="chapter-title">session-04-ndvi.html</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../sessions/session-04-ndvi.html" class="pagination-link" aria-label="session 04: spectral indices, NDVI and NDWI">
+        <span class="nav-page-text"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -847,7 +1627,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-03-raster-metadata-crs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-03-raster-metadata-crs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>

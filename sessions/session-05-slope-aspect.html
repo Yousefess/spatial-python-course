@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>session-05-slope-aspect – Spatial Python</title>
+<title>session 05: terrain analysis, slope, aspect, and hillshade – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -256,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-05-slope-aspect.html"><span class="chapter-title">session-05-slope-aspect.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-05-slope-aspect.html"><span class="chapter-title">session 05: terrain analysis, slope, aspect, and hillshade</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -329,17 +365,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-03-raster-metadata-crs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-03-raster-metadata-crs.html</span></a>
+  <a href="../sessions/session-03-raster-metadata-crs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 03: raster metadata and CRS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-04-ndvi.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-04-ndvi.html</span></a>
+  <a href="../sessions/session-04-ndvi.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-05-slope-aspect.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session-05-slope-aspect.html</span></a>
+  <a href="../sessions/session-05-slope-aspect.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session 05: terrain analysis, slope, aspect, and hillshade</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -395,18 +431,561 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#from-elevation-to-gradient" id="toc-from-elevation-to-gradient" class="nav-link" data-scroll-target="#from-elevation-to-gradient">From Elevation to Gradient</a></li>
+  <li><a href="#calculating-slope" id="toc-calculating-slope" class="nav-link" data-scroll-target="#calculating-slope">Calculating Slope</a></li>
+  <li><a href="#calculating-aspect" id="toc-calculating-aspect" class="nav-link" data-scroll-target="#calculating-aspect">Calculating Aspect</a></li>
+  <li><a href="#the-flat-area-problem" id="toc-the-flat-area-problem" class="nav-link" data-scroll-target="#the-flat-area-problem">The Flat-Area Problem</a></li>
+  <li><a href="#visualizing-slope-and-aspect" id="toc-visualizing-slope-and-aspect" class="nav-link" data-scroll-target="#visualizing-slope-and-aspect">Visualizing Slope and Aspect</a></li>
+  <li><a href="#histogram-of-slope" id="toc-histogram-of-slope" class="nav-link" data-scroll-target="#histogram-of-slope">Histogram of Slope</a></li>
+  <li><a href="#previewing-the-suitability-masks" id="toc-previewing-the-suitability-masks" class="nav-link" data-scroll-target="#previewing-the-suitability-masks">Previewing the Suitability Masks</a>
+  <ul class="collapse">
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#saving-the-results" id="toc-saving-the-results" class="nav-link" data-scroll-target="#saving-the-results">Saving the Results</a></li>
+  <li><a href="#hillshade-seeing-the-terrain-not-just-measuring-it" id="toc-hillshade-seeing-the-terrain-not-just-measuring-it" class="nav-link" data-scroll-target="#hillshade-seeing-the-terrain-not-just-measuring-it">Hillshade: Seeing the Terrain, Not Just Measuring It</a></li>
+  <li><a href="#building-terrain_analysis.py" id="toc-building-terrain_analysis.py" class="nav-link" data-scroll-target="#building-terrain_analysis.py">Building <code>terrain_analysis.py</code></a></li>
+  <li><a href="#further-terrain-analysis-beyond-this-course" id="toc-further-terrain-analysis-beyond-this-course" class="nav-link" data-scroll-target="#further-terrain-analysis-beyond-this-course">Further Terrain Analysis, Beyond This Course</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-05-slope-aspect.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-05-slope-aspect.html"><span class="chapter-title">session-05-slope-aspect.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-05-slope-aspect.html"><span class="chapter-title">session 05: terrain analysis, slope, aspect, and hillshade</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">session 05: terrain analysis, slope, aspect, and hillshade</span></h1>
+<p class="subtitle lead">Turning elevation into the two factors that matter most for solar siting</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div style="text-align: justify;">
+<p><a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a> turned Sentinel bands into NDVI and NDWI, two flat, per-pixel formulas applied to spectral values. This session works with a single band, the DEM, but the math is a different kind of operation entirely: instead of comparing two bands at the same pixel, we compare each pixel to its neighbors, since slope and aspect are both properties of how elevation changes across space, not properties of a single elevation value on its own. This is the first time in the course we calculate something from a raster’s spatial structure rather than its spectral content, and that distinction is worth sitting with before writing any code.</p>
+</div>
+<div style="text-align: justify;">
+<p>Slope and aspect are two of the four suitability factors for the project: a gentle slope keeps installation and maintenance costs down, and a south facing slope, in the northern hemisphere, receives more direct sunlight across the day than a north facing one. Both come from the same DEM, and both come from the same underlying calculation, a gradient, so we build them together in this session.</p>
+</div>
+</section>
+<section id="from-elevation-to-gradient" class="level2">
+<h2 class="anchored" data-anchor-id="from-elevation-to-gradient">From Elevation to Gradient</h2>
+<div style="text-align: justify;">
+<p>A DEM gives us elevation, a single value per pixel. Slope and aspect both need to know how that elevation <em>changes</em> as we move across the grid, in the east-west direction and in the north-south direction. This rate of change is called a gradient, and it is calculated the same way a derivative is calculated in calculus: the difference in value between two nearby points, divided by the distance between them.</p>
+</div>
+<div style="text-align: justify;">
+<p>For a raster, “nearby points” means neighboring pixels, and “distance between them” means the pixel’s spatial resolution, the same value we pulled from <code>transform.a</code> and <code>transform.e</code> back in <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>. This is the one detail that is easy to forget and produces a slope that looks plausible but is quantitatively wrong: the gradient has to be computed in real ground units, meters per meter, not in pixels per pixel.</p>
+</div>
+<div style="margin-top: 30px; margin-bottom: 45px; text-align: center;">
+<p><img src="../images/session_05_slope_aspect_concept.webp" class="img-fluid" style="width:100.0%" alt="a simple 3D-style diagram of a small hillside DEM grid, with one arrow showing the steepest downhill direction labeled slope, and a compass rose showing that same direction's compass bearing labeled aspect"></p>
+</div>
+<div style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;">
+<p><em>Image generated with GPT Image 2.5.</em></p>
+</div>
+<div id="73707127" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dem_path <span class="op">=</span> <span class="st">"data/dem.tif"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    dem <span class="op">=</span> src.read(<span class="dv">1</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    transform <span class="op">=</span> src.transform</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    profile <span class="op">=</span> src.profile</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>x_resolution <span class="op">=</span> transform.a</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>y_resolution <span class="op">=</span> <span class="bu">abs</span>(transform.e)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pixel resolution (x, y):"</span>, x_resolution, y_resolution)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pixel resolution (x, y): 0.00026949458523585647 0.00026949458523585647</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p><code>np.gradient</code> computes exactly this kind of neighbor-to-neighbor rate of change for an entire array at once, no explicit loop needed, the same vectorized spirit as every calculation so far in this course. Passed a spacing value for each axis, it divides by the correct real-world distance automatically.</p>
+</div>
+<div id="3ebcf97b" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dy, dx <span class="op">=</span> np.gradient(dem, y_resolution, x_resolution)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"dx shape:"</span>, dx.shape)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"dy shape:"</span>, dy.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>dx shape: (605, 610)
+dy shape: (605, 610)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: the order of <code>np.gradient</code>’s return values
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>np.gradient</code> returns one array per axis, in the same order as the array’s own axes. For a 2D raster, axis 0 is rows, the y direction, and axis 1 is columns, the x direction, so the first array returned is <code>dy</code> and the second is <code>dx</code>. Swapping them by accident is a common source of an aspect layer that looks rotated 90 degrees from what it should be.</p>
+</div>
+</div>
+</section>
+<section id="calculating-slope" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-slope">Calculating Slope</h2>
+<div style="text-align: justify;">
+<p>Slope is the steepness of the terrain at each pixel, independent of which direction it faces. Once we have <code>dx</code> and <code>dy</code>, slope is the angle whose tangent is the combined magnitude of the two gradients, converted from radians to degrees since degrees are the more familiar unit for describing a hillside.</p>
+</div>
+<div id="04605ec0" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_slope(dx, dy):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate slope in degrees from x and y gradients."""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    slope_radians <span class="op">=</span> np.arctan(np.sqrt(dx<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> dy<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.degrees(slope_radians)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> calculate_slope(dx, dy)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Slope range:"</span>, slope.<span class="bu">min</span>(), <span class="st">"to"</span>, slope.<span class="bu">max</span>(), <span class="st">"degrees"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Slope range: 88.552414 to 89.999985 degrees</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>A slope of 0 degrees means perfectly flat ground, and 90 degrees means a vertical cliff face. For a real DEM, especially one already smoothed by satellite-derived elevation processing, values will typically stay well below that, but it is worth sanity checking the maximum value against what you know about the study area, since an unexpectedly extreme slope is often a sign the resolution passed to <code>np.gradient</code> was wrong.</p>
+</div>
+</section>
+<section id="calculating-aspect" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-aspect">Calculating Aspect</h2>
+<div style="text-align: justify;">
+<p>Aspect is the compass direction the slope faces, the direction water would flow downhill from that pixel. It comes from the same <code>dx</code> and <code>dy</code> gradients, but through <code>arctan2</code>, which correctly handles all four quadrants of direction rather than just a single angle.</p>
+</div>
+<div id="843f9af8" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_aspect(dx, dy):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate aspect in degrees (0-360, 0 = north, clockwise) from x and y gradients."""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    aspect_radians <span class="op">=</span> np.arctan2(dy, <span class="op">-</span>dx)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    aspect_degrees <span class="op">=</span> np.degrees(aspect_radians)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    aspect_degrees <span class="op">=</span> (<span class="dv">90</span> <span class="op">-</span> aspect_degrees) <span class="op">%</span> <span class="dv">360</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aspect_degrees</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>aspect <span class="op">=</span> calculate_aspect(dx, dy)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Aspect range:"</span>, aspect.<span class="bu">min</span>(), <span class="st">"to"</span>, aspect.<span class="bu">max</span>(), <span class="st">"degrees"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Aspect range: 0.0 to 359.99918 degrees</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: aspect convention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This course follows the standard GIS convention: 0 degrees is north, 90 is east, 180 is south, 270 is west, measured clockwise. Different libraries and textbooks sometimes define this differently, measuring counter-clockwise from east instead, so always check a formula’s convention before reusing it, and always sanity check a couple of pixels by hand against a known slope direction in your data before trusting the full output.</p>
+</div>
+</div>
+</section>
+<section id="the-flat-area-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-flat-area-problem">The Flat-Area Problem</h2>
+<div style="text-align: justify;">
+<p>Where a pixel is perfectly flat, both <code>dx</code> and <code>dy</code> are 0, and aspect becomes mathematically undefined, not zero, undefined, since there is no downhill direction on flat ground. <code>arctan2(0, 0)</code> does not raise an error, it silently returns 0, which would incorrectly show every flat pixel as facing due north. We mark these pixels explicitly instead of letting that silent default stand.</p>
+</div>
+<div id="2a481747" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>FLAT_THRESHOLD <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>flat_mask <span class="op">=</span> slope <span class="op">&lt;</span> FLAT_THRESHOLD</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>aspect[flat_mask] <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>flat_percentage <span class="op">=</span> (np.<span class="bu">sum</span>(flat_mask) <span class="op">/</span> flat_mask.size) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Flat pixels marked as -1: </span><span class="sc">{</span>flat_percentage<span class="sc">:.2f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Flat pixels marked as -1: 0.00%</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-slope-and-aspect" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-slope-and-aspect">Visualizing Slope and Aspect</h2>
+<div style="text-align: justify;">
+<p>Slope is a sequential quantity, 0 degrees is meaningfully “less” than 40 degrees, so a sequential colormap such as <code>"YlOrRd"</code> fits it well: pale for gentle, dark red for steep. Aspect is different: it is a circular quantity, 359 degrees and 1 degree are almost the same direction, nearly due north, but a normal sequential colormap would show them as opposite ends of the color scale, visually implying they are as different as possible. A cyclic colormap such as <code>"hsv"</code> or <code>"twilight"</code> fixes this, wrapping smoothly back to its starting color as the value passes 360.</p>
+</div>
+<div id="36e468f0" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>slope_im <span class="op">=</span> axes[<span class="dv">0</span>].imshow(slope, cmap<span class="op">=</span><span class="st">"YlOrRd"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Slope (degrees)"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt.colorbar(slope_im, ax<span class="op">=</span>axes[<span class="dv">0</span>], label<span class="op">=</span><span class="st">"Degrees"</span>, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>aspect_display <span class="op">=</span> np.ma.masked_where(aspect <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>, aspect)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>aspect_im <span class="op">=</span> axes[<span class="dv">1</span>].imshow(aspect_display, cmap<span class="op">=</span><span class="st">"hsv"</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">360</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Aspect (degrees, flat areas masked)"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>plt.colorbar(aspect_im, ax<span class="op">=</span>axes[<span class="dv">1</span>], label<span class="op">=</span><span class="st">"Degrees from north"</span>, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-05-slope-aspect_files/figure-html/cell-7-output-1.png" width="1314" height="549" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>np.ma.masked_where</code> builds a masked array, which <code>imshow</code> simply leaves transparent wherever the mask is <code>True</code>, rather than plotting our <code>-1</code> sentinel value as if it were a real, very dark aspect. This is a cleaner way to exclude flagged pixels from a plot than filtering them out of the array entirely, since the array’s shape stays intact.</p>
+</div>
+</div>
+</section>
+<section id="histogram-of-slope" class="level2">
+<h2 class="anchored" data-anchor-id="histogram-of-slope">Histogram of Slope</h2>
+<div style="text-align: justify;">
+<p>A normal histogram works well for slope, since it is not a circular quantity.</p>
+</div>
+<div id="02399c0d" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>ax.hist(slope.flatten(), bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"darkorange"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Slope (degrees)"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Pixel count"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Slope Distribution"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-05-slope-aspect_files/figure-html/cell-8-output-1.png" width="693" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note: why aspect does not get a normal histogram here
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A standard histogram of aspect would visually split what is actually one common direction, a slope facing 5 degrees east of north and one facing 355 degrees, just west of north, into opposite bars at either edge of the chart, understating how common near-north aspects really are. Plotting circular data properly needs a different chart, a wind-rose style polar histogram, which is outside the scope of what we build by hand in this course, but worth knowing exists if you work with aspect, wind direction, or any other circular variable again.</p>
+</div>
+</div>
+</section>
+<section id="previewing-the-suitability-masks" class="level2">
+<h2 class="anchored" data-anchor-id="previewing-the-suitability-masks">Previewing the Suitability Masks</h2>
+<div style="text-align: justify;">
+<p>The project’s suitability rule favors slopes under 10 degrees and south facing aspects, roughly 150 to 220 degrees. We build both masks here to inspect them, exactly as we did with the NDWI water mask in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, without applying them to any score yet, that step waits for the weighted overlay in <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>.</p>
+</div>
+<div id="d1fbd483" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gentle_slope_mask <span class="op">=</span> slope <span class="op">&lt;</span> <span class="dv">10</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>south_facing_mask <span class="op">=</span> (aspect <span class="op">&gt;=</span> <span class="dv">150</span>) <span class="op">&amp;</span> (aspect <span class="op">&lt;=</span> <span class="dv">220</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>both_favorable <span class="op">=</span> gentle_slope_mask <span class="op">&amp;</span> south_facing_mask</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gentle slope (&lt;10 deg): </span><span class="sc">{</span>(np.<span class="bu">sum</span>(gentle_slope_mask) <span class="op">/</span> gentle_slope_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"South facing (150-220 deg): </span><span class="sc">{</span>(np.<span class="bu">sum</span>(south_facing_mask) <span class="op">/</span> south_facing_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Both favorable: </span><span class="sc">{</span>(np.<span class="bu">sum</span>(both_favorable) <span class="op">/</span> both_favorable.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Gentle slope (&lt;10 deg): 0.00%
+South facing (150-220 deg): 28.98%
+Both favorable: 0.00%</code></pre>
+</div>
+</div>
+<div id="37870688" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(both_favorable, cmap<span class="op">=</span><span class="st">"Greens"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Gentle Slope AND South Facing"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-05-slope-aspect_files/figure-html/cell-10-output-1.png" width="579" height="578" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<details>
+<summary>
+Exercise 1: A stricter slope threshold
+</summary>
+<div style="text-align: justify;">
+<p>Recalculate the gentle slope mask using a stricter threshold of 5 degrees instead of 10, and print what percentage of pixels qualify under each threshold, side by side, to see how much the choice of cutoff actually matters for this study area.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="b21ce625" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>strict_slope_mask <span class="op">=</span> slope <span class="op">&lt;</span> <span class="dv">5</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Under 5 degrees: </span><span class="sc">{</span>(np.<span class="bu">sum</span>(strict_slope_mask) <span class="op">/</span> strict_slope_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Under 10 degrees: </span><span class="sc">{</span>(np.<span class="bu">sum</span>(gentle_slope_mask) <span class="op">/</span> gentle_slope_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Under 5 degrees: 0.00%
+Under 10 degrees: 0.00%</code></pre>
+</div>
+</div>
+</details>
+</details>
+<details>
+<summary>
+Exercise 2: Widen the favorable aspect range
+</summary>
+<div style="text-align: justify;">
+<p>The project currently treats 150 to 220 degrees as south facing. Recalculate the mask using a wider range, 120 to 250 degrees, and compare the resulting percentage of favorable pixels to the original range.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="ff4bfdbf" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>wide_south_facing_mask <span class="op">=</span> (aspect <span class="op">&gt;=</span> <span class="dv">120</span>) <span class="op">&amp;</span> (aspect <span class="op">&lt;=</span> <span class="dv">250</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Narrow range (150-220): </span><span class="sc">{</span>(np.<span class="bu">sum</span>(south_facing_mask) <span class="op">/</span> south_facing_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Wide range (120-250): </span><span class="sc">{</span>(np.<span class="bu">sum</span>(wide_south_facing_mask) <span class="op">/</span> wide_south_facing_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Narrow range (150-220): 28.98%
+Wide range (120-250): 48.32%</code></pre>
+</div>
+</div>
+</details>
+</details>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Why is a perfectly flat pixel’s aspect marked with a sentinel value like -1, rather than left at whatever <code>arctan2(0, 0)</code> returns?</p>
+</div>
+<p>A. Because <code>arctan2(0, 0)</code> raises an error and the program would crash otherwise</p>
+<p>B. Because <code>arctan2(0, 0)</code> silently returns 0, which would incorrectly show every flat pixel as facing due north</p>
+<p>C. Because flat pixels should always be excluded from the DEM entirely</p>
+<p>D. Because aspect cannot be calculated in degrees, only in radians</p>
+<details>
+<summary>
+Answer
+</summary>
+B. Flat ground has no downhill direction, so aspect is genuinely undefined there. <code>arctan2(0, 0)</code> does not raise an error, it quietly returns 0, which would misrepresent every flat pixel as north facing if left unmarked.
+</details>
+</details>
+</section>
+</section>
+<section id="saving-the-results" class="level2">
+<h2 class="anchored" data-anchor-id="saving-the-results">Saving the Results</h2>
+<div id="efe8932c" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>output_profile <span class="op">=</span> profile.copy()</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>output_profile.update({<span class="st">"dtype"</span>: <span class="st">"float32"</span>, <span class="st">"count"</span>: <span class="dv">1</span>})</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/slope.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>output_profile) <span class="im">as</span> dst:</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    dst.write(slope.astype(<span class="st">"float32"</span>), <span class="dv">1</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/aspect.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>output_profile) <span class="im">as</span> dst:</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    dst.write(aspect.astype(<span class="st">"float32"</span>), <span class="dv">1</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Saved slope.tif and aspect.tif to data/outputs/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved slope.tif and aspect.tif to data/outputs/</code></pre>
+</div>
+</div>
+</section>
+<section id="hillshade-seeing-the-terrain-not-just-measuring-it" class="level2">
+<h2 class="anchored" data-anchor-id="hillshade-seeing-the-terrain-not-just-measuring-it">Hillshade: Seeing the Terrain, Not Just Measuring It</h2>
+<div style="text-align: justify;">
+<p>Slope and aspect are the two numbers the suitability score actually needs, but neither one, on its own, produces something that reads as a recognizable landscape at a glance. Hillshade solves a different problem: it simulates how sunlight would fall across the terrain from a chosen direction and height, producing a shaded relief image that looks like a photograph of the landscape lit from the side. It uses exactly the same slope and aspect values calculated above, combined with a light source direction, so it is a natural next step rather than a separate calculation.</p>
+</div>
+<div style="text-align: justify;">
+<p><code>matplotlib</code> ships a ready-made tool for this, <code>matplotlib.colors.LightSource</code>, which takes a raw elevation array and a chosen sun azimuth, compass direction, and altitude, angle above the horizon, and returns a shaded image directly, without us needing to reimplement the illumination formula by hand.</p>
+</div>
+<div id="4f0054f4" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> LightSource</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>light_source <span class="op">=</span> LightSource(azdeg<span class="op">=</span><span class="dv">315</span>, altdeg<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>hillshade <span class="op">=</span> light_source.hillshade(dem, vert_exag<span class="op">=</span><span class="dv">1</span>, dx<span class="op">=</span>x_resolution, dy<span class="op">=</span>y_resolution)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>ax.imshow(hillshade, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Hillshade (sun from northwest, 45 degrees altitude)"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-05-slope-aspect_files/figure-html/cell-14-output-1.png" width="652" height="652" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: <code>azdeg=315</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An azimuth of 315 degrees, northwest, is the conventional default for hillshade in GIS software, since it tends to produce visually intuitive shading for terrain in the northern hemisphere without flattening ridgelines that happen to run in an unlucky direction. <code>vert_exag</code> exaggerates vertical relief, useful for a DEM with subtle elevation differences, but purely a display choice, it does not change the underlying slope or aspect values calculated earlier.</p>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>Hillshade is a display technique, not a data layer the suitability score uses directly, so it is not saved as one of the project’s terrain outputs. Its real value shows up later: in <a href="../sessions/session-09-interactive-map.html"><strong>Session 09</strong></a> a hillshade makes an excellent semi-transparent base layer underneath the final suitability colors, giving the interactive map real topographic texture instead of a flat colored overlay floating over a plain basemap.</p>
+</div>
+<details>
+<summary>
+Exercise 3: Light from the east
+</summary>
+<div style="text-align: justify;">
+<p>Recreate the hillshade above with the sun coming from the east instead, <code>azdeg=90</code>, and compare which ridgelines become more or less visible compared to the northwest version.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="95f22b75" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>light_source_east <span class="op">=</span> LightSource(azdeg<span class="op">=</span><span class="dv">90</span>, altdeg<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>hillshade_east <span class="op">=</span> light_source_east.hillshade(dem, vert_exag<span class="op">=</span><span class="dv">1</span>, dx<span class="op">=</span>x_resolution, dy<span class="op">=</span>y_resolution)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>ax.imshow(hillshade_east, cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Hillshade (sun from east, 45 degrees altitude)"</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-05-slope-aspect_files/figure-html/cell-15-output-1.png" width="652" height="652" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+</details>
+</section>
+<section id="building-terrain_analysis.py" class="level2">
+<h2 class="anchored" data-anchor-id="building-terrain_analysis.py">Building <code>terrain_analysis.py</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modules/terrain_analysis.py</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_slope(dx, dy):</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate slope in degrees from x and y gradients."""</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    slope_radians <span class="op">=</span> np.arctan(np.sqrt(dx<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> dy<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.degrees(slope_radians)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_aspect(dx, dy, flat_threshold<span class="op">=</span><span class="fl">0.1</span>, slope<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate aspect in degrees (0-360, 0 = north, clockwise) from x and y gradients.</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Flat pixels (slope below flat_threshold) are marked as -1."""</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    aspect_radians <span class="op">=</span> np.arctan2(dy, <span class="op">-</span>dx)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    aspect_degrees <span class="op">=</span> np.degrees(aspect_radians)</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    aspect_degrees <span class="op">=</span> (<span class="dv">90</span> <span class="op">-</span> aspect_degrees) <span class="op">%</span> <span class="dv">360</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> slope <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>        aspect_degrees[slope <span class="op">&lt;</span> flat_threshold] <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> aspect_degrees</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_and_calculate_terrain(dem_path):</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Read a DEM and return slope, aspect, and the source profile."""</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>        dem <span class="op">=</span> src.read(<span class="dv">1</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>        x_resolution <span class="op">=</span> src.transform.a</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>        y_resolution <span class="op">=</span> <span class="bu">abs</span>(src.transform.e)</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>        profile <span class="op">=</span> src.profile</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>    dy, dx <span class="op">=</span> np.gradient(dem, y_resolution, x_resolution)</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    slope <span class="op">=</span> calculate_slope(dx, dy)</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    aspect <span class="op">=</span> calculate_aspect(dx, dy, slope<span class="op">=</span>slope)</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> slope, aspect, profile</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Just like <code>modules/indices.py</code> in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, the pure math functions, <code>calculate_slope</code> and <code>calculate_aspect</code>, take plain NumPy arrays and know nothing about <code>rasterio</code>, while <code>load_and_calculate_terrain</code> is the only function that touches a file directly. This split is the same pattern the whole course follows, and it is exactly what lets <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a> import and combine functions from several modules without worrying about how each one reads its own input file.</p>
+</div>
+</div>
+</section>
+<section id="further-terrain-analysis-beyond-this-course" class="level2">
+<h2 class="anchored" data-anchor-id="further-terrain-analysis-beyond-this-course">Further Terrain Analysis, Beyond This Course</h2>
+<div style="text-align: justify;">
+<p>Slope, aspect, and hillshade cover what the solar suitability project actually needs, but a DEM can be pushed considerably further, and it is worth knowing what exists if you continue with terrain analysis beyond this course.</p>
+</div>
+<div style="text-align: justify;">
+<p><strong>Curvature</strong> describes whether terrain is convex or concave, ridges curve one way, valleys curve the other, calculated from the second derivative of elevation rather than the first derivative slope uses. It matters for things like water flow and erosion modeling, less directly for solar siting, but it is the natural next step once slope and aspect feel comfortable, since it reuses the same gradient-based thinking one level deeper.</p>
+</div>
+<div style="text-align: justify;">
+<p><strong>Terrain Ruggedness Index (TRI)</strong> and <strong>Topographic Position Index (TPI)</strong> summarize how much a pixel’s elevation differs from its immediate neighbors, capturing roughness that a single slope value at one pixel does not. A moderately sloped but highly irregular patch of ground can be a worse installation site than a uniformly sloped one at the same average steepness, so a ruggedness layer is a genuinely reasonable additional suitability factor for a more advanced version of this project.</p>
+</div>
+<div style="text-align: justify;">
+<p><strong>Solar radiation modeling</strong> goes a step beyond aspect alone, estimating the actual incoming solar energy a pixel would receive over a day or year, accounting for slope, aspect, latitude, time of year, and even shadows cast by surrounding terrain. This is precisely the calculation a real solar siting project would eventually want in place of the simplified aspect range rule used here. It is a substantially more involved calculation than anything in this session, typically done with a dedicated tool such as <a href="https://grass.osgeo.org/grass-stable/manuals/r.sun.html">GRASS GIS’s <code>r.sun</code></a> or the Python library <a href="https://pysolar.readthedocs.io/"><code>pysolar</code></a>, rather than written from scratch.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>None of these three are implemented in this course, the project’s simplified slope and aspect rule is a deliberate teaching simplification, not a claim that it is the most physically accurate way to score a solar site. If you want to explore further on your own, <a href="https://richdem.readthedocs.io/"><code>richdem</code></a> is a Python library purpose-built for exactly this kind of deeper terrain analysis, curvature, ruggedness, and flow routing included, built on the same NumPy array foundations used throughout this session.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session turned a single elevation raster into two of the project’s four suitability factors: slope, calculated from the magnitude of the DEM’s gradient, and aspect, calculated from its direction, both derived using <code>np.gradient</code> in real ground units rather than raw pixel units. We handled the one genuine edge case, undefined aspect on flat ground, visualized slope with a sequential colormap and aspect with a cyclic one, and previewed the gentle-slope and south-facing masks that will feed the real suitability score in <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>. We also built a hillshade for visual, rather than analytical, use later in <a href="../sessions/session-09-interactive-map.html"><strong>Session 09</strong></a>, saved <code>slope.tif</code> and <code>aspect.tif</code>, built <code>modules/terrain_analysis.py</code>, and took a brief look at curvature, ruggedness, and solar radiation modeling as further terrain analysis beyond what this course covers. <a href="../sessions/session-06-buffers-distance.html"><strong>Session 06</strong></a> turns to the project’s last suitability factor, distance to roads and power lines, this time built from vector data rather than a raster.</p>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -829,8 +1408,8 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../sessions/session-04-ndvi.html" class="pagination-link" aria-label="session-04-ndvi.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session-04-ndvi.html</span></span>
+      <a href="../sessions/session-04-ndvi.html" class="pagination-link" aria-label="session 04: spectral indices, NDVI and NDWI">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -847,7 +1426,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-05-slope-aspect.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-05-slope-aspect.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>

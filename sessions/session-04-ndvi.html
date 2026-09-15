@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>session-04-ndvi – Spatial Python</title>
+<title>session 04: spectral indices, NDVI and NDWI – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -82,6 +118,49 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -256,7 +335,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-04-ndvi.html"><span class="chapter-title">session-04-ndvi.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-04-ndvi.html"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -329,17 +408,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-03-raster-metadata-crs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-03-raster-metadata-crs.html</span></a>
+  <a href="../sessions/session-03-raster-metadata-crs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 03: raster metadata and CRS</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-04-ndvi.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session-04-ndvi.html</span></a>
+  <a href="../sessions/session-04-ndvi.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-05-slope-aspect.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-05-slope-aspect.html</span></a>
+  <a href="../sessions/session-05-slope-aspect.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 05: terrain analysis, slope, aspect, and hillshade</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -395,18 +474,521 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#ndvi-the-normalized-difference-vegetation-index" id="toc-ndvi-the-normalized-difference-vegetation-index" class="nav-link" data-scroll-target="#ndvi-the-normalized-difference-vegetation-index">NDVI: The Normalized Difference Vegetation Index</a></li>
+  <li><a href="#ndwi-the-normalized-difference-water-index" id="toc-ndwi-the-normalized-difference-water-index" class="nav-link" data-scroll-target="#ndwi-the-normalized-difference-water-index">NDWI: The Normalized Difference Water Index</a></li>
+  <li><a href="#identifying-the-right-bands" id="toc-identifying-the-right-bands" class="nav-link" data-scroll-target="#identifying-the-right-bands">Identifying the Right Bands</a></li>
+  <li><a href="#reading-the-bands-as-arrays" id="toc-reading-the-bands-as-arrays" class="nav-link" data-scroll-target="#reading-the-bands-as-arrays">Reading the Bands as Arrays</a></li>
+  <li><a href="#handling-division-by-zero" id="toc-handling-division-by-zero" class="nav-link" data-scroll-target="#handling-division-by-zero">Handling Division by Zero</a></li>
+  <li><a href="#calculating-ndvi-and-ndwi" id="toc-calculating-ndvi-and-ndwi" class="nav-link" data-scroll-target="#calculating-ndvi-and-ndwi">Calculating NDVI and NDWI</a></li>
+  <li><a href="#visualizing-both-indices" id="toc-visualizing-both-indices" class="nav-link" data-scroll-target="#visualizing-both-indices">Visualizing Both Indices</a></li>
+  <li><a href="#histograms-looking-at-the-distribution-not-just-the-map" id="toc-histograms-looking-at-the-distribution-not-just-the-map" class="nav-link" data-scroll-target="#histograms-looking-at-the-distribution-not-just-the-map">Histograms: Looking at the Distribution, Not Just the Map</a></li>
+  <li><a href="#building-a-water-mask-from-ndwi" id="toc-building-a-water-mask-from-ndwi" class="nav-link" data-scroll-target="#building-a-water-mask-from-ndwi">Building a Water Mask from NDWI</a>
+  <ul class="collapse">
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#saving-the-results" id="toc-saving-the-results" class="nav-link" data-scroll-target="#saving-the-results">Saving the Results</a></li>
+  <li><a href="#building-indices.py" id="toc-building-indices.py" class="nav-link" data-scroll-target="#building-indices.py">Building <code>indices.py</code></a></li>
+  <li><a href="#a-look-ahead-xarray-and-rioxarray" id="toc-a-look-ahead-xarray-and-rioxarray" class="nav-link" data-scroll-target="#a-look-ahead-xarray-and-rioxarray">A Look Ahead: <code>xarray</code> and <code>rioxarray</code></a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-04-ndvi.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-04-ndvi.html"><span class="chapter-title">session-04-ndvi.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-04-ndvi.html"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">session 04: spectral indices, NDVI and NDWI</span></h1>
+<p class="subtitle lead">Vectorized band math, our first two derived rasters</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div style="text-align: justify;">
+<p>Every session so far has been about opening, inspecting, and displaying data that already existed on disk. This session is where we start <em>creating</em> new data. <code>sentinel.tif</code> carries several spectral bands, each one a full 2D grid of reflectance values, and a spectral index is simply a formula applied to two or more of those bands, pixel by pixel, producing a brand new single-band raster. We build two of them here: NDVI, which tells us how much healthy vegetation is present at each pixel, and NDWI, which tells us how much water is present. Both matter directly for the solar suitability project: NDVI feeds one of our four suitability factors, land cover, while NDWI gives us something NDVI cannot, a reliable way to identify water so it can be excluded from consideration entirely later on.</p>
+</div>
+<div style="text-align: justify;">
+<p>Nothing in this session is conceptually new. Reading a band with <code>rasterio</code> is exactly what we did in <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a> and <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>. The vectorized array math is exactly what we practiced with NumPy in <a href="../sessions/session-00-python-review.html"><strong>Session 00</strong></a>. What this session adds is putting those two things together, deliberately, to produce a real scientific output, and doing it carefully enough to avoid the most common mistake in band math: dividing by zero.</p>
+</div>
+</section>
+<section id="ndvi-the-normalized-difference-vegetation-index" class="level2">
+<h2 class="anchored" data-anchor-id="ndvi-the-normalized-difference-vegetation-index">NDVI: The Normalized Difference Vegetation Index</h2>
+<div style="text-align: justify;">
+<p>NDVI is defined as:</p>
+</div>
+<p><span class="math display">
+NDVI = \frac{NIR - Red}{NIR + Red}
+</span></p>
+<div style="text-align: justify;">
+<p>The formula works because of a simple, consistent fact about how healthy vegetation reflects light. Chlorophyll in a healthy leaf absorbs most red light for photosynthesis, so red reflectance stays low, while the internal cell structure of the leaf strongly reflects near-infrared light, so NIR reflectance is high. Subtracting and normalizing the two turns that gap into a single number: healthy, dense vegetation pushes NDVI toward 1, bare soil and rock sit close to 0, and water, which reflects very little in either band but even less in NIR, produces negative values. The full range of NDVI is always between -1 and 1, regardless of the sensor or the units of the original reflectance values, which is exactly what makes it comparable across different images and different dates.</p>
+</div>
+<div style="margin-top: 30px; margin-bottom: 45px; text-align: center;">
+<p><img src="../images/session_04_ndvi_concept.webp" class="img-fluid" style="width:100.0%" alt="a simple diagram showing a healthy leaf with arrows illustrating high near-infrared reflectance and low red reflectance, next to a small scale from -1 to 1 labeled with water, bare soil, and healthy vegetation"></p>
+</div>
+<div style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;">
+<p><em>Image generated with GPT Image 2.5.</em></p>
+</div>
+<div style="text-align: justify;">
+<p>For the solar suitability project specifically, NDVI is what lets us tell bare, scrubby desert apart from forest or farmland: low NDVI is exactly the kind of land that makes a good solar site, since it means little vegetation would need to be cleared and the land is not already in agricultural use.</p>
+</div>
+</section>
+<section id="ndwi-the-normalized-difference-water-index" class="level2">
+<h2 class="anchored" data-anchor-id="ndwi-the-normalized-difference-water-index">NDWI: The Normalized Difference Water Index</h2>
+<div style="text-align: justify;">
+<p>NDWI is defined as:</p>
+</div>
+<p><span class="math display">
+NDWI = \frac{Green - NIR}{Green + NIR}
+</span></p>
+<div style="text-align: justify;">
+<p>The logic mirrors NDVI, but with the opposite pair of bands. Water reflects a moderate amount of green light but absorbs almost all near-infrared light, the opposite pattern from vegetation. So water pixels produce high, positive NDWI values, while vegetation and bare soil, which both reflect relatively strongly in NIR, produce low or negative NDWI values.</p>
+</div>
+<div style="margin-top: 30px; margin-bottom: 45px; text-align: center;">
+<p><img src="../images/session_04_ndwi_concept.webp" class="img-fluid" style="width:100.0%" alt="a simple diagram showing a body of water with arrows illustrating moderate green reflectance and very low near-infrared reflectance, next to a small scale from -1 to 1 labeled with vegetation/soil and water"></p>
+</div>
+<div style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;">
+<p><em>Image generated with GPT Image 2.5.</em></p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: NDWI is used differently from NDVI in this project
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>NDVI feeds directly into the suitability <em>score</em>, as a continuous factor: lower NDVI means a higher land cover score. NDWI is not used that way. A pixel sitting in a seasonal riverbed is not “less suitable”, it is simply not a candidate at all, regardless of how every other factor scores. NDWI’s role here is to build an <strong>exclusion mask</strong>, a set of pixels removed from consideration entirely, rather than a factor that nudges a score up or down. We build that mask later in this session, and it is applied for real once we reach the weighted overlay in <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>.</p>
+</div>
+</div>
+</section>
+<section id="identifying-the-right-bands" class="level2">
+<h2 class="anchored" data-anchor-id="identifying-the-right-bands">Identifying the Right Bands</h2>
+<div style="text-align: justify;">
+<p>In <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a> we inspected <code>sentinel.tif</code>’s bands individually, checking <code>src.descriptions</code> and basic statistics to understand what each one held. NDVI and NDWI both need us to know exactly which band index corresponds to Red, Green, and NIR in our specific file, since band order is not guaranteed to match the sensor’s own numbering once a file has been subset or reordered during preprocessing.</p>
+</div>
+<div id="f2cb9fbd" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sentinel_path <span class="op">=</span> <span class="st">"data/sentinel.tif"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> band_index <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, src.count <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        description <span class="op">=</span> src.descriptions[band_index <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Band </span><span class="sc">{</span>band_index<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>description<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Band 1: None
+Band 2: None
+Band 3: None
+Band 4: None</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For our <code>sentinel.tif</code>, the bands map as follows: <strong>band 1 is Blue, band 2 is Green, band 3 is Red, band 4 is NIR</strong>. This is not the full 13-band Sentinel-2 product, only the four bands our project actually needs, already extracted and reordered. Always confirm this mapping against your own file’s <code>src.descriptions</code> rather than assuming, since a different export could easily order or select bands differently.</p>
+</div>
+</div>
+<div id="c14d89de" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>RED_BAND <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>GREEN_BAND <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>NIR_BAND <span class="op">=</span> <span class="dv">4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="reading-the-bands-as-arrays" class="level2">
+<h2 class="anchored" data-anchor-id="reading-the-bands-as-arrays">Reading the Bands as Arrays</h2>
+<div style="text-align: justify;">
+<p>With the mapping confirmed, we read the three bands we need directly into NumPy arrays, converting to <code>float32</code> immediately. Sentinel data is normally stored as an unsigned integer type such as <code>uint16</code>; if we perform subtraction and division on integer arrays directly, the result silently truncates and produces wrong values, so this conversion has to happen before any math.</p>
+</div>
+<div id="e8466db5" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    red <span class="op">=</span> src.read(RED_BAND).astype(<span class="st">"float32"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    green <span class="op">=</span> src.read(GREEN_BAND).astype(<span class="st">"float32"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    nir <span class="op">=</span> src.read(NIR_BAND).astype(<span class="st">"float32"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    profile <span class="op">=</span> src.profile</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Array shape:"</span>, red.shape)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Red dtype:"</span>, red.dtype)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Array shape: (1814, 1829)
+Red dtype: float32</code></pre>
+</div>
+</div>
+</section>
+<section id="handling-division-by-zero" class="level2">
+<h2 class="anchored" data-anchor-id="handling-division-by-zero">Handling Division by Zero</h2>
+<div style="text-align: justify;">
+<p>Both formulas divide by a sum of two bands. Wherever that sum is exactly zero, typically in <code>nodata</code> regions at the edge of an image, standard NumPy division either raises a runtime warning or produces <code>inf</code> and <code>nan</code> values scattered through the result. We handle this deliberately with <code>np.errstate</code>, which suppresses the warning, combined with <code>np.where</code>, which explicitly assigns a safe value, <code>0</code>, to every pixel where the denominator is zero, instead of letting NumPy decide.</p>
+</div>
+<div id="cbc1372f" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> safe_divide(numerator, denominator):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Divide two arrays element-wise, returning 0 wherever the denominator is 0."""</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> np.errstate(divide<span class="op">=</span><span class="st">"ignore"</span>, invalid<span class="op">=</span><span class="st">"ignore"</span>):</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> np.where(denominator <span class="op">!=</span> <span class="dv">0</span>, numerator <span class="op">/</span> denominator, <span class="dv">0</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: why not just ignore the warning?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Silencing the warning with <code>np.errstate</code> only stops NumPy from printing it; it does not fix the underlying <code>nan</code> or <code>inf</code> values. <code>np.where</code> is what actually replaces them with a defined value. Skipping this step is one of the most common sources of a suitability map with unexplained black or white streaks along its edges later in the course.</p>
+</div>
+</div>
+</section>
+<section id="calculating-ndvi-and-ndwi" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-ndvi-and-ndwi">Calculating NDVI and NDWI</h2>
+<div style="text-align: justify;">
+<p>With <code>safe_divide</code> in place, both formulas become a single vectorized line each, no loops, applied to every pixel in the array at once, exactly the pattern practiced in <a href="../sessions/session-00-python-review.html"><strong>Session 00</strong></a>.</p>
+</div>
+<div id="4d26fd7a" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_ndvi(red, nir):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate NDVI from red and near-infrared bands."""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> safe_divide(nir <span class="op">-</span> red, nir <span class="op">+</span> red)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_ndwi(green, nir):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate NDWI from green and near-infrared bands."""</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> safe_divide(green <span class="op">-</span> nir, green <span class="op">+</span> nir)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>ndvi <span class="op">=</span> calculate_ndvi(red, nir)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>ndwi <span class="op">=</span> calculate_ndwi(green, nir)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NDVI range:"</span>, ndvi.<span class="bu">min</span>(), <span class="st">"to"</span>, ndvi.<span class="bu">max</span>())</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NDWI range:"</span>, ndwi.<span class="bu">min</span>(), <span class="st">"to"</span>, ndwi.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NDVI range: -0.22123894 to 0.805008
+NDWI range: -0.7602937 to 0.49100256</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-both-indices" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-both-indices">Visualizing Both Indices</h2>
+<div style="text-align: justify;">
+<p><code>"RdYlGn"</code> is a natural colormap choice for NDVI, since it runs from red through yellow to green, matching low to high vegetation intuitively. For NDWI, <code>"Blues"</code> communicates the same idea for water: low values stay pale, high values, likely water, turn a deep blue. We display both side by side, following the same subplot and colorbar pattern from <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>.</p>
+</div>
+<div id="f87323dd" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ndvi_im <span class="op">=</span> axes[<span class="dv">0</span>].imshow(ndvi, cmap<span class="op">=</span><span class="st">"RdYlGn"</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"NDVI"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.colorbar(ndvi_im, ax<span class="op">=</span>axes[<span class="dv">0</span>], label<span class="op">=</span><span class="st">"NDVI"</span>, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>ndwi_im <span class="op">=</span> axes[<span class="dv">1</span>].imshow(ndwi, cmap<span class="op">=</span><span class="st">"Blues"</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"NDWI"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.colorbar(ndwi_im, ax<span class="op">=</span>axes[<span class="dv">1</span>], label<span class="op">=</span><span class="st">"NDWI"</span>, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-04-ndvi_files/figure-html/cell-7-output-1.png" width="1319" height="533" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="histograms-looking-at-the-distribution-not-just-the-map" class="level2">
+<h2 class="anchored" data-anchor-id="histograms-looking-at-the-distribution-not-just-the-map">Histograms: Looking at the Distribution, Not Just the Map</h2>
+<div style="text-align: justify;">
+<p>A map shows <em>where</em> values fall, but a histogram shows <em>how many</em> pixels fall into each value range, which is often the faster way to judge whether an index behaved as expected before trusting it further. <code>plt.hist()</code> takes a flattened array directly.</p>
+</div>
+<div id="d95187d9" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">4</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].hist(ndvi.flatten(), bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"seagreen"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"NDVI Distribution"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"NDVI"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Pixel count"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].hist(ndwi.flatten(), bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"NDWI Distribution"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"NDWI"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">"Pixel count"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-04-ndvi_files/figure-html/cell-8-output-1.png" width="1334" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: what a healthy histogram looks like here
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a mostly arid, sparsely vegetated study area such as Desierto de Tabernas, expect the NDVI histogram to bunch up close to 0, with only a small tail reaching toward higher values, and the NDWI histogram to sit almost entirely below 0, with at most a thin spike near the top representing any seasonal water. A histogram that instead shows most pixels near the extremes, -1 or 1, on either index, is usually a sign that the wrong bands were used, or that the division-by-zero handling above did not run.</p>
+</div>
+</div>
+</section>
+<section id="building-a-water-mask-from-ndwi" class="level2">
+<h2 class="anchored" data-anchor-id="building-a-water-mask-from-ndwi">Building a Water Mask from NDWI</h2>
+<div style="text-align: justify;">
+<p>A common convention is that any pixel with NDWI above 0 is more likely water than not. This is only a starting threshold, not a scientifically fixed cutoff, but it is a reasonable default for now. We build the mask the same way we filtered NumPy arrays with boolean conditions back in <a href="../sessions/session-00-python-review.html"><strong>Session 00</strong></a>.</p>
+</div>
+<div id="5cc6bc66" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>water_mask <span class="op">=</span> ndwi <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>water_pixel_count <span class="op">=</span> np.<span class="bu">sum</span>(water_mask)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>total_pixel_count <span class="op">=</span> water_mask.size</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>water_percentage <span class="op">=</span> (water_pixel_count <span class="op">/</span> total_pixel_count) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Water pixels: </span><span class="sc">{</span>water_pixel_count<span class="sc">}</span><span class="ss"> out of </span><span class="sc">{</span>total_pixel_count<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>water_percentage<span class="sc">:.2f}</span><span class="ss">%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Water pixels: 421 out of 3317806 (0.01%)</code></pre>
+</div>
+</div>
+<div id="080d0415" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(water_mask, cmap<span class="op">=</span><span class="st">"Blues"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Water Mask (NDWI &gt; 0), </span><span class="sc">{</span>water_percentage<span class="sc">:.2f}</span><span class="ss">% of pixels"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-04-ndvi_files/figure-html/cell-10-output-1.png" width="583" height="578" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>This mask is not applied to anything yet, we are only building and inspecting it here. It gets used for real once every layer is aligned and combined into the final suitability score in <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>, where any pixel flagged here as water is removed from consideration entirely, before scoring even happens.</p>
+</div>
+<details>
+<summary>
+Exercise 1: What fraction counts as vegetated?
+</summary>
+<div style="text-align: justify;">
+<p>Using the <code>ndvi</code> array calculated above, count how many pixels have NDVI above 0.3, a common threshold for meaningful vegetation, and print that count as a percentage of all pixels.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="9bdd0df8" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>vegetation_mask <span class="op">=</span> ndvi <span class="op">&gt;</span> <span class="fl">0.3</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>vegetation_percentage <span class="op">=</span> (np.<span class="bu">sum</span>(vegetation_mask) <span class="op">/</span> vegetation_mask.size) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Vegetated pixels: </span><span class="sc">{</span>vegetation_percentage<span class="sc">:.2f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Vegetated pixels: 2.18%</code></pre>
+</div>
+</div>
+</details>
+</details>
+<details>
+<summary>
+Exercise 2: Compare the two histograms side by side with a shared x-axis
+</summary>
+<div style="text-align: justify;">
+<p>Re-plot the NDVI and NDWI histograms from earlier in this session, but this time on the <em>same</em> axes, in different colors, with a legend, so the two distributions can be compared directly.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="1e8007e7" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ax.hist(ndvi.flatten(), bins<span class="op">=</span><span class="dv">50</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, label<span class="op">=</span><span class="st">"NDVI"</span>, color<span class="op">=</span><span class="st">"seagreen"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>ax.hist(ndwi.flatten(), bins<span class="op">=</span><span class="dv">50</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, label<span class="op">=</span><span class="st">"NDWI"</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Index value"</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Pixel count"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"NDVI vs NDWI Distribution"</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-04-ndvi_files/figure-html/cell-12-output-1.png" width="693" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+</details>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Why does NDWI get used as an exclusion mask in this project, rather than as a continuous scoring factor the way NDVI is?</p>
+</div>
+<p>A. Because NDWI cannot be calculated from Sentinel-2 bands</p>
+<p>B. Because a water pixel is not simply “less suitable”, it should not be considered a candidate site at all</p>
+<p>C. Because NDWI values are always exactly 0 or 1</p>
+<p>D. Because NDWI and NDVI use the same two bands, so only one can be used</p>
+<details>
+<summary>
+Answer
+</summary>
+B. NDVI describes a spectrum of vegetation density, where less vegetation genuinely means a somewhat better solar site, which fits a continuous score. Water is a binary, hard constraint: a pixel is either a candidate location or it is not, so it makes more sense as a mask that removes pixels entirely than as a factor that lowers their score.
+</details>
+</details>
+</section>
+</section>
+<section id="saving-the-results" class="level2">
+<h2 class="anchored" data-anchor-id="saving-the-results">Saving the Results</h2>
+<div style="text-align: justify;">
+<p>Both indices get written to disk using the exact write pattern practiced in <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>: start from the source file’s profile, update the keys that changed, and write. NDVI and NDWI are both continuous values between -1 and 1, so the output dtype has to be <code>float32</code>, not the <code>uint16</code> of the original Sentinel bands.</p>
+</div>
+<div id="7dddf082" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>output_profile <span class="op">=</span> profile.copy()</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>output_profile.update({<span class="st">"dtype"</span>: <span class="st">"float32"</span>, <span class="st">"count"</span>: <span class="dv">1</span>, <span class="st">"nodata"</span>: <span class="va">None</span>})</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/ndvi.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>output_profile) <span class="im">as</span> dst:</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    dst.write(ndvi, <span class="dv">1</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/ndwi.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>output_profile) <span class="im">as</span> dst:</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    dst.write(ndwi, <span class="dv">1</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Saved ndvi.tif and ndwi.tif to data/outputs/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved ndvi.tif and ndwi.tif to data/outputs/</code></pre>
+</div>
+</div>
+</section>
+<section id="building-indices.py" class="level2">
+<h2 class="anchored" data-anchor-id="building-indices.py">Building <code>indices.py</code></h2>
+<div style="text-align: justify;">
+<p>This session’s module collects everything above into reusable functions, saved into <code>modules/indices.py</code>. It reuses <code>save_raster</code> from <code>modules/raster_utils.py</code>, built in <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>, rather than repeating the write logic again here.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modules/indices.py</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> safe_divide(numerator, denominator):</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Divide two arrays element-wise, returning 0 wherever the denominator is 0."""</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> np.errstate(divide<span class="op">=</span><span class="st">"ignore"</span>, invalid<span class="op">=</span><span class="st">"ignore"</span>):</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> np.where(denominator <span class="op">!=</span> <span class="dv">0</span>, numerator <span class="op">/</span> denominator, <span class="dv">0</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_ndvi(red, nir):</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate NDVI from red and near-infrared bands."""</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> safe_divide(nir <span class="op">-</span> red, nir <span class="op">+</span> red)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_ndwi(green, nir):</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate NDWI from green and near-infrared bands."""</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> safe_divide(green <span class="op">-</span> nir, green <span class="op">+</span> nir)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_and_calculate_indices(sentinel_path, red_band, green_band, nir_band):</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Read the required bands from a Sentinel file and return NDVI, NDWI, and the source profile."""</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>        red <span class="op">=</span> src.read(red_band).astype(<span class="st">"float32"</span>)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>        green <span class="op">=</span> src.read(green_band).astype(<span class="st">"float32"</span>)</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>        nir <span class="op">=</span> src.read(nir_band).astype(<span class="st">"float32"</span>)</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        profile <span class="op">=</span> src.profile</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    ndvi <span class="op">=</span> calculate_ndvi(red, nir)</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    ndwi <span class="op">=</span> calculate_ndwi(green, nir)</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ndvi, ndwi, profile</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>load_and_calculate_indices</code> is deliberately the only function here that opens a file; <code>calculate_ndvi</code> and <code>calculate_ndwi</code> work on plain NumPy arrays and know nothing about <code>rasterio</code>, which keeps them easy to test and reuse, for example in <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a> when we combine multiple indices into a single suitability score.</p>
+</div>
+</div>
+</section>
+<section id="a-look-ahead-xarray-and-rioxarray" class="level2">
+<h2 class="anchored" data-anchor-id="a-look-ahead-xarray-and-rioxarray">A Look Ahead: <code>xarray</code> and <code>rioxarray</code></h2>
+<div style="text-align: justify;">
+<p>Everything in this session worked directly with <code>rasterio</code> and plain NumPy arrays: a raster’s pixel values and its geographic metadata, the CRS and transform, were always two separate things that we had to keep track of and pass around ourselves, exactly as we did with <code>profile</code> a moment ago. This is deliberate for a course focused on building intuition for what a raster actually is underneath. It is worth knowing, though, that a large part of the Python geospatial ecosystem has moved toward a library that fuses the two together.</p>
+</div>
+<div style="text-align: justify;">
+<p><a href="https://docs.xarray.dev/"><code>xarray</code></a> is a general-purpose library for working with labeled, multi-dimensional arrays, originally built for climate and atmospheric science, where a single dataset might have dimensions for latitude, longitude, time, and elevation all at once, each one labeled rather than just numbered. <a href="https://corteva.github.io/rioxarray/stable/"><code>rioxarray</code></a> extends <code>xarray</code> with exactly the geospatial pieces <code>rasterio</code> provides: CRS, transform, and raster I/O, attached directly to the array itself as metadata that travels with it automatically.</p>
+</div>
+<div style="text-align: justify;">
+<p>Concretely, this means a raster opened with <code>rioxarray</code> remembers its own CRS and transform without a separate <code>profile</code> dictionary being carried around by hand, and an operation such as clipping to a boundary, reprojecting, or computing NDVI can be written in a single readable expression instead of several explicit steps. For a project with only two rasters and a handful of derived layers, the way we have built things this session is easy to follow and debug. For much larger projects, especially ones involving many time steps or many bands at once, <code>rioxarray</code> often becomes the more practical choice, and the concepts from this course, bands, CRS, transforms, nodata, translate directly, since <code>rioxarray</code> is built on top of <code>rasterio</code> rather than replacing the ideas it represents.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We do not switch to <code>rioxarray</code> in this course, since building the raster mental model by hand, the way we have been doing, pays off more for learning than it costs in convenience. If you want to explore it on your own afterward, the <a href="https://corteva.github.io/rioxarray/stable/getting_started/getting_started.html"><code>rioxarray</code> getting started guide</a> and the <a href="https://docs.xarray.dev/en/stable/"><code>xarray</code> documentation</a> are both good starting points.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session produced our first derived raster outputs: NDVI, capturing vegetation density from the Red and NIR bands, and NDWI, capturing water presence from the Green and NIR bands, both computed with vectorized NumPy math and carefully guarded against division by zero. We visualized both as maps and as histograms, built a water mask from NDWI that will later become a real exclusion in the suitability score, and saved both indices as GeoTIFFs following the write pattern from <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>. We also built <code>modules/indices.py</code>, and took a brief look at <code>xarray</code> and <code>rioxarray</code> as a more integrated alternative to the <code>rasterio</code> and NumPy workflow used throughout this course. <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a> turns to the DEM, calculating slope and aspect, the two terrain-based factors of our suitability score.</p>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -829,13 +1411,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../sessions/session-03-raster-metadata-crs.html" class="pagination-link" aria-label="session-03-raster-metadata-crs.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session-03-raster-metadata-crs.html</span></span>
+      <a href="../sessions/session-03-raster-metadata-crs.html" class="pagination-link" aria-label="session 03: raster metadata and CRS">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session 03: raster metadata and CRS</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../sessions/session-05-slope-aspect.html" class="pagination-link" aria-label="session-05-slope-aspect.html">
-        <span class="nav-page-text"><span class="chapter-title">session-05-slope-aspect.html</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../sessions/session-05-slope-aspect.html" class="pagination-link" aria-label="session 05: terrain analysis, slope, aspect, and hillshade">
+        <span class="nav-page-text"><span class="chapter-title">session 05: terrain analysis, slope, aspect, and hillshade</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -847,7 +1429,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-04-ndvi.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-04-ndvi.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>
