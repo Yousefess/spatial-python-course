@@ -49,12 +49,43 @@ with rasterio.open(dem_path) as src:
     dem = src.read(1).astype("float32")
     transform = src.transform
     profile = src.profile
+    crs = src.crs
+    bounds = src.bounds
 
-x_resolution = transform.a
-y_resolution = abs(transform.e)
-
-print("Pixel resolution (x, y):", x_resolution, y_resolution)
+print("CRS:", crs)
+print("Is geographic:", crs.is_geographic)
+print(transform)
 ```
+
+::: {.callout-warning style="text-align: justify;"}
+## Note: check this before trusting any slope value
+Our `dem.tif` uses `EPSG:4326`, a geographic CRS, exactly the case flagged as risky back in [**Session 03**](session-03-raster-metadata-crs.qmd). `transform.a` and `transform.e` here are tiny numbers, around 0.001, because they are measured in degrees, not meters, while every elevation value in the array is in meters. Feeding a meter-scale elevation difference straight into a degree-scale spacing produces a gradient many orders of magnitude too large, and `arctan` of a huge number saturates at 90 degrees. This is exactly why a first attempt at this calculation often produces a slope map that shows nearly every pixel at 90 degrees, a uniform, clearly wrong result, and a completely empty gentle-slope mask afterward. Always check `src.crs.is_geographic` before treating `transform.a`/`transform.e` as real ground distances.
+:::
+
+::: {style="text-align: justify;"}
+The correct fix, reprojecting the DEM into a projected, meters-based CRS such as a UTM zone, is exactly the topic of [**Session 07**](session-07-reprojection.qmd), and doing it properly there means resampling the whole raster onto a new grid, not just adjusting two numbers. For this session, since we only need a reasonable pixel size in meters to get slope and aspect right, not a fully reprojected raster, we convert the degree-based resolution to an approximate meter-based one instead, using the well known fact that one degree of latitude is about 111,320 meters everywhere, while one degree of longitude shrinks as latitude increases, since meridians converge toward the poles.
+:::
+
+```{python}
+if crs.is_geographic:
+    center_latitude = (bounds.top + bounds.bottom) / 2
+    meters_per_degree_lat = 111320
+    meters_per_degree_lon = 111320 * np.cos(np.radians(center_latitude))
+
+    x_resolution = transform.a * meters_per_degree_lon
+    y_resolution = abs(transform.e) * meters_per_degree_lat
+else:
+    x_resolution = transform.a
+    y_resolution = abs(transform.e)
+
+print("Pixel resolution in meters (x, y):", x_resolution, y_resolution)
+```
+
+::: {.callout-note style="text-align: justify;"}
+## Note: this is an approximation, not a reprojection
+This conversion is only accurate near `center_latitude`, and gets less accurate the further a pixel is from that center latitude, or the larger the study area is. For our small study area around Desierto de Tabernas this is a perfectly reasonable stand-in, but it is not something to rely on for a large or high-latitude region, where a real reprojection to a projected CRS, as we do properly in [**Session 07**](session-07-reprojection.qmd), is the only reliable approach. Treat this cell as a practical shortcut for this session, not a technique to reuse blindly elsewhere.
+:::
+
 
 ::: {style="text-align: justify;"}
 `np.gradient` computes exactly this kind of neighbor-to-neighbor rate of change for an entire array at once, no explicit loop needed, the same vectorized spirit as every calculation so far in this course. Passed a spacing value for each axis, it divides by the correct real-world distance automatically.
@@ -372,12 +403,25 @@ def calculate_aspect(dx, dy, flat_threshold=0.1, slope=None):
 
 
 def load_and_calculate_terrain(dem_path):
-    """Read a DEM and return slope, aspect, and the source profile."""
+    """Read a DEM and return slope, aspect, and the source profile.
+    Converts pixel resolution from degrees to an approximate meters value
+    if the DEM's CRS is geographic."""
     with rasterio.open(dem_path) as src:
         dem = src.read(1).astype("float32")
-        x_resolution = src.transform.a
-        y_resolution = abs(src.transform.e)
+        transform = src.transform
+        crs = src.crs
+        bounds = src.bounds
         profile = src.profile
+
+    if crs.is_geographic:
+        center_latitude = (bounds.top + bounds.bottom) / 2
+        meters_per_degree_lat = 111320
+        meters_per_degree_lon = 111320 * np.cos(np.radians(center_latitude))
+        x_resolution = transform.a * meters_per_degree_lon
+        y_resolution = abs(transform.e) * meters_per_degree_lat
+    else:
+        x_resolution = transform.a
+        y_resolution = abs(transform.e)
 
     dy, dx = np.gradient(dem, y_resolution, x_resolution)
     slope = calculate_slope(dx, dy)
