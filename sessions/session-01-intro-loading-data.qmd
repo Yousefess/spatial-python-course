@@ -30,15 +30,7 @@ Spatial resolution is the single most important property of a raster to internal
 :::
 
 ::: {style="text-align: justify;"}
-A raster is never just a grid of numbers. Every raster file also carries geographic metadata that ties that grid to a real location on Earth: a coordinate reference system (CRS), defining which projection and datum the coordinates use, and an affine transform, defining exactly how a pixel's row and column position maps to a real-world coordinate. Without this metadata, a raster is just an image; with it, a raster becomes a georeferenced dataset that can be measured, compared, and combined with other spatial data. This is the deepest conceptual difference between a raster and an ordinary photograph: a photograph has pixels, but a raster has pixels that know exactly where they are. We will look closely at this metadata in Session 03; for now it is enough to know that it exists.
-:::
-
-::: {style="margin-top: 30px; margin-bottom: 45px; text-align: center;"}
-![](../images/session_01_affine.webp){fig-alt="illustration of how the affine transform maps a pixel's row/column index to a real-world x/y coordinate, ideally with a small grid and an arrow pointing to a coordinate pair" width="100%"}
-:::
-
-::: {style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;"}
-*Image generated with GPT Image 2.5.*
+A raster is never just a grid of numbers. Every raster file also carries geographic metadata that ties that grid to a real location on Earth: a coordinate reference system (CRS), defining which projection and datum the coordinates use, and an affine transform, defining exactly how a pixel's row and column position maps to a real-world coordinate. Without this metadata, a raster is just an image; with it, a raster becomes a georeferenced dataset that can be measured, compared, and combined with other spatial data. This is the deepest conceptual difference between a raster and an ordinary photograph: a photograph has pixels, but a raster has pixels that know exactly where they are. We will look closely at this metadata in [**Session 03**](session-03-raster-metadata-crs); for now it is enough to know that it exists.
 :::
 
 ::: {style="text-align: justify;"}
