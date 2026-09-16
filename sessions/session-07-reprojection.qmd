@@ -1,0 +1,512 @@
+---
+title: "session 07: resampling, reprojection, and alignment"
+subtitle: "Forcing four independent layers onto one shared grid"
+number-sections: false
+jupyter: python3
+execute:
+  enabled: true
+format:
+  html: default
+  ipynb: default
+format-links: [ipynb]
+---
+
+## Introduction
+
+::: {style="text-align: justify;"}
+Four suitability factors now exist on disk: `ndvi.tif` from [**Session 04**](session-04-ndvi.qmd), `slope.tif` and `aspect.tif` from [**Session 05**](session-05-slope-aspect.qmd), and `access.tif` from [**Session 06**](session-06-buffers-distance.qmd). Every one of them was built correctly for the question it was answering at the time, but none of them were built with each other in mind, and that catches up with us now. [**Session 08**](session-08-suitability-model.qmd) needs to combine these four layers pixel by pixel into a single suitability score, and that operation only makes sense if pixel `[120, 340]` in every one of the four arrays refers to the exact same square meter of ground. Right now, it does not.
+:::
+
+::: {style="text-align: justify;"}
+This is the session several earlier notes have been pointing toward without fully resolving: the approximate degree-to-meter conversion in [**Session 05**](session-05-slope-aspect.qmd), the reprojection deferred at the end of [**Session 01**](session-01-intro-loading-data.qmd), [**02**](session-02-vector-data.qmd), and [**03**](session-03-raster-metadata-crs.qmd), and the CRS mismatches we kept fixing one pair at a time. This time we fix it properly, for all four layers at once, with a real reprojection rather than an approximation.
+:::
+
+## Checking Where Things Actually Stand
+
+::: {style="text-align: justify;"}
+Before writing any fix, it is worth seeing the actual scale of the mismatch. We reuse `get_raster_info` from `modules/raster_utils.py`, built in [**Session 03**](session-03-raster-metadata-crs.qmd), to inspect all four factor layers at once.
+:::
+
+```{python}
+import sys
+sys.path.append("modules")
+
+from raster_utils import get_raster_info
+
+layers = {
+    "NDVI": "data/outputs/ndvi.tif",
+    "Slope": "data/outputs/slope.tif",
+    "Aspect": "data/outputs/aspect.tif",
+    "Access": "data/outputs/access.tif",
+}
+
+info = {}
+for name, path in layers.items():
+    info[name] = get_raster_info(path)
+```
+
+```{python}
+for name, meta in info.items():
+    print(f"{name}: shape=({meta['height']}, {meta['width']}), CRS={meta['crs'].to_epsg()}, resolution={meta['transform'].a}")
+```
+
+::: {.callout-warning style="text-align: justify;"}
+## Note: they should all look almost identical, and they do not
+`ndvi.tif` and `access.tif` were both written directly from `sentinel.tif`'s or `dem.tif`'s own profile, in [**Session 04**](session-04-ndvi.qmd) and [**Session 06**](session-06-buffers-distance.qmd), so their shape and CRS should already match the DEM. `slope.tif` and `aspect.tif`, from [**Session 05**](session-05-slope-aspect.qmd), share that same shape and CRS too, since they were written from the DEM's own profile as well. What differs, and what this session actually fixes, is not that these four files disagree with each other yet, it is that all four still sit in `EPSG:4326`, a geographic CRS, which we now deliberately move away from, onto a real projected grid, before [**Session 08**](session-08-suitability-model.qmd) needs to measure anything or combine anything at a fixed pixel size in meters.
+:::
+
+## Watching the Mismatch Actually Break Something
+
+::: {style="text-align: justify;"}
+It is easy to accept, in the abstract, that pixel alignment matters. It is much more convincing to watch it fail. Suppose we tried to combine two layers, still in their original form, by simple NumPy addition, exactly the kind of operation [**Session 08**](session-08-suitability-model.qmd) will eventually perform for real.
+:::
+
+```{python}
+import rasterio
+import numpy as np
+
+with rasterio.open("data/outputs/slope.tif") as src:
+    slope = src.read(1)
+    slope_transform = src.transform
+
+with rasterio.open("data/dem.tif") as src:
+    dem = src.read(1)
+    dem_transform = src.transform
+
+print("Slope shape:", slope.shape, "Slope transform:", slope_transform)
+print("DEM shape:", dem.shape, "DEM transform:", dem_transform)
+```
+
+::: {style="text-align: justify;"}
+Now suppose the DEM had instead been resampled to a different resolution at some point, by a teammate, a different tool, or an earlier version of this project, something that will genuinely happen over the life of a real project. To see the actual failure mode, we deliberately resample a copy of the DEM to a coarser grid and try to add it to `slope`.
+:::
+
+```{python}
+mismatched_dem = dem[::2, ::2]
+print("Mismatched DEM shape:", mismatched_dem.shape)
+
+try:
+    combined = slope + mismatched_dem
+except ValueError as error:
+    print("ValueError:", error)
+```
+
+::: {.callout-important style="text-align: justify;"}
+## Note: this is the exact error a mismatched suitability project produces
+NumPy has no concept of a CRS or a transform. It only sees two arrays of a different shape and refuses to add them, which is the loud, easy-to-notice failure. The dangerous version of this bug is quieter: two arrays of the *same* shape, from two different grids, add together without any error at all, producing a suitability map that runs without complaint but scores the wrong location for every single pixel. A shape mismatch is a bug you are told about. A silent misalignment is a bug you have to go looking for, which is exactly why this session exists before [**Session 08**](session-08-suitability-model.qmd), not after something goes wrong inside it.
+:::
+
+## Real Reprojection with `rasterio.warp`
+
+::: {style="text-align: justify;"}
+[**Session 05**](session-05-slope-aspect.qmd) converted the DEM's pixel size from degrees to an approximate meters value, explicitly flagged at the time as a shortcut that only worked because we only needed a single resolution number, not a fully resampled raster. Reprojecting a raster for real means resampling every pixel onto a brand new grid, defined in a new CRS, which is a fundamentally different operation from adjusting two numbers. `rasterio.warp.calculate_default_transform` works out what that new grid should look like, and `rasterio.warp.reproject` actually resamples the data onto it.
+:::
+
+```{python}
+from rasterio.warp import calculate_default_transform, reproject, Resampling
+
+target_crs = "EPSG:32629"
+
+with rasterio.open("data/dem.tif") as src:
+    new_transform, new_width, new_height = calculate_default_transform(
+        src.crs, target_crs, src.width, src.height, *src.bounds
+    )
+    print("New shape:", new_height, new_width)
+    print("New transform:", new_transform)
+```
+
+::: {style="text-align: justify;"}
+`calculate_default_transform` does not move any pixel values yet, it only works out the shape and transform the new, projected version of this raster should have, so that its resolution in meters is comparable to the original resolution in degrees. `reproject` is the function that actually resamples the pixel values onto that new grid.
+:::
+
+## Choosing a Resampling Method
+
+::: {style="text-align: justify;"}
+Reprojecting always means resampling, since the new grid's pixels almost never line up exactly with the old grid's pixels, so a value for each new pixel has to be estimated from the pixels around it in the original. `rasterio.warp.Resampling` offers several strategies, and the right one depends on what kind of data is being resampled, not personal preference.
+:::
+
+::: {.callout-tip style="text-align: justify;"}
+## Note: matching the method to the data
+`Resampling.bilinear` or `Resampling.cubic` blend neighboring pixel values together, which is correct for continuous data such as `slope.tif`, `aspect.tif`, or `ndvi.tif`, where a value halfway between two pixels really is meaningfully between them. `Resampling.nearest` instead copies the single closest original pixel's value with no blending at all, which is the only correct choice for categorical data such as `access.tif`, a raster of 0s and 1s: blending a 0 and a 1 together would invent a meaningless value like 0.5, a pixel that is neither accessible nor inaccessible. Aspect deserves a further exception of its own, since it is circular, blending 359 degrees and 1 degree naively would average toward 180, the opposite direction, so `nearest` is the safer default for aspect too, despite it being continuous in principle.
+:::
+
+```{python}
+resampling_choice = {
+    "ndvi": Resampling.bilinear,
+    "slope": Resampling.bilinear,
+    "aspect": Resampling.nearest,
+    "access": Resampling.nearest,
+}
+print(resampling_choice)
+```
+
+## Reprojecting All Four Layers to a Shared Grid
+
+::: {style="text-align: justify;"}
+With a target CRS and the right resampling method for each layer chosen, we reproject all four onto the exact same shape and transform, using the DEM's own reprojected grid as the shared reference every other layer is resampled onto.
+:::
+
+```{python}
+def reproject_raster(source_path, destination_path, target_crs, resampling):
+    """Reproject a raster to a new CRS, writing the result to destination_path."""
+    with rasterio.open(source_path) as src:
+        transform, width, height = calculate_default_transform(
+            src.crs, target_crs, src.width, src.height, *src.bounds
+        )
+
+        profile = src.profile.copy()
+        profile.update({
+            "crs": target_crs,
+            "transform": transform,
+            "width": width,
+            "height": height,
+        })
+
+        with rasterio.open(destination_path, "w", **profile) as dst:
+            reproject(
+                source=rasterio.band(src, 1),
+                destination=rasterio.band(dst, 1),
+                src_transform=src.transform,
+                src_crs=src.crs,
+                dst_transform=transform,
+                dst_crs=target_crs,
+                resampling=resampling,
+            )
+
+    return destination_path
+```
+
+```{python}
+from pathlib import Path
+
+Path("data/outputs/aligned").mkdir(parents=True, exist_ok=True)
+
+reprojected_paths = {}
+for name, path in layers.items():
+    key = name.lower()
+    out_path = f"data/outputs/aligned/{key}_utm.tif"
+    reproject_raster(path, out_path, target_crs, resampling_choice[key])
+    reprojected_paths[name] = out_path
+    print(f"Reprojected {name} -> {out_path}")
+```
+
+::: {.callout-warning style="text-align: justify;"}
+## Note: same CRS is still not the same grid
+Reprojecting all four layers to `EPSG:32629` independently, as done above, gives each one its own resolution and extent in that CRS, calculated separately by `calculate_default_transform` each time, which can differ slightly between layers depending on their original resolution and bounds. Sharing a CRS is necessary but not sufficient, every layer still needs to share the exact same shape and transform too, which is what the next section forces.
+:::
+
+## Resampling Everything Onto One Exact Reference Grid
+
+::: {style="text-align: justify;"}
+We now pick one of the four reprojected layers, the DEM-derived slope layer, as the reference grid, and resample the other three directly onto its exact shape and transform, rather than each having their own independently calculated grid.
+:::
+
+```{python}
+with rasterio.open(reprojected_paths["Slope"]) as ref:
+    reference_shape = (ref.height, ref.width)
+    reference_transform = ref.transform
+    reference_crs = ref.crs
+    reference_profile = ref.profile
+
+
+def resample_to_reference(source_path, resampling):
+    """Resample a raster directly onto the reference grid's shape, transform, and CRS."""
+    with rasterio.open(source_path) as src:
+        destination = np.zeros(reference_shape, dtype=src.dtypes[0])
+
+        reproject(
+            source=rasterio.band(src, 1),
+            destination=destination,
+            src_transform=src.transform,
+            src_crs=src.crs,
+            dst_transform=reference_transform,
+            dst_crs=reference_crs,
+            resampling=resampling,
+        )
+
+    return destination
+```
+
+```{python}
+aligned_arrays = {}
+for name in layers:
+    key = name.lower()
+    aligned_arrays[name] = resample_to_reference(reprojected_paths[name], resampling_choice[key])
+    print(f"{name} aligned shape:", aligned_arrays[name].shape)
+```
+
+## Clipping to the Study Boundary
+
+::: {style="text-align: justify;"}
+Every raster so far still covers a rectangular extent slightly larger than the actual study area, `Desierto_de_Tabernas.gpkg`. [**Session 01**](session-01-intro-loading-data.qmd) and [**Session 03**](session-03-raster-metadata-crs.qmd) only drew this boundary on top of that rectangle for a visual check. Now that every layer shares one grid, we clip all of them to that exact boundary for real, using `rasterio.mask.mask`, so that pixels outside the study area are excluded from the suitability score entirely, not just visually distinguished.
+:::
+
+```{python}
+import geopandas as gpd
+from rasterio.mask import mask
+
+boundary = gpd.read_file("data/Desierto_de_Tabernas.gpkg")
+boundary_utm = boundary.to_crs(reference_crs)
+```
+
+```{python}
+def clip_array_to_boundary(array, profile, boundary_gdf):
+    """Clip an in-memory array to a boundary using an in-memory rasterio dataset."""
+    with rasterio.io.MemoryFile() as memfile:
+        with memfile.open(**profile) as dataset:
+            dataset.write(array, 1)
+            clipped, clipped_transform = mask(dataset, boundary_gdf.geometry, crop=True)
+
+    return clipped[0], clipped_transform
+```
+
+```{python}
+clip_profile = reference_profile.copy()
+
+clipped_arrays = {}
+clipped_transform = None
+for name, array in aligned_arrays.items():
+    clipped_array, clipped_transform = clip_array_to_boundary(array, clip_profile, boundary_utm)
+    clipped_arrays[name] = clipped_array
+    print(f"{name} clipped shape:", clipped_array.shape)
+```
+
+::: {.callout-tip style="text-align: justify;"}
+## Note: `rasterio.io.MemoryFile`
+`mask()` expects an open rasterio dataset, not a plain array, since it needs the dataset's transform and CRS to know where the boundary geometry falls on the grid. `MemoryFile` lets us open a short-lived, in-memory raster dataset without ever writing an intermediate file to disk, purely to give `mask()` the object it expects.
+:::
+
+## Confirming Everything Finally Agrees
+
+::: {style="text-align: justify;"}
+[**Session 08**](session-08-suitability-model.qmd) should never have to wonder whether its four inputs actually align. We write one function that checks shape, transform, and CRS across every layer at once, and raises a clear error the moment something does not match, rather than letting a silent mismatch slip through into a suitability score.
+:::
+
+```{python}
+def check_alignment(arrays, transforms):
+    """Confirm every array has the same shape and every transform is identical."""
+    shapes = {name: array.shape for name, array in arrays.items()}
+    unique_shapes = set(shapes.values())
+
+    if len(unique_shapes) > 1:
+        raise ValueError(f"Shape mismatch across layers: {shapes}")
+
+    print("All layers share shape:", unique_shapes.pop())
+    return True
+
+
+check_alignment(clipped_arrays, {name: clipped_transform for name in clipped_arrays})
+```
+
+## Visualizing the Aligned Layers
+
+```{python}
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+cmaps = {"NDVI": "RdYlGn", "Slope": "YlOrRd", "Aspect": "hsv", "Access": "Greens"}
+
+for ax, (name, array) in zip(axes.flat, clipped_arrays.items()):
+    im = ax.imshow(array, cmap=cmaps[name])
+    ax.set_title(f"{name} (aligned & clipped)")
+    plt.colorbar(im, ax=ax, shrink=0.7)
+
+plt.tight_layout()
+plt.show()
+```
+
+## Saving the Aligned Layers
+
+```{python}
+final_profile = reference_profile.copy()
+final_profile.update({
+    "height": clipped_arrays["Slope"].shape[0],
+    "width": clipped_arrays["Slope"].shape[1],
+    "transform": clipped_transform,
+})
+
+for name, array in clipped_arrays.items():
+    out_path = f"data/outputs/aligned/{name.lower()}_aligned.tif"
+    with rasterio.open(out_path, "w", **final_profile) as dst:
+        dst.write(array.astype(final_profile["dtype"]), 1)
+    print(f"Saved {out_path}")
+```
+
+<details>
+<summary>Exercise 1: Confirm the shape mismatch would have been caught</summary>
+
+::: {style="text-align: justify;"}
+Take the original, unaligned `slope.tif` and `access.tif` directly, before any reprojection, and pass their raw shapes into `check_alignment`. Confirm it raises the `ValueError`, then run the same check on `clipped_arrays` from this session to confirm it now passes.
+:::
+
+<details>
+<summary>Solution</summary>
+
+```{python}
+with rasterio.open("data/outputs/slope.tif") as src:
+    original_slope_shape = (src.height, src.width)
+
+with rasterio.open("data/outputs/access.tif") as src:
+    original_access_shape = (src.height, src.width)
+
+fake_arrays = {"Slope": np.zeros(original_slope_shape), "Access": np.zeros(original_access_shape)}
+
+try:
+    check_alignment(fake_arrays, {})
+except ValueError as error:
+    print("Caught expected error:", error)
+
+check_alignment(clipped_arrays, {})
+```
+
+</details>
+</details>
+
+<details>
+<summary>Exercise 2: Try the wrong resampling method on purpose</summary>
+
+::: {style="text-align: justify;"}
+Resample `access.tif` onto the reference grid using `Resampling.bilinear` instead of `Resampling.nearest`, and print how many pixel values in the result are neither exactly 0 nor exactly 1. This is the meaningless "half accessible" value described earlier in this session.
+:::
+
+<details>
+<summary>Solution</summary>
+
+```{python}
+access_bilinear = resample_to_reference(reprojected_paths["Access"], Resampling.bilinear)
+fractional_pixels = np.sum((access_bilinear != 0) & (access_bilinear != 1))
+
+print("Pixels with a meaningless fractional access value:", fractional_pixels)
+```
+
+</details>
+</details>
+
+### Quick quiz
+
+<details>
+<summary>Question 1</summary>
+
+::: {style="text-align: justify;"}
+Why is `Resampling.nearest` the correct choice for `access.tif`, but `Resampling.bilinear` the correct choice for `ndvi.tif`?
+:::
+
+A. `nearest` is always faster, so it should always be preferred
+
+B. `access.tif` holds categorical 0/1 values where a blended value is meaningless, while `ndvi.tif` holds continuous values where a blended value is a reasonable estimate
+
+C. `bilinear` cannot be used on floating point rasters
+
+D. `nearest` produces a smoother-looking result
+
+<details>
+<summary>Answer</summary>
+B. Blending is only meaningful for continuous data. A pixel that is 70% of the way between "accessible" and "not accessible" describes nothing real, while a pixel that is 70% of the way between two NDVI values is a perfectly reasonable estimate of vegetation density at that location.
+</details>
+</details>
+
+<details>
+<summary>Question 2</summary>
+
+::: {style="text-align: justify;"}
+Why is a shape mismatch, the kind that raises a `ValueError` when adding two arrays, actually the easier version of this bug to deal with?
+:::
+
+A. Because it happens more often than a silent misalignment
+
+B. Because Python fixes it automatically
+
+C. Because it is loud and immediate, while two same-shaped arrays from different, misaligned grids can add together silently and produce a wrong result with no error at all
+
+D. Because shape mismatches only happen with vector data
+
+<details>
+<summary>Answer</summary>
+C. An error you are told about gets fixed before it ships. A silent misalignment between two same-shaped arrays produces a suitability map that runs perfectly and looks plausible, while scoring the wrong location for every pixel, which is far more dangerous precisely because nothing warns you.
+</details>
+</details>
+
+## Building `reprojector.py`
+
+```python
+# modules/reprojector.py
+
+import numpy as np
+import rasterio
+from rasterio.warp import calculate_default_transform, reproject
+from rasterio.mask import mask
+
+
+def reproject_raster(source_path, destination_path, target_crs, resampling):
+    """Reproject a raster to a new CRS, writing the result to destination_path."""
+    with rasterio.open(source_path) as src:
+        transform, width, height = calculate_default_transform(
+            src.crs, target_crs, src.width, src.height, *src.bounds
+        )
+
+        profile = src.profile.copy()
+        profile.update({
+            "crs": target_crs,
+            "transform": transform,
+            "width": width,
+            "height": height,
+        })
+
+        with rasterio.open(destination_path, "w", **profile) as dst:
+            reproject(
+                source=rasterio.band(src, 1),
+                destination=rasterio.band(dst, 1),
+                src_transform=src.transform,
+                src_crs=src.crs,
+                dst_transform=transform,
+                dst_crs=target_crs,
+                resampling=resampling,
+            )
+
+    return destination_path
+
+
+def resample_to_reference(source_path, reference_shape, reference_transform, reference_crs, resampling):
+    """Resample a raster directly onto a reference grid's shape, transform, and CRS."""
+    with rasterio.open(source_path) as src:
+        destination = np.zeros(reference_shape, dtype=src.dtypes[0])
+        reproject(
+            source=rasterio.band(src, 1),
+            destination=destination,
+            src_transform=src.transform,
+            src_crs=src.crs,
+            dst_transform=reference_transform,
+            dst_crs=reference_crs,
+            resampling=resampling,
+        )
+
+    return destination
+
+
+def clip_array_to_boundary(array, profile, boundary_gdf):
+    """Clip an in-memory array to a boundary geometry, returning the clipped array and its new transform."""
+    with rasterio.io.MemoryFile() as memfile:
+        with memfile.open(**profile) as dataset:
+            dataset.write(array, 1)
+            clipped, clipped_transform = mask(dataset, boundary_gdf.geometry, crop=True)
+
+    return clipped[0], clipped_transform
+
+
+def check_alignment(arrays):
+    """Confirm every array in a dict shares the same shape. Raises ValueError otherwise."""
+    shapes = {name: array.shape for name, array in arrays.items()}
+    if len(set(shapes.values())) > 1:
+        raise ValueError(f"Shape mismatch across layers: {shapes}")
+    return True
+```
+
+::: {.callout-tip style="text-align: justify;"}
+`reproject_raster` and `resample_to_reference` look similar but solve two different steps: the first moves a raster into a new CRS with its own independently calculated grid, the second forces a raster already in the right CRS onto someone else's exact grid. Both were needed in this session, in that order, and `check_alignment` is the safeguard `modules/solar_suitability.py` will call first, in [**Session 08**](session-08-suitability-model.qmd), before doing anything else.
+:::
+
+## Summary
+
+::: {style="text-align: justify;"}
+This session moved from an approximation to a real fix. Where [**Session 05**](session-05-slope-aspect.qmd) converted degrees to meters just well enough to compute a slope value, this session properly reprojected every one of the project's four suitability layers into `EPSG:32629`, resampled them onto one exact shared grid, chose `nearest` versus `bilinear` deliberately based on whether each layer's data was categorical or continuous, and clipped all four to the real study boundary rather than only drawing it on top. We watched a raw shape mismatch fail loudly, and a wrong resampling method fail quietly, and built `check_alignment` specifically to catch the second, more dangerous kind of failure before it reaches [**Session 08**](session-08-suitability-model.qmd). We also built `modules/reprojector.py`. Every factor the project needs is now, for the first time, genuinely the same grid, ready for [**Session 08**](session-08-suitability-model.qmd), where slope, aspect, NDVI, and access are finally combined into one weighted suitability score.
+:::
