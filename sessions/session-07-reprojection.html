@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>session-07-reprojection – Spatial Python</title>
+<title>session 07: resampling, reprojection, and alignment – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -256,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-07-reprojection.html"><span class="chapter-title">session-07-reprojection.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-07-reprojection.html"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -344,17 +380,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-06-buffers-distance.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-06-buffers-distance.html</span></a>
+  <a href="../sessions/session-06-buffers-distance.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 06: vector spatial analysis, buffer and access</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-07-reprojection.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session-07-reprojection.html</span></a>
+  <a href="../sessions/session-07-reprojection.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-08-suitability-model.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-08-suitability-model.html</span></a>
+  <a href="../sessions/session-08-suitability-model.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 08: weighted overlay and the suitability model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -395,18 +431,659 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#checking-where-things-actually-stand" id="toc-checking-where-things-actually-stand" class="nav-link" data-scroll-target="#checking-where-things-actually-stand">Checking Where Things Actually Stand</a></li>
+  <li><a href="#watching-the-mismatch-actually-break-something" id="toc-watching-the-mismatch-actually-break-something" class="nav-link" data-scroll-target="#watching-the-mismatch-actually-break-something">Watching the Mismatch Actually Break Something</a></li>
+  <li><a href="#real-reprojection-with-rasterio.warp" id="toc-real-reprojection-with-rasterio.warp" class="nav-link" data-scroll-target="#real-reprojection-with-rasterio.warp">Real Reprojection with <code>rasterio.warp</code></a></li>
+  <li><a href="#choosing-a-resampling-method" id="toc-choosing-a-resampling-method" class="nav-link" data-scroll-target="#choosing-a-resampling-method">Choosing a Resampling Method</a></li>
+  <li><a href="#reprojecting-all-four-layers-to-a-shared-grid" id="toc-reprojecting-all-four-layers-to-a-shared-grid" class="nav-link" data-scroll-target="#reprojecting-all-four-layers-to-a-shared-grid">Reprojecting All Four Layers to a Shared Grid</a></li>
+  <li><a href="#resampling-everything-onto-one-exact-reference-grid" id="toc-resampling-everything-onto-one-exact-reference-grid" class="nav-link" data-scroll-target="#resampling-everything-onto-one-exact-reference-grid">Resampling Everything Onto One Exact Reference Grid</a></li>
+  <li><a href="#clipping-to-the-study-boundary" id="toc-clipping-to-the-study-boundary" class="nav-link" data-scroll-target="#clipping-to-the-study-boundary">Clipping to the Study Boundary</a></li>
+  <li><a href="#confirming-everything-finally-agrees" id="toc-confirming-everything-finally-agrees" class="nav-link" data-scroll-target="#confirming-everything-finally-agrees">Confirming Everything Finally Agrees</a></li>
+  <li><a href="#visualizing-the-aligned-layers" id="toc-visualizing-the-aligned-layers" class="nav-link" data-scroll-target="#visualizing-the-aligned-layers">Visualizing the Aligned Layers</a></li>
+  <li><a href="#saving-the-aligned-layers" id="toc-saving-the-aligned-layers" class="nav-link" data-scroll-target="#saving-the-aligned-layers">Saving the Aligned Layers</a>
+  <ul class="collapse">
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#building-reprojector.py" id="toc-building-reprojector.py" class="nav-link" data-scroll-target="#building-reprojector.py">Building <code>reprojector.py</code></a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-07-reprojection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-07-reprojection.html"><span class="chapter-title">session-07-reprojection.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-07-reprojection.html"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></h1>
+<p class="subtitle lead">Forcing four independent layers onto one shared grid</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div style="text-align: justify;">
+<p>Four suitability factors now exist on disk: <code>ndvi.tif</code> from <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, <code>slope.tif</code> and <code>aspect.tif</code> from <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>, and <code>access.tif</code> from <a href="../sessions/session-06-buffers-distance.html"><strong>Session 06</strong></a>. Every one of them was built correctly for the question it was answering at the time, but none of them were built with each other in mind, and that catches up with us now. <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a> needs to combine these four layers pixel by pixel into a single suitability score, and that operation only makes sense if pixel <code>[120, 340]</code> in every one of the four arrays refers to the exact same square meter of ground. Right now, it does not.</p>
+</div>
+<div style="text-align: justify;">
+<p>This is the session several earlier notes have been pointing toward without fully resolving: the approximate degree-to-meter conversion in <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>, the reprojection deferred at the end of <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a>, <a href="../sessions/session-02-vector-data.html"><strong>02</strong></a>, and <a href="../sessions/session-03-raster-metadata-crs.html"><strong>03</strong></a>, and the CRS mismatches we kept fixing one pair at a time. This time we fix it properly, for all four layers at once, with a real reprojection rather than an approximation.</p>
+</div>
+</section>
+<section id="checking-where-things-actually-stand" class="level2">
+<h2 class="anchored" data-anchor-id="checking-where-things-actually-stand">Checking Where Things Actually Stand</h2>
+<div style="text-align: justify;">
+<p>Before writing any fix, it is worth seeing the actual scale of the mismatch. We reuse <code>get_raster_info</code> from <code>modules/raster_utils.py</code>, built in <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>, to inspect all four factor layers at once.</p>
+</div>
+<div id="83591b61" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sys.path.append(<span class="st">"modules"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> raster_utils <span class="im">import</span> get_raster_info</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NDVI"</span>: <span class="st">"data/outputs/ndvi.tif"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Slope"</span>: <span class="st">"data/outputs/slope.tif"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Aspect"</span>: <span class="st">"data/outputs/aspect.tif"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Access"</span>: <span class="st">"data/outputs/access.tif"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>info <span class="op">=</span> {}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, path <span class="kw">in</span> layers.items():</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    info[name] <span class="op">=</span> get_raster_info(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>data/outputs/ndvi.tif: 1829x1814, 1 band(s), CRS 4326
+data/outputs/slope.tif: 610x605, 1 band(s), CRS 4326
+data/outputs/aspect.tif: 610x605, 1 band(s), CRS 4326
+data/outputs/access.tif: 610x605, 1 band(s), CRS 4326</code></pre>
+</div>
+</div>
+<div id="65cff612" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, meta <span class="kw">in</span> info.items():</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: shape=(</span><span class="sc">{</span>meta[<span class="st">'height'</span>]<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>meta[<span class="st">'width'</span>]<span class="sc">}</span><span class="ss">), CRS=</span><span class="sc">{</span>meta[<span class="st">'crs'</span>]<span class="sc">.</span>to_epsg()<span class="sc">}</span><span class="ss">, resolution=</span><span class="sc">{</span>meta[<span class="st">'transform'</span>]<span class="sc">.</span>a<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NDVI: shape=(1814, 1829), CRS=4326, resolution=8.983152841195215e-05
+Slope: shape=(605, 610), CRS=4326, resolution=0.00026949458523585647
+Aspect: shape=(605, 610), CRS=4326, resolution=0.00026949458523585647
+Access: shape=(605, 610), CRS=4326, resolution=0.00026949458523585647</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: they should all look almost identical, and they do not
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>ndvi.tif</code> and <code>access.tif</code> were both written directly from <code>sentinel.tif</code>’s or <code>dem.tif</code>’s own profile, in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a> and <a href="../sessions/session-06-buffers-distance.html"><strong>Session 06</strong></a>, so their shape and CRS should already match the DEM. <code>slope.tif</code> and <code>aspect.tif</code>, from <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>, share that same shape and CRS too, since they were written from the DEM’s own profile as well. What differs, and what this session actually fixes, is not that these four files disagree with each other yet, it is that all four still sit in <code>EPSG:4326</code>, a geographic CRS, which we now deliberately move away from, onto a real projected grid, before <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a> needs to measure anything or combine anything at a fixed pixel size in meters.</p>
+</div>
+</div>
+</section>
+<section id="watching-the-mismatch-actually-break-something" class="level2">
+<h2 class="anchored" data-anchor-id="watching-the-mismatch-actually-break-something">Watching the Mismatch Actually Break Something</h2>
+<div style="text-align: justify;">
+<p>It is easy to accept, in the abstract, that pixel alignment matters. It is much more convincing to watch it fail. Suppose we tried to combine two layers, still in their original form, by simple NumPy addition, exactly the kind of operation <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a> will eventually perform for real.</p>
+</div>
+<div id="995d5af7" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/slope.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    slope <span class="op">=</span> src.read(<span class="dv">1</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    slope_transform <span class="op">=</span> src.transform</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/dem.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    dem <span class="op">=</span> src.read(<span class="dv">1</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    dem_transform <span class="op">=</span> src.transform</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Slope shape:"</span>, slope.shape, <span class="st">"Slope transform:"</span>, slope_transform)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"DEM shape:"</span>, dem.shape, <span class="st">"DEM transform:"</span>, dem_transform)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Slope shape: (605, 610) Slope transform: | 0.00, 0.00,-2.59|
+| 0.00,-0.00, 37.15|
+| 0.00, 0.00, 1.00|
+DEM shape: (605, 610) DEM transform: | 0.00, 0.00,-2.59|
+| 0.00,-0.00, 37.15|
+| 0.00, 0.00, 1.00|</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>Now suppose the DEM had instead been resampled to a different resolution at some point, by a teammate, a different tool, or an earlier version of this project, something that will genuinely happen over the life of a real project. To see the actual failure mode, we deliberately resample a copy of the DEM to a coarser grid and try to add it to <code>slope</code>.</p>
+</div>
+<div id="a2b52492" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mismatched_dem <span class="op">=</span> dem[::<span class="dv">2</span>, ::<span class="dv">2</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mismatched DEM shape:"</span>, mismatched_dem.shape)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    combined <span class="op">=</span> slope <span class="op">+</span> mismatched_dem</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> error:</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"ValueError:"</span>, error)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mismatched DEM shape: (303, 305)
+ValueError: operands could not be broadcast together with shapes (605,610) (303,305) </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: this is the exact error a mismatched suitability project produces
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>NumPy has no concept of a CRS or a transform. It only sees two arrays of a different shape and refuses to add them, which is the loud, easy-to-notice failure. The dangerous version of this bug is quieter: two arrays of the <em>same</em> shape, from two different grids, add together without any error at all, producing a suitability map that runs without complaint but scores the wrong location for every single pixel. A shape mismatch is a bug you are told about. A silent misalignment is a bug you have to go looking for, which is exactly why this session exists before <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>, not after something goes wrong inside it.</p>
+</div>
+</div>
+</section>
+<section id="real-reprojection-with-rasterio.warp" class="level2">
+<h2 class="anchored" data-anchor-id="real-reprojection-with-rasterio.warp">Real Reprojection with <code>rasterio.warp</code></h2>
+<div style="text-align: justify;">
+<p><a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a> converted the DEM’s pixel size from degrees to an approximate meters value, explicitly flagged at the time as a shortcut that only worked because we only needed a single resolution number, not a fully resampled raster. Reprojecting a raster for real means resampling every pixel onto a brand new grid, defined in a new CRS, which is a fundamentally different operation from adjusting two numbers. <code>rasterio.warp.calculate_default_transform</code> works out what that new grid should look like, and <code>rasterio.warp.reproject</code> actually resamples the data onto it.</p>
+</div>
+<div id="cf4ff4fe" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.warp <span class="im">import</span> calculate_default_transform, reproject, Resampling</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>target_crs <span class="op">=</span> <span class="st">"EPSG:32629"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/dem.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    new_transform, new_width, new_height <span class="op">=</span> calculate_default_transform(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        src.crs, target_crs, src.width, src.height, <span class="op">*</span>src.bounds</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"New shape:"</span>, new_height, new_width)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"New transform:"</span>, new_transform)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>New shape: 704 584
+New transform: | 27.18, 0.00, 1069772.37|
+| 0.00,-27.18, 4131740.26|
+| 0.00, 0.00, 1.00|</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p><code>calculate_default_transform</code> does not move any pixel values yet, it only works out the shape and transform the new, projected version of this raster should have, so that its resolution in meters is comparable to the original resolution in degrees. <code>reproject</code> is the function that actually resamples the pixel values onto that new grid.</p>
+</div>
+</section>
+<section id="choosing-a-resampling-method" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-a-resampling-method">Choosing a Resampling Method</h2>
+<div style="text-align: justify;">
+<p>Reprojecting always means resampling, since the new grid’s pixels almost never line up exactly with the old grid’s pixels, so a value for each new pixel has to be estimated from the pixels around it in the original. <code>rasterio.warp.Resampling</code> offers several strategies, and the right one depends on what kind of data is being resampled, not personal preference.</p>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: matching the method to the data
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>Resampling.bilinear</code> or <code>Resampling.cubic</code> blend neighboring pixel values together, which is correct for continuous data such as <code>slope.tif</code>, <code>aspect.tif</code>, or <code>ndvi.tif</code>, where a value halfway between two pixels really is meaningfully between them. <code>Resampling.nearest</code> instead copies the single closest original pixel’s value with no blending at all, which is the only correct choice for categorical data such as <code>access.tif</code>, a raster of 0s and 1s: blending a 0 and a 1 together would invent a meaningless value like 0.5, a pixel that is neither accessible nor inaccessible. Aspect deserves a further exception of its own, since it is circular, blending 359 degrees and 1 degree naively would average toward 180, the opposite direction, so <code>nearest</code> is the safer default for aspect too, despite it being continuous in principle.</p>
+</div>
+</div>
+<div id="9a3bbf72" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>resampling_choice <span class="op">=</span> {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ndvi"</span>: Resampling.bilinear,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slope"</span>: Resampling.bilinear,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"aspect"</span>: Resampling.nearest,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"access"</span>: Resampling.nearest,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resampling_choice)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'ndvi': &lt;Resampling.bilinear: 1&gt;, 'slope': &lt;Resampling.bilinear: 1&gt;, 'aspect': &lt;Resampling.nearest: 0&gt;, 'access': &lt;Resampling.nearest: 0&gt;}</code></pre>
+</div>
+</div>
+</section>
+<section id="reprojecting-all-four-layers-to-a-shared-grid" class="level2">
+<h2 class="anchored" data-anchor-id="reprojecting-all-four-layers-to-a-shared-grid">Reprojecting All Four Layers to a Shared Grid</h2>
+<div style="text-align: justify;">
+<p>With a target CRS and the right resampling method for each layer chosen, we reproject all four onto the exact same shape and transform, using the DEM’s own reprojected grid as the shared reference every other layer is resampled onto.</p>
+</div>
+<div id="9bec2e0e" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reproject_raster(source_path, destination_path, target_crs, resampling):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Reproject a raster to a new CRS, writing the result to destination_path."""</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(source_path) <span class="im">as</span> src:</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        transform, width, height <span class="op">=</span> calculate_default_transform(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            src.crs, target_crs, src.width, src.height, <span class="op">*</span>src.bounds</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        profile <span class="op">=</span> src.profile.copy()</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        profile.update({</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"crs"</span>: target_crs,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"transform"</span>: transform,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"width"</span>: width,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"height"</span>: height,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> rasterio.<span class="bu">open</span>(destination_path, <span class="st">"w"</span>, <span class="op">**</span>profile) <span class="im">as</span> dst:</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>            reproject(</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>                source<span class="op">=</span>rasterio.band(src, <span class="dv">1</span>),</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>                destination<span class="op">=</span>rasterio.band(dst, <span class="dv">1</span>),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>                src_transform<span class="op">=</span>src.transform,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>                src_crs<span class="op">=</span>src.crs,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                dst_transform<span class="op">=</span>transform,</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>                dst_crs<span class="op">=</span>target_crs,</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>                resampling<span class="op">=</span>resampling,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> destination_path</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="bc227065" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs/aligned"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>reprojected_paths <span class="op">=</span> {}</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, path <span class="kw">in</span> layers.items():</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    key <span class="op">=</span> name.lower()</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    out_path <span class="op">=</span> <span class="ss">f"data/outputs/aligned/</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">_utm.tif"</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    reproject_raster(path, out_path, target_crs, resampling_choice[key])</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    reprojected_paths[name] <span class="op">=</span> out_path</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Reprojected </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> -&gt; </span><span class="sc">{</span>out_path<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reprojected NDVI -&gt; data/outputs/aligned/ndvi_utm.tif
+Reprojected Slope -&gt; data/outputs/aligned/slope_utm.tif
+Reprojected Aspect -&gt; data/outputs/aligned/aspect_utm.tif
+Reprojected Access -&gt; data/outputs/aligned/access_utm.tif</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: same CRS is still not the same grid
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Reprojecting all four layers to <code>EPSG:32629</code> independently, as done above, gives each one its own resolution and extent in that CRS, calculated separately by <code>calculate_default_transform</code> each time, which can differ slightly between layers depending on their original resolution and bounds. Sharing a CRS is necessary but not sufficient, every layer still needs to share the exact same shape and transform too, which is what the next section forces.</p>
+</div>
+</div>
+</section>
+<section id="resampling-everything-onto-one-exact-reference-grid" class="level2">
+<h2 class="anchored" data-anchor-id="resampling-everything-onto-one-exact-reference-grid">Resampling Everything Onto One Exact Reference Grid</h2>
+<div style="text-align: justify;">
+<p>We now pick one of the four reprojected layers, the DEM-derived slope layer, as the reference grid, and resample the other three directly onto its exact shape and transform, rather than each having their own independently calculated grid.</p>
+</div>
+<div id="ec4bf913" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(reprojected_paths[<span class="st">"Slope"</span>]) <span class="im">as</span> ref:</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    reference_shape <span class="op">=</span> (ref.height, ref.width)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    reference_transform <span class="op">=</span> ref.transform</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    reference_crs <span class="op">=</span> ref.crs</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    reference_profile <span class="op">=</span> ref.profile</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resample_to_reference(source_path, resampling):</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Resample a raster directly onto the reference grid's shape, transform, and CRS."""</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(source_path) <span class="im">as</span> src:</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        destination <span class="op">=</span> np.zeros(reference_shape, dtype<span class="op">=</span>src.dtypes[<span class="dv">0</span>])</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        reproject(</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>            source<span class="op">=</span>rasterio.band(src, <span class="dv">1</span>),</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>            destination<span class="op">=</span>destination,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>            src_transform<span class="op">=</span>src.transform,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>            src_crs<span class="op">=</span>src.crs,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>            dst_transform<span class="op">=</span>reference_transform,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>            dst_crs<span class="op">=</span>reference_crs,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>            resampling<span class="op">=</span>resampling,</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> destination</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="5c4024d3" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>aligned_arrays <span class="op">=</span> {}</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> layers:</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    key <span class="op">=</span> name.lower()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    aligned_arrays[name] <span class="op">=</span> resample_to_reference(reprojected_paths[name], resampling_choice[key])</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> aligned shape:"</span>, aligned_arrays[name].shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NDVI aligned shape: (704, 584)
+Slope aligned shape: (704, 584)
+Aspect aligned shape: (704, 584)
+Access aligned shape: (704, 584)</code></pre>
+</div>
+</div>
+</section>
+<section id="clipping-to-the-study-boundary" class="level2">
+<h2 class="anchored" data-anchor-id="clipping-to-the-study-boundary">Clipping to the Study Boundary</h2>
+<div style="text-align: justify;">
+<p>Every raster so far still covers a rectangular extent slightly larger than the actual study area, <code>Desierto_de_Tabernas.gpkg</code>. <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a> and <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a> only drew this boundary on top of that rectangle for a visual check. Now that every layer shares one grid, we clip all of them to that exact boundary for real, using <code>rasterio.mask.mask</code>, so that pixels outside the study area are excluded from the suitability score entirely, not just visually distinguished.</p>
+</div>
+<div id="8ee7d061" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.mask <span class="im">import</span> mask</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>boundary <span class="op">=</span> gpd.read_file(<span class="st">"data/Desierto_de_Tabernas.gpkg"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>boundary_utm <span class="op">=</span> boundary.to_crs(reference_crs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="fef899d3" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clip_array_to_boundary(array, profile, boundary_gdf):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Clip an in-memory array to a boundary using an in-memory rasterio dataset."""</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.io.MemoryFile() <span class="im">as</span> memfile:</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> memfile.<span class="bu">open</span>(<span class="op">**</span>profile) <span class="im">as</span> dataset:</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>            dataset.write(array, <span class="dv">1</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>            clipped, clipped_transform <span class="op">=</span> mask(dataset, boundary_gdf.geometry, crop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> clipped[<span class="dv">0</span>], clipped_transform</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="73d4ae9c" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>clip_profile <span class="op">=</span> reference_profile.copy()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>clipped_arrays <span class="op">=</span> {}</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>clipped_transform <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, array <span class="kw">in</span> aligned_arrays.items():</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    clipped_array, clipped_transform <span class="op">=</span> clip_array_to_boundary(array, clip_profile, boundary_utm)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    clipped_arrays[name] <span class="op">=</span> clipped_array</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> clipped shape:"</span>, clipped_array.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NDVI clipped shape: (662, 554)
+Slope clipped shape: (662, 554)
+Aspect clipped shape: (662, 554)
+Access clipped shape: (662, 554)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: <code>rasterio.io.MemoryFile</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>mask()</code> expects an open rasterio dataset, not a plain array, since it needs the dataset’s transform and CRS to know where the boundary geometry falls on the grid. <code>MemoryFile</code> lets us open a short-lived, in-memory raster dataset without ever writing an intermediate file to disk, purely to give <code>mask()</code> the object it expects.</p>
+</div>
+</div>
+</section>
+<section id="confirming-everything-finally-agrees" class="level2">
+<h2 class="anchored" data-anchor-id="confirming-everything-finally-agrees">Confirming Everything Finally Agrees</h2>
+<div style="text-align: justify;">
+<p><a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a> should never have to wonder whether its four inputs actually align. We write one function that checks shape, transform, and CRS across every layer at once, and raises a clear error the moment something does not match, rather than letting a silent mismatch slip through into a suitability score.</p>
+</div>
+<div id="f4c1cbd1" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_alignment(arrays, transforms):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Confirm every array has the same shape and every transform is identical."""</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    shapes <span class="op">=</span> {name: array.shape <span class="cf">for</span> name, array <span class="kw">in</span> arrays.items()}</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    unique_shapes <span class="op">=</span> <span class="bu">set</span>(shapes.values())</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(unique_shapes) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Shape mismatch across layers: </span><span class="sc">{</span>shapes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"All layers share shape:"</span>, unique_shapes.pop())</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>check_alignment(clipped_arrays, {name: clipped_transform <span class="cf">for</span> name <span class="kw">in</span> clipped_arrays})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>All layers share shape: (662, 554)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>True</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-aligned-layers" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-aligned-layers">Visualizing the Aligned Layers</h2>
+<div id="d5c57add" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>cmaps <span class="op">=</span> {<span class="st">"NDVI"</span>: <span class="st">"RdYlGn"</span>, <span class="st">"Slope"</span>: <span class="st">"YlOrRd"</span>, <span class="st">"Aspect"</span>: <span class="st">"hsv"</span>, <span class="st">"Access"</span>: <span class="st">"Greens"</span>}</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, array) <span class="kw">in</span> <span class="bu">zip</span>(axes.flat, clipped_arrays.items()):</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> ax.imshow(array, cmap<span class="op">=</span>cmaps[name])</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (aligned &amp; clipped)"</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    plt.colorbar(im, ax<span class="op">=</span>ax, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-07-reprojection_files/figure-html/cell-16-output-1.png" width="1033" height="950" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="saving-the-aligned-layers" class="level2">
+<h2 class="anchored" data-anchor-id="saving-the-aligned-layers">Saving the Aligned Layers</h2>
+<div id="3f582e10" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>final_profile <span class="op">=</span> reference_profile.copy()</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>final_profile.update({</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"height"</span>: clipped_arrays[<span class="st">"Slope"</span>].shape[<span class="dv">0</span>],</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"width"</span>: clipped_arrays[<span class="st">"Slope"</span>].shape[<span class="dv">1</span>],</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"transform"</span>: clipped_transform,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, array <span class="kw">in</span> clipped_arrays.items():</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    out_path <span class="op">=</span> <span class="ss">f"data/outputs/aligned/</span><span class="sc">{</span>name<span class="sc">.</span>lower()<span class="sc">}</span><span class="ss">_aligned.tif"</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(out_path, <span class="st">"w"</span>, <span class="op">**</span>final_profile) <span class="im">as</span> dst:</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>        dst.write(array.astype(final_profile[<span class="st">"dtype"</span>]), <span class="dv">1</span>)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Saved </span><span class="sc">{</span>out_path<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved data/outputs/aligned/ndvi_aligned.tif
+Saved data/outputs/aligned/slope_aligned.tif
+Saved data/outputs/aligned/aspect_aligned.tif
+Saved data/outputs/aligned/access_aligned.tif</code></pre>
+</div>
+</div>
+<details>
+<summary>
+Exercise 1: Confirm the shape mismatch would have been caught
+</summary>
+<div style="text-align: justify;">
+<p>Take the original, unaligned <code>slope.tif</code> and <code>access.tif</code> directly, before any reprojection, and pass their raw shapes into <code>check_alignment</code>. Confirm it raises the <code>ValueError</code>, then run the same check on <code>clipped_arrays</code> from this session to confirm it now passes.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="e6d76335" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/slope.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    original_slope_shape <span class="op">=</span> (src.height, src.width)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/access.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    original_access_shape <span class="op">=</span> (src.height, src.width)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>fake_arrays <span class="op">=</span> {<span class="st">"Slope"</span>: np.zeros(original_slope_shape), <span class="st">"Access"</span>: np.zeros(original_access_shape)}</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    check_alignment(fake_arrays, {})</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> error:</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Caught expected error:"</span>, error)</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>check_alignment(clipped_arrays, {})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>All layers share shape: (605, 610)
+All layers share shape: (662, 554)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>True</code></pre>
+</div>
+</div>
+</details>
+</details>
+<details>
+<summary>
+Exercise 2: Try the wrong resampling method on purpose
+</summary>
+<div style="text-align: justify;">
+<p>Resample <code>access.tif</code> onto the reference grid using <code>Resampling.bilinear</code> instead of <code>Resampling.nearest</code>, and print how many pixel values in the result are neither exactly 0 nor exactly 1. This is the meaningless “half accessible” value described earlier in this session.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="48b07926" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>access_bilinear <span class="op">=</span> resample_to_reference(reprojected_paths[<span class="st">"Access"</span>], Resampling.bilinear)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fractional_pixels <span class="op">=</span> np.<span class="bu">sum</span>((access_bilinear <span class="op">!=</span> <span class="dv">0</span>) <span class="op">&amp;</span> (access_bilinear <span class="op">!=</span> <span class="dv">1</span>))</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pixels with a meaningless fractional access value:"</span>, fractional_pixels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pixels with a meaningless fractional access value: 0</code></pre>
+</div>
+</div>
+</details>
+</details>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Why is <code>Resampling.nearest</code> the correct choice for <code>access.tif</code>, but <code>Resampling.bilinear</code> the correct choice for <code>ndvi.tif</code>?</p>
+</div>
+<p>A. <code>nearest</code> is always faster, so it should always be preferred</p>
+<p>B. <code>access.tif</code> holds categorical 0/1 values where a blended value is meaningless, while <code>ndvi.tif</code> holds continuous values where a blended value is a reasonable estimate</p>
+<p>C. <code>bilinear</code> cannot be used on floating point rasters</p>
+<p>D. <code>nearest</code> produces a smoother-looking result</p>
+<details>
+<summary>
+Answer
+</summary>
+B. Blending is only meaningful for continuous data. A pixel that is 70% of the way between “accessible” and “not accessible” describes nothing real, while a pixel that is 70% of the way between two NDVI values is a perfectly reasonable estimate of vegetation density at that location.
+</details>
+</details>
+<details>
+<summary>
+Question 2
+</summary>
+<div style="text-align: justify;">
+<p>Why is a shape mismatch, the kind that raises a <code>ValueError</code> when adding two arrays, actually the easier version of this bug to deal with?</p>
+</div>
+<p>A. Because it happens more often than a silent misalignment</p>
+<p>B. Because Python fixes it automatically</p>
+<p>C. Because it is loud and immediate, while two same-shaped arrays from different, misaligned grids can add together silently and produce a wrong result with no error at all</p>
+<p>D. Because shape mismatches only happen with vector data</p>
+<details>
+<summary>
+Answer
+</summary>
+C. An error you are told about gets fixed before it ships. A silent misalignment between two same-shaped arrays produces a suitability map that runs perfectly and looks plausible, while scoring the wrong location for every pixel, which is far more dangerous precisely because nothing warns you.
+</details>
+</details>
+</section>
+</section>
+<section id="building-reprojector.py" class="level2">
+<h2 class="anchored" data-anchor-id="building-reprojector.py">Building <code>reprojector.py</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modules/reprojector.py</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.warp <span class="im">import</span> calculate_default_transform, reproject</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.mask <span class="im">import</span> mask</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reproject_raster(source_path, destination_path, target_crs, resampling):</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Reproject a raster to a new CRS, writing the result to destination_path."""</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(source_path) <span class="im">as</span> src:</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>        transform, width, height <span class="op">=</span> calculate_default_transform(</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>            src.crs, target_crs, src.width, src.height, <span class="op">*</span>src.bounds</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>        profile <span class="op">=</span> src.profile.copy()</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>        profile.update({</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"crs"</span>: target_crs,</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">"transform"</span>: transform,</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">"width"</span>: width,</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">"height"</span>: height,</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> rasterio.<span class="bu">open</span>(destination_path, <span class="st">"w"</span>, <span class="op">**</span>profile) <span class="im">as</span> dst:</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>            reproject(</span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>                source<span class="op">=</span>rasterio.band(src, <span class="dv">1</span>),</span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>                destination<span class="op">=</span>rasterio.band(dst, <span class="dv">1</span>),</span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>                src_transform<span class="op">=</span>src.transform,</span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>                src_crs<span class="op">=</span>src.crs,</span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>                dst_transform<span class="op">=</span>transform,</span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a>                dst_crs<span class="op">=</span>target_crs,</span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>                resampling<span class="op">=</span>resampling,</span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> destination_path</span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resample_to_reference(source_path, reference_shape, reference_transform, reference_crs, resampling):</span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Resample a raster directly onto a reference grid's shape, transform, and CRS."""</span></span>
+<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(source_path) <span class="im">as</span> src:</span>
+<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a>        destination <span class="op">=</span> np.zeros(reference_shape, dtype<span class="op">=</span>src.dtypes[<span class="dv">0</span>])</span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a>        reproject(</span>
+<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a>            source<span class="op">=</span>rasterio.band(src, <span class="dv">1</span>),</span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a>            destination<span class="op">=</span>destination,</span>
+<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a>            src_transform<span class="op">=</span>src.transform,</span>
+<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>            src_crs<span class="op">=</span>src.crs,</span>
+<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a>            dst_transform<span class="op">=</span>reference_transform,</span>
+<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a>            dst_crs<span class="op">=</span>reference_crs,</span>
+<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>            resampling<span class="op">=</span>resampling,</span>
+<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> destination</span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clip_array_to_boundary(array, profile, boundary_gdf):</span>
+<span id="cb34-56"><a href="#cb34-56" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Clip an in-memory array to a boundary geometry, returning the clipped array and its new transform."""</span></span>
+<span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.io.MemoryFile() <span class="im">as</span> memfile:</span>
+<span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> memfile.<span class="bu">open</span>(<span class="op">**</span>profile) <span class="im">as</span> dataset:</span>
+<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>            dataset.write(array, <span class="dv">1</span>)</span>
+<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a>            clipped, clipped_transform <span class="op">=</span> mask(dataset, boundary_gdf.geometry, crop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-62"><a href="#cb34-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> clipped[<span class="dv">0</span>], clipped_transform</span>
+<span id="cb34-63"><a href="#cb34-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-64"><a href="#cb34-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-65"><a href="#cb34-65" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_alignment(arrays):</span>
+<span id="cb34-66"><a href="#cb34-66" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Confirm every array in a dict shares the same shape. Raises ValueError otherwise."""</span></span>
+<span id="cb34-67"><a href="#cb34-67" aria-hidden="true" tabindex="-1"></a>    shapes <span class="op">=</span> {name: array.shape <span class="cf">for</span> name, array <span class="kw">in</span> arrays.items()}</span>
+<span id="cb34-68"><a href="#cb34-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(<span class="bu">set</span>(shapes.values())) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb34-69"><a href="#cb34-69" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Shape mismatch across layers: </span><span class="sc">{</span>shapes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb34-70"><a href="#cb34-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">True</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>reproject_raster</code> and <code>resample_to_reference</code> look similar but solve two different steps: the first moves a raster into a new CRS with its own independently calculated grid, the second forces a raster already in the right CRS onto someone else’s exact grid. Both were needed in this session, in that order, and <code>check_alignment</code> is the safeguard <code>modules/solar_suitability.py</code> will call first, in <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>, before doing anything else.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session moved from an approximation to a real fix. Where <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a> converted degrees to meters just well enough to compute a slope value, this session properly reprojected every one of the project’s four suitability layers into <code>EPSG:32629</code>, resampled them onto one exact shared grid, chose <code>nearest</code> versus <code>bilinear</code> deliberately based on whether each layer’s data was categorical or continuous, and clipped all four to the real study boundary rather than only drawing it on top. We watched a raw shape mismatch fail loudly, and a wrong resampling method fail quietly, and built <code>check_alignment</code> specifically to catch the second, more dangerous kind of failure before it reaches <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>. We also built <code>modules/reprojector.py</code>. Every factor the project needs is now, for the first time, genuinely the same grid, ready for <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>, where slope, aspect, NDVI, and access are finally combined into one weighted suitability score.</p>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -829,13 +1506,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../sessions/session-06-buffers-distance.html" class="pagination-link" aria-label="session-06-buffers-distance.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session-06-buffers-distance.html</span></span>
+      <a href="../sessions/session-06-buffers-distance.html" class="pagination-link" aria-label="session 06: vector spatial analysis, buffer and access">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session 06: vector spatial analysis, buffer and access</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../sessions/session-08-suitability-model.html" class="pagination-link" aria-label="session-08-suitability-model.html">
-        <span class="nav-page-text"><span class="chapter-title">session-08-suitability-model.html</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../sessions/session-08-suitability-model.html" class="pagination-link" aria-label="session 08: weighted overlay and the suitability model">
+        <span class="nav-page-text"><span class="chapter-title">session 08: weighted overlay and the suitability model</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -847,7 +1524,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-07-reprojection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-07-reprojection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>

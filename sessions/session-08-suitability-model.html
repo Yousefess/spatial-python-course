@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>session-08-suitability-model – Spatial Python</title>
+<title>session 08: weighted overlay and the suitability model – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -256,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-08-suitability-model.html"><span class="chapter-title">session-08-suitability-model.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-08-suitability-model.html"><span class="chapter-title">session 08: weighted overlay and the suitability model</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -344,17 +380,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-06-buffers-distance.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-06-buffers-distance.html</span></a>
+  <a href="../sessions/session-06-buffers-distance.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 06: vector spatial analysis, buffer and access</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-07-reprojection.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-07-reprojection.html</span></a>
+  <a href="../sessions/session-07-reprojection.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-08-suitability-model.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session-08-suitability-model.html</span></a>
+  <a href="../sessions/session-08-suitability-model.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session 08: weighted overlay and the suitability model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -395,18 +431,672 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#why-raw-values-cannot-simply-be-added" id="toc-why-raw-values-cannot-simply-be-added" class="nav-link" data-scroll-target="#why-raw-values-cannot-simply-be-added">Why Raw Values Cannot Simply Be Added</a></li>
+  <li><a href="#loading-the-aligned-layers" id="toc-loading-the-aligned-layers" class="nav-link" data-scroll-target="#loading-the-aligned-layers">Loading the Aligned Layers</a></li>
+  <li><a href="#normalizing-slope" id="toc-normalizing-slope" class="nav-link" data-scroll-target="#normalizing-slope">Normalizing Slope</a></li>
+  <li><a href="#normalizing-aspect" id="toc-normalizing-aspect" class="nav-link" data-scroll-target="#normalizing-aspect">Normalizing Aspect</a></li>
+  <li><a href="#normalizing-ndvi" id="toc-normalizing-ndvi" class="nav-link" data-scroll-target="#normalizing-ndvi">Normalizing NDVI</a></li>
+  <li><a href="#access-needs-no-normalization" id="toc-access-needs-no-normalization" class="nav-link" data-scroll-target="#access-needs-no-normalization">Access Needs No Normalization</a></li>
+  <li><a href="#visualizing-all-four-normalized-scores" id="toc-visualizing-all-four-normalized-scores" class="nav-link" data-scroll-target="#visualizing-all-four-normalized-scores">Visualizing All Four Normalized Scores</a></li>
+  <li><a href="#combining-the-scores-the-weighted-sum" id="toc-combining-the-scores-the-weighted-sum" class="nav-link" data-scroll-target="#combining-the-scores-the-weighted-sum">Combining the Scores: The Weighted Sum</a></li>
+  <li><a href="#applying-the-water-exclusion-mask" id="toc-applying-the-water-exclusion-mask" class="nav-link" data-scroll-target="#applying-the-water-exclusion-mask">Applying the Water Exclusion Mask</a></li>
+  <li><a href="#classifying-the-final-map" id="toc-classifying-the-final-map" class="nav-link" data-scroll-target="#classifying-the-final-map">Classifying the Final Map</a></li>
+  <li><a href="#visualizing-the-final-result" id="toc-visualizing-the-final-result" class="nav-link" data-scroll-target="#visualizing-the-final-result">Visualizing the Final Result</a></li>
+  <li><a href="#how-much-area-falls-into-each-class" id="toc-how-much-area-falls-into-each-class" class="nav-link" data-scroll-target="#how-much-area-falls-into-each-class">How Much Area Falls Into Each Class</a>
+  <ul class="collapse">
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#saving-the-results" id="toc-saving-the-results" class="nav-link" data-scroll-target="#saving-the-results">Saving the Results</a></li>
+  <li><a href="#building-solar_suitability.py" id="toc-building-solar_suitability.py" class="nav-link" data-scroll-target="#building-solar_suitability.py">Building <code>solar_suitability.py</code></a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-08-suitability-model.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-08-suitability-model.html"><span class="chapter-title">session-08-suitability-model.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-08-suitability-model.html"><span class="chapter-title">session 08: weighted overlay and the suitability model</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">session 08: weighted overlay and the suitability model</span></h1>
+<p class="subtitle lead">Turning four aligned layers into one score</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div style="text-align: justify;">
+<p><a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> ended with four rasters that finally share the exact same shape, transform, and CRS: slope, aspect, NDVI, and access. This session is the one the entire course has been building toward, combining those four layers into a single suitability score for every pixel, and turning that score into a map someone could actually use to decide where a solar installation makes sense.</p>
+</div>
+<div style="text-align: justify;">
+<p>This kind of analysis, combining several raster layers, each describing one relevant factor, into one overall score, is called a <strong>weighted overlay</strong>. It is one of the oldest and most common techniques in GIS, used for far more than solar siting: choosing a site for a new road, a hospital, a landfill, or a nature reserve all follow the same basic pattern. The specific factors change, but the underlying idea does not: decide what matters, decide how much each thing matters relative to the others, and combine them consistently across every pixel at once.</p>
+</div>
+</section>
+<section id="why-raw-values-cannot-simply-be-added" class="level2">
+<h2 class="anchored" data-anchor-id="why-raw-values-cannot-simply-be-added">Why Raw Values Cannot Simply Be Added</h2>
+<div style="text-align: justify;">
+<p>It is worth pausing on why this session needs a normalization step at all, before jumping to code. Slope is measured in degrees, roughly 0 to 90. NDVI is a ratio between -1 and 1. Access is already 0 or 1. If we tried to add these three numbers directly, a single degree of slope would completely swamp the entire range of NDVI, not because slope actually matters more, but purely because its numbers happen to be bigger. Before any two measurements can be meaningfully combined, they need to be expressed on the same scale, in a way that also reflects which direction is “good” for each one.</p>
+</div>
+<div style="margin-top: 30px; margin-bottom: 45px; text-align: center;">
+<p><img src="../images/session_08_weighted_overlay_concept.webp" class="img-fluid" style="width:100.0%" alt="a simple diagram showing four separate raster grids (slope, aspect, ndvi, access) each with a small icon, stacked and combined by an arrow into a single output grid labeled suitability score, illustrating the weighted overlay concept"></p>
+</div>
+<div style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;">
+<p><em>Image generated with GPT Image 2.5.</em></p>
+</div>
+<div style="text-align: justify;">
+<p>The convention this session uses, and the standard convention in weighted overlay generally, is to rescale every factor onto the same 0 to 1 range, where 0 always means “worst for this purpose” and 1 always means “best for this purpose”, regardless of what the original units were. This step is called <strong>normalization</strong>. Once every factor speaks the same language, 0 to 1, combining them with simple arithmetic finally becomes meaningful.</p>
+</div>
+</section>
+<section id="loading-the-aligned-layers" class="level2">
+<h2 class="anchored" data-anchor-id="loading-the-aligned-layers">Loading the Aligned Layers</h2>
+<div id="7efedd74" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>aligned_paths <span class="op">=</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slope"</span>: <span class="st">"data/outputs/aligned/slope_aligned.tif"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"aspect"</span>: <span class="st">"data/outputs/aligned/aspect_aligned.tif"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ndvi"</span>: <span class="st">"data/outputs/aligned/ndvi_aligned.tif"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"access"</span>: <span class="st">"data/outputs/aligned/access_aligned.tif"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> {}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>reference_profile <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, path <span class="kw">in</span> aligned_paths.items():</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> rasterio.<span class="bu">open</span>(path) <span class="im">as</span> src:</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        layers[name] <span class="op">=</span> src.read(<span class="dv">1</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> reference_profile <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>            reference_profile <span class="op">=</span> src.profile</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>({name: array.shape <span class="cf">for</span> name, array <span class="kw">in</span> layers.items()})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'slope': (662, 554), 'aspect': (662, 554), 'ndvi': (662, 554), 'access': (662, 554)}</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note: relying on <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nothing in this section checks alignment by hand, since <code>check_alignment</code> from <code>modules/reprojector.py</code>, built in <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>, already exists specifically to be called here first, before any of this session’s own math runs. It is good practice to actually call it, rather than only trusting that <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> worked.</p>
+</div>
+</div>
+<div id="ba8d7f0c" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sys.path.append(<span class="st">"modules"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> reprojector <span class="im">import</span> check_alignment</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>check_alignment(layers)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>True</code></pre>
+</div>
+</div>
+</section>
+<section id="normalizing-slope" class="level2">
+<h2 class="anchored" data-anchor-id="normalizing-slope">Normalizing Slope</h2>
+<div style="text-align: justify;">
+<p>Gentle slopes are good for solar installation, steep slopes are not, so slope needs an inverted normalization: low slope should map close to 1, and high slope should map close to 0. A simple, common approach is min-max normalization, rescaling the actual range of values in the data to sit between 0 and 1, then flipping it.</p>
+</div>
+<div id="eed55cef" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_slope(slope, max_slope<span class="op">=</span><span class="dv">45</span>):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize slope so 0 degrees scores 1 (best) and max_slope or more scores 0 (worst)."""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    clipped <span class="op">=</span> np.clip(slope, <span class="dv">0</span>, max_slope)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    normalized <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> (clipped <span class="op">/</span> max_slope)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> normalized</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>slope_score <span class="op">=</span> normalize_slope(layers[<span class="st">"slope"</span>])</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Slope score range:"</span>, slope_score.<span class="bu">min</span>(), <span class="st">"to"</span>, slope_score.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Slope score range: 0.0 to 1.0</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: why cap at 45 degrees, rather than the data’s own maximum
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Min-max normalization is often written using the data’s own minimum and maximum, but that has a subtle problem here: if this DEM happens to contain one unusually steep outlier pixel, every other, much gentler slope would get rescaled relative to that single extreme value, compressing all the meaningful differences into a narrow band near 1. Choosing a fixed, sensible cap, 45 degrees is already far steeper than anything reasonable for solar installation, avoids letting one outlier pixel distort the scoring for every other pixel. <code>np.clip</code> ensures any slope beyond that cap is simply treated as equally bad, at exactly 0, rather than going negative.</p>
+</div>
+</div>
+</section>
+<section id="normalizing-aspect" class="level2">
+<h2 class="anchored" data-anchor-id="normalizing-aspect">Normalizing Aspect</h2>
+<div style="text-align: justify;">
+<p>Aspect needs more care than a straight min-max rescale, for the same reason flagged back in <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>: it is a circular quantity. A south-facing slope, around 180 degrees, is ideal. As aspect moves away from 180 in either direction, east through west or west through east, suitability should fall off symmetrically, until due north, 0 or 360 degrees, is the worst possible aspect. A plain <code>aspect / 360</code> would incorrectly treat 359 degrees as almost the best score, when it is actually almost due north, one of the worst.</p>
+</div>
+<div id="debba3cb" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_aspect(aspect):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Score aspect by closeness to south (180 degrees). Flat pixels (-1) score 0."""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    distance_from_south <span class="op">=</span> np.<span class="bu">abs</span>(aspect <span class="op">-</span> <span class="dv">180</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    distance_from_south <span class="op">=</span> np.minimum(distance_from_south, <span class="dv">360</span> <span class="op">-</span> distance_from_south)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> (distance_from_south <span class="op">/</span> <span class="dv">180</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> np.where(aspect <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, score)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> score</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>aspect_score <span class="op">=</span> normalize_aspect(layers[<span class="st">"aspect"</span>])</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Aspect score range:"</span>, aspect_score.<span class="bu">min</span>(), <span class="st">"to"</span>, aspect_score.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Aspect score range: 0.0 to 0.9999984</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p><code>np.minimum(distance_from_south, 360 - distance_from_south)</code> is the same wraparound logic used any time a circular quantity, aspect, wind direction, compass bearing, is compared to a fixed target: it takes the shorter of the two possible paths around the circle, so 359 degrees and 1 degree both correctly end up extremely close to 0 degrees, rather than at opposite ends of a straight numeric scale.</p>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: flat pixels do not simply score badly, they need their own rule
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recall from <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a> that flat ground has no defined aspect at all, and was marked with the sentinel value <code>-1</code>, not a real compass direction. Feeding <code>-1</code> into the distance formula above would produce a nonsensical result, since <code>-1</code> is not a real aspect. We explicitly override every flat pixel to a fixed score, <code>0</code>, after the main formula runs, rather than letting the formula guess for a case it was never designed to handle. A flat pixel that also happens to be gently sloped is still a candidate site, so a score of exactly 0 for aspect is a deliberate simplification for this course, not a claim that flat ground is truly worthless; a more advanced version of this project might score flat aspect as neutral instead of worst.</p>
+</div>
+</div>
+</section>
+<section id="normalizing-ndvi" class="level2">
+<h2 class="anchored" data-anchor-id="normalizing-ndvi">Normalizing NDVI</h2>
+<div style="text-align: justify;">
+<p>Low NDVI, bare or scrubby ground, is preferable for this project, exactly as established back in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, so NDVI also needs an inverted normalization, the same shape as slope’s, but over NDVI’s own natural range.</p>
+</div>
+<div id="f713c4b1" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_ndvi(ndvi):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize NDVI so low vegetation scores 1 (best) and high vegetation scores 0 (worst)."""</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    clipped <span class="op">=</span> np.clip(ndvi, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    normalized <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> ((clipped <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> normalized</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>ndvi_score <span class="op">=</span> normalize_ndvi(layers[<span class="st">"ndvi"</span>])</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NDVI score range:"</span>, ndvi_score.<span class="bu">min</span>(), <span class="st">"to"</span>, ndvi_score.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NDVI score range: 0.12568057 to 0.5198025</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p><code>(clipped + 1) / 2</code> first rescales NDVI’s own -1 to 1 range onto a plain 0 to 1 range, the ordinary min-max step, since NDVI’s mathematical range is always exactly -1 to 1 regardless of the specific image, unlike slope, which has no fixed natural maximum. <code>1 -</code> then flips that scale, since high NDVI, dense vegetation, should score low suitability, not high.</p>
+</div>
+</section>
+<section id="access-needs-no-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="access-needs-no-normalization">Access Needs No Normalization</h2>
+<div style="text-align: justify;">
+<p><code>access.tif</code> already stores exactly 0 or 1, with 1 already meaning “good”, accessible, so no rescaling is needed at all. It is included here only to make explicit that not every layer requires the same treatment, and that checking what a layer already represents comes before deciding how, or whether, to transform it.</p>
+</div>
+<div id="3cb3a5e3" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>access_score <span class="op">=</span> layers[<span class="st">"access"</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Access score unique values:"</span>, np.unique(access_score))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Access score unique values: [0. 1.]</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-all-four-normalized-scores" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-all-four-normalized-scores">Visualizing All Four Normalized Scores</h2>
+<div style="text-align: justify;">
+<p>Before combining anything, it is worth looking at all four scores side by side, now that they finally share not just a grid, but a scale. Every one of these four maps should visually range from 0, shown pale or dark depending on the colormap, to 1.</p>
+</div>
+<div id="7908fd27" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> {<span class="st">"Slope"</span>: slope_score, <span class="st">"Aspect"</span>: aspect_score, <span class="st">"NDVI"</span>: ndvi_score, <span class="st">"Access"</span>: access_score}</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (name, array) <span class="kw">in</span> <span class="bu">zip</span>(axes.flat, scores.items()):</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> ax.imshow(array, cmap<span class="op">=</span><span class="st">"RdYlGn"</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> Score (normalized)"</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    plt.colorbar(im, ax<span class="op">=</span>ax, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-08-suitability-model_files/figure-html/cell-8-output-1.png" width="1031" height="950" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="combining-the-scores-the-weighted-sum" class="level2">
+<h2 class="anchored" data-anchor-id="combining-the-scores-the-weighted-sum">Combining the Scores: The Weighted Sum</h2>
+<div style="text-align: justify;">
+<p>A <strong>weight</strong> is simply a number representing how much a factor should count relative to the others, and the weights across all factors are chosen to add up to 1, so the final combined score stays within the same 0 to 1 range as each individual input. This project’s default weights, established at the start of the course, are slope 0.3, aspect 0.2, NDVI 0.3, and access 0.2, reflecting that terrain, slope and land cover, matters somewhat more for this particular project than proximity to existing infrastructure, though this is a modeling choice, not a fact about solar siting in general, which is exactly why it becomes this session’s main exercise to change.</p>
+</div>
+<div id="77c2f831" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slope"</span>: <span class="fl">0.3</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"aspect"</span>: <span class="fl">0.2</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ndvi"</span>: <span class="fl">0.3</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"access"</span>: <span class="fl">0.2</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Weights sum to:"</span>, <span class="bu">sum</span>(weights.values()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Weights sum to: 1.0</code></pre>
+</div>
+</div>
+<div id="e58cfa49" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_final_score(slope_score, aspect_score, ndvi_score, access_score, weights):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Combine four normalized 0-1 layers into one weighted score, scaled to 0-100."""</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    combined <span class="op">=</span> (</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        slope_score <span class="op">*</span> weights[<span class="st">"slope"</span>]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> aspect_score <span class="op">*</span> weights[<span class="st">"aspect"</span>]</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> ndvi_score <span class="op">*</span> weights[<span class="st">"ndvi"</span>]</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> access_score <span class="op">*</span> weights[<span class="st">"access"</span>]</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> combined <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>suitability_score <span class="op">=</span> calculate_final_score(slope_score, aspect_score, ndvi_score, access_score, weights)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Suitability score range:"</span>, suitability_score.<span class="bu">min</span>(), <span class="st">"to"</span>, suitability_score.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Suitability score range: 16.988344 to 83.36556</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: a weighted sum is not the only way to combine factors
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This project uses a <strong>weighted linear sum</strong>, the most common and easiest to explain approach: each factor contributes independently, in proportion to its weight, and a very bad score in one factor can still be outweighed by very good scores in the others. Real GIS suitability models sometimes use stricter alternatives instead, such as a weighted product, where every factor is multiplied together rather than added, so a score of 0 in any single factor forces the whole result to 0 regardless of the others. We use the additive version here because it is simpler to reason about while learning the technique, not because it is the only correct choice for every project.</p>
+</div>
+</div>
+</section>
+<section id="applying-the-water-exclusion-mask" class="level2">
+<h2 class="anchored" data-anchor-id="applying-the-water-exclusion-mask">Applying the Water Exclusion Mask</h2>
+<div style="text-align: justify;">
+<p>The NDWI water mask, built and inspected but deliberately never applied back in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, finally gets used here. A pixel sitting in water is not simply penalized for it, exactly as that session explained, it should be removed from consideration entirely, regardless of how favorably every other factor scored it. We rebuild the mask here, since it was not one of the four factor layers carried through <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>’s alignment, and apply it directly to the final score.</p>
+</div>
+<div id="b4eb13cb" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/sentinel.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    green <span class="op">=</span> src.read(<span class="dv">2</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    nir <span class="op">=</span> src.read(<span class="dv">4</span>).astype(<span class="st">"float32"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> np.errstate(divide<span class="op">=</span><span class="st">"ignore"</span>, invalid<span class="op">=</span><span class="st">"ignore"</span>):</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    ndwi <span class="op">=</span> np.where((green <span class="op">+</span> nir) <span class="op">!=</span> <span class="dv">0</span>, (green <span class="op">-</span> nir) <span class="op">/</span> (green <span class="op">+</span> nir), <span class="dv">0</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>water_mask <span class="op">=</span> ndwi <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Water pixels in original grid:"</span>, np.<span class="bu">sum</span>(water_mask))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Water pixels in original grid: 421</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: the water mask needs aligning too
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>ndwi</code> above was calculated directly from <code>sentinel.tif</code>, still in its original grid from <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, not the aligned grid this session has been using since. Applying it directly to <code>suitability_score</code> would silently reintroduce the exact misalignment problem <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> exists to prevent. In a full project, this mask would be run through the same <code>resample_to_reference</code> step from <code>modules/reprojector.py</code> before use. For this session, since building the full mask is a repeat of <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>’s own steps, we take the shortcut of resampling only the boolean mask itself with nearest-neighbor resampling, the correct method for categorical data, exactly as decided in <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>.</p>
+</div>
+</div>
+<div id="2e1382e2" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.warp <span class="im">import</span> reproject, Resampling</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/sentinel.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    water_mask_uint8 <span class="op">=</span> water_mask.astype(<span class="st">"uint8"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    aligned_water_mask <span class="op">=</span> np.zeros(suitability_score.shape, dtype<span class="op">=</span><span class="st">"uint8"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    reproject(</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        source<span class="op">=</span>water_mask_uint8,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        destination<span class="op">=</span>aligned_water_mask,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        src_transform<span class="op">=</span>src.transform,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        src_crs<span class="op">=</span>src.crs,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        dst_transform<span class="op">=</span>reference_profile[<span class="st">"transform"</span>],</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        dst_crs<span class="op">=</span>reference_profile[<span class="st">"crs"</span>],</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        resampling<span class="op">=</span>Resampling.nearest,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>suitability_score <span class="op">=</span> np.where(aligned_water_mask <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>, suitability_score)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Suitability score range after masking water:"</span>, suitability_score.<span class="bu">min</span>(), <span class="st">"to"</span>, suitability_score.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Suitability score range after masking water: 0.0 to 83.36556</code></pre>
+</div>
+</div>
+</section>
+<section id="classifying-the-final-map" class="level2">
+<h2 class="anchored" data-anchor-id="classifying-the-final-map">Classifying the Final Map</h2>
+<div style="text-align: justify;">
+<p>A continuous 0 to 100 score is precise, but a decision maker usually wants a simpler answer: is this location suitable or not. We split the continuous score into three classes using fixed thresholds, following the project’s original plan: below 40 is unsuitable, 40 to 70 is moderate, and above 70 is suitable.</p>
+</div>
+<div id="447c361e" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_suitability(score, low_threshold<span class="op">=</span><span class="dv">40</span>, high_threshold<span class="op">=</span><span class="dv">70</span>):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Classify a continuous suitability score into 3 classes: 0=unsuitable, 1=moderate, 2=suitable."""</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    classified <span class="op">=</span> np.zeros_like(score, dtype<span class="op">=</span><span class="st">"uint8"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    classified[(score <span class="op">&gt;=</span> low_threshold) <span class="op">&amp;</span> (score <span class="op">&lt;</span> high_threshold)] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    classified[score <span class="op">&gt;=</span> high_threshold] <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> classified</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>suitability_class <span class="op">=</span> classify_suitability(suitability_score)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>class_labels <span class="op">=</span> {<span class="dv">0</span>: <span class="st">"Unsuitable"</span>, <span class="dv">1</span>: <span class="st">"Moderate"</span>, <span class="dv">2</span>: <span class="st">"Suitable"</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: <code>np.zeros_like</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>np.zeros_like(score, dtype="uint8")</code> creates a new array with the same shape as <code>score</code>, but filled with 0 and stored as an 8-bit unsigned integer, appropriate for a layer that only ever needs to hold the values 0, 1, or 2. This is the same pattern as <code>np.zeros()</code> from Session 00, except the shape is copied from an existing array rather than typed out by hand, which matters here since we do not want to risk a typo producing a shape that quietly does not match <code>suitability_score</code>.</p>
+</div>
+</div>
+</section>
+<section id="visualizing-the-final-result" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-final-result">Visualizing the Final Result</h2>
+<div id="44a2d65b" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">7</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>score_im <span class="op">=</span> axes[<span class="dv">0</span>].imshow(suitability_score, cmap<span class="op">=</span><span class="st">"RdYlGn"</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Suitability Score (0-100)"</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>plt.colorbar(score_im, ax<span class="op">=</span>axes[<span class="dv">0</span>], label<span class="op">=</span><span class="st">"Score"</span>, shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> ListedColormap</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>class_cmap <span class="op">=</span> ListedColormap([<span class="st">"firebrick"</span>, <span class="st">"khaki"</span>, <span class="st">"forestgreen"</span>])</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>class_im <span class="op">=</span> axes[<span class="dv">1</span>].imshow(suitability_class, cmap<span class="op">=</span>class_cmap, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Suitability Class"</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>colorbar <span class="op">=</span> plt.colorbar(class_im, ax<span class="op">=</span>axes[<span class="dv">1</span>], ticks<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>], shrink<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>colorbar.ax.set_yticklabels([<span class="st">"Unsuitable"</span>, <span class="st">"Moderate"</span>, <span class="st">"Suitable"</span>])</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-08-suitability-model_files/figure-html/cell-14-output-1.png" width="1319" height="636" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="how-much-area-falls-into-each-class" class="level2">
+<h2 class="anchored" data-anchor-id="how-much-area-falls-into-each-class">How Much Area Falls Into Each Class</h2>
+<div style="text-align: justify;">
+<p>A map communicates location, but a decision maker often wants a single summary number first: how much of the study area is actually usable. We count pixels per class and convert that count into an approximate area, using the pixel resolution carried in <code>reference_profile</code>.</p>
+</div>
+<div id="bf1fabf5" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pixel_area_m2 <span class="op">=</span> <span class="bu">abs</span>(reference_profile[<span class="st">"transform"</span>].a <span class="op">*</span> reference_profile[<span class="st">"transform"</span>].e)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>class_counts <span class="op">=</span> {label: np.<span class="bu">sum</span>(suitability_class <span class="op">==</span> value) <span class="cf">for</span> value, label <span class="kw">in</span> class_labels.items()}</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>class_area_km2 <span class="op">=</span> {label: (count <span class="op">*</span> pixel_area_m2) <span class="op">/</span> <span class="dv">1_000_000</span> <span class="cf">for</span> label, count <span class="kw">in</span> class_counts.items()}</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> label, area <span class="kw">in</span> class_area_km2.items():</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>area<span class="sc">:.2f}</span><span class="ss"> sq km"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unsuitable: 11.20 sq km
+Moderate: 235.71 sq km
+Suitable: 23.97 sq km</code></pre>
+</div>
+</div>
+<div id="f7f7475a" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>ax.bar(class_area_km2.keys(), class_area_km2.values(), color<span class="op">=</span>[<span class="st">"firebrick"</span>, <span class="st">"khaki"</span>, <span class="st">"forestgreen"</span>])</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Area (sq km)"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Suitability Class Area Distribution"</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-08-suitability-model_files/figure-html/cell-16-output-1.png" width="593" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<details>
+<summary>
+Exercise 1: Change the weights
+</summary>
+<div style="text-align: justify;">
+<p>The default weights treat slope and NDVI as somewhat more important than aspect and access. Recalculate the suitability score using equal weights instead, 0.25 for every factor, and compare the resulting class area distribution against the default weights, using a grouped bar chart.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="76d24e4f" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>equal_weights <span class="op">=</span> {<span class="st">"slope"</span>: <span class="fl">0.25</span>, <span class="st">"aspect"</span>: <span class="fl">0.25</span>, <span class="st">"ndvi"</span>: <span class="fl">0.25</span>, <span class="st">"access"</span>: <span class="fl">0.25</span>}</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>suitability_equal <span class="op">=</span> calculate_final_score(slope_score, aspect_score, ndvi_score, access_score, equal_weights)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>suitability_equal <span class="op">=</span> np.where(aligned_water_mask <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>, suitability_equal)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>class_equal <span class="op">=</span> classify_suitability(suitability_equal)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>counts_equal <span class="op">=</span> {label: np.<span class="bu">sum</span>(class_equal <span class="op">==</span> value) <span class="cf">for</span> value, label <span class="kw">in</span> class_labels.items()}</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>area_equal <span class="op">=</span> {label: (count <span class="op">*</span> pixel_area_m2) <span class="op">/</span> <span class="dv">1_000_000</span> <span class="cf">for</span> label, count <span class="kw">in</span> counts_equal.items()}</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(class_labels))</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width <span class="op">/</span> <span class="dv">2</span>, class_area_km2.values(), width, label<span class="op">=</span><span class="st">"Default weights"</span>, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width <span class="op">/</span> <span class="dv">2</span>, area_equal.values(), width, label<span class="op">=</span><span class="st">"Equal weights"</span>, color<span class="op">=</span><span class="st">"darkorange"</span>)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(class_area_km2.keys())</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Area (sq km)"</span>)</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Default vs Equal Weights"</span>)</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-08-suitability-model_files/figure-html/cell-17-output-1.png" width="667" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+</details>
+<details>
+<summary>
+Exercise 2: A stricter suitable threshold
+</summary>
+<div style="text-align: justify;">
+<p>Reclassify <code>suitability_score</code> using a stricter threshold for the suitable class, 80 instead of 70, keeping the unsuitable threshold at 40. Compare the resulting suitable area, in square kilometers, against the original threshold.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="fad8c1e2" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>strict_class <span class="op">=</span> classify_suitability(suitability_score, low_threshold<span class="op">=</span><span class="dv">40</span>, high_threshold<span class="op">=</span><span class="dv">80</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>strict_suitable_km2 <span class="op">=</span> (np.<span class="bu">sum</span>(strict_class <span class="op">==</span> <span class="dv">2</span>) <span class="op">*</span> pixel_area_m2) <span class="op">/</span> <span class="dv">1_000_000</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>original_suitable_km2 <span class="op">=</span> class_area_km2[<span class="st">"Suitable"</span>]</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Suitable area (threshold 70): </span><span class="sc">{</span>original_suitable_km2<span class="sc">:.2f}</span><span class="ss"> sq km"</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Suitable area (threshold 80): </span><span class="sc">{</span>strict_suitable_km2<span class="sc">:.2f}</span><span class="ss"> sq km"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Suitable area (threshold 70): 23.97 sq km
+Suitable area (threshold 80): 1.06 sq km</code></pre>
+</div>
+</div>
+</details>
+</details>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Why must every factor be normalized to the same 0-1 range before applying weights, rather than combining the raw slope, aspect, NDVI, and access values directly?</p>
+</div>
+<p>A. Because <code>numpy</code> cannot add arrays with different data types</p>
+<p>B. Because each factor’s raw values use different units and ranges, so a weight applied to unnormalized numbers would not actually reflect the intended importance of each factor</p>
+<p>C. Because normalization is required for <code>rasterio</code> to save a file</p>
+<p>D. Because only integer arrays can be combined with weights</p>
+<details>
+<summary>
+Answer
+</summary>
+B. A weight is only meaningful relative to a shared scale. Applying a weight of 0.3 to slope, measured in tens of degrees, and 0.3 to NDVI, measured between -1 and 1, would not give them equal influence at all, since their raw numbers are wildly different sizes to begin with.
+</details>
+</details>
+<details>
+<summary>
+Question 2
+</summary>
+<div style="text-align: justify;">
+<p>Why is the water mask applied after the weighted sum, by forcing masked pixels to 0, rather than built into <code>calculate_final_score</code> as a fifth weighted factor?</p>
+</div>
+<p>A. Because NDWI cannot be normalized to a 0-1 range</p>
+<p>B. Because a weighted factor only ever nudges a score up or down, while water needs to remove a pixel from consideration entirely, exactly the distinction made back in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a></p>
+<p>C. Because <code>numpy</code> does not support more than four arrays in a weighted sum</p>
+<p>D. Because water pixels always have the lowest NDVI value</p>
+<details>
+<summary>
+Answer
+</summary>
+B. This is the same reasoning introduced in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>’s quiz: NDVI describes a spectrum where a partial penalty makes sense, but a water pixel is a hard exclusion, not a matter of degree. A weight, no matter how large, can always be outweighed by the other factors; an explicit mask cannot.
+</details>
+</details>
+</section>
+</section>
+<section id="saving-the-results" class="level2">
+<h2 class="anchored" data-anchor-id="saving-the-results">Saving the Results</h2>
+<div id="b694a828" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>score_profile <span class="op">=</span> reference_profile.copy()</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>score_profile.update({<span class="st">"dtype"</span>: <span class="st">"float32"</span>, <span class="st">"count"</span>: <span class="dv">1</span>, <span class="st">"nodata"</span>: <span class="va">None</span>})</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/suitability.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>score_profile) <span class="im">as</span> dst:</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    dst.write(suitability_score.astype(<span class="st">"float32"</span>), <span class="dv">1</span>)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>class_profile <span class="op">=</span> reference_profile.copy()</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>class_profile.update({<span class="st">"dtype"</span>: <span class="st">"uint8"</span>, <span class="st">"count"</span>: <span class="dv">1</span>, <span class="st">"nodata"</span>: <span class="va">None</span>})</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/suitability_class.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>class_profile) <span class="im">as</span> dst:</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    dst.write(suitability_class, <span class="dv">1</span>)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Saved suitability.tif and suitability_class.tif to data/outputs/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved suitability.tif and suitability_class.tif to data/outputs/</code></pre>
+</div>
+</div>
+</section>
+<section id="building-solar_suitability.py" class="level2">
+<h2 class="anchored" data-anchor-id="building-solar_suitability.py">Building <code>solar_suitability.py</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modules/solar_suitability.py</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_slope(slope, max_slope<span class="op">=</span><span class="dv">45</span>):</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize slope so 0 degrees scores 1 (best) and max_slope or more scores 0 (worst)."""</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    clipped <span class="op">=</span> np.clip(slope, <span class="dv">0</span>, max_slope)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">-</span> (clipped <span class="op">/</span> max_slope)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_aspect(aspect):</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Score aspect by closeness to south (180 degrees). Flat pixels (-1) score 0."""</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    distance_from_south <span class="op">=</span> np.<span class="bu">abs</span>(aspect <span class="op">-</span> <span class="dv">180</span>)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    distance_from_south <span class="op">=</span> np.minimum(distance_from_south, <span class="dv">360</span> <span class="op">-</span> distance_from_south)</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> (distance_from_south <span class="op">/</span> <span class="dv">180</span>)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.where(aspect <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, score)</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_ndvi(ndvi):</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize NDVI so low vegetation scores 1 (best) and high vegetation scores 0 (worst)."""</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    clipped <span class="op">=</span> np.clip(ndvi, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">-</span> ((clipped <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_final_score(slope_score, aspect_score, ndvi_score, access_score, weights):</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Combine four normalized 0-1 layers into one weighted score, scaled to 0-100."""</span></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>    combined <span class="op">=</span> (</span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>        slope_score <span class="op">*</span> weights[<span class="st">"slope"</span>]</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> aspect_score <span class="op">*</span> weights[<span class="st">"aspect"</span>]</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> ndvi_score <span class="op">*</span> weights[<span class="st">"ndvi"</span>]</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> access_score <span class="op">*</span> weights[<span class="st">"access"</span>]</span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> combined <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_water_mask(score, water_mask):</span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Force any pixel flagged as water to a score of 0, regardless of its other factors."""</span></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.where(water_mask <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>, score)</span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_suitability(score, low_threshold<span class="op">=</span><span class="dv">40</span>, high_threshold<span class="op">=</span><span class="dv">70</span>):</span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Classify a continuous suitability score into 3 classes: 0=unsuitable, 1=moderate, 2=suitable."""</span></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a>    classified <span class="op">=</span> np.zeros_like(score, dtype<span class="op">=</span><span class="st">"uint8"</span>)</span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a>    classified[(score <span class="op">&gt;=</span> low_threshold) <span class="op">&amp;</span> (score <span class="op">&lt;</span> high_threshold)] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a>    classified[score <span class="op">&gt;=</span> high_threshold] <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> classified</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every function here works on plain NumPy arrays, following the same split as every module before it: the parts of this session that actually open files, in the notebook above, stay separate from the parts that only do math, which is what makes it possible for <a href="../sessions/session-09-interactive-map.html"><strong>Session 09</strong></a> to import <code>classify_suitability</code> and reuse it without needing to know anything about how <code>suitability.tif</code> was produced.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session combined everything the project has built so far into one result. We normalized slope, aspect, and NDVI onto a shared 0-1 scale, each with a rule specific to what “good” means for that factor, left access unchanged since it was already on that scale, and combined all four with a weighted sum into a single 0-100 suitability score. We applied the NDWI water mask for the first time since it was built in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, turning it from an inspected layer into a real exclusion, classified the result into three usable categories, and summarized both a map and an area distribution chart. We also built <code>modules/solar_suitability.py</code>, saved <code>suitability.tif</code> and <code>suitability_class.tif</code>, and practiced changing both the weights and the classification thresholds as exercises, exactly the kind of adjustment a real siting decision would need to revisit more than once. <a href="../sessions/session-09-interactive-map.html"><strong>Session 09</strong></a> takes this static result and turns it into an interactive web map with Folium.</p>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -829,8 +1519,8 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../sessions/session-07-reprojection.html" class="pagination-link" aria-label="session-07-reprojection.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session-07-reprojection.html</span></span>
+      <a href="../sessions/session-07-reprojection.html" class="pagination-link" aria-label="session 07: resampling, reprojection, and alignment">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -847,7 +1537,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-08-suitability-model.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-08-suitability-model.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>

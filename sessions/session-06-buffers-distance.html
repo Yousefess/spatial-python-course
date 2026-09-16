@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>session-06-buffers-distance – Spatial Python</title>
+<title>session 06: vector spatial analysis, buffer and access – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,10 +27,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -81,6 +117,9 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -256,7 +295,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-06-buffers-distance.html"><span class="chapter-title">session-06-buffers-distance.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-06-buffers-distance.html"><span class="chapter-title">session 06: vector spatial analysis, buffer and access</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -344,17 +383,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-06-buffers-distance.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session-06-buffers-distance.html</span></a>
+  <a href="../sessions/session-06-buffers-distance.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session 06: vector spatial analysis, buffer and access</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-07-reprojection.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-07-reprojection.html</span></a>
+  <a href="../sessions/session-07-reprojection.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-08-suitability-model.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session-08-suitability-model.html</span></a>
+  <a href="../sessions/session-08-suitability-model.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 08: weighted overlay and the suitability model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -395,18 +434,808 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setting-up" id="toc-setting-up" class="nav-link" data-scroll-target="#setting-up">Setting Up</a></li>
+  <li><a href="#dissolve-merging-features-by-attribute" id="toc-dissolve-merging-features-by-attribute" class="nav-link" data-scroll-target="#dissolve-merging-features-by-attribute">Dissolve: Merging Features by Attribute</a>
+  <ul class="collapse">
+  <li><a href="#measuring-real-length-by-road-type" id="toc-measuring-real-length-by-road-type" class="nav-link" data-scroll-target="#measuring-real-length-by-road-type">Measuring Real Length by Road Type</a></li>
+  </ul></li>
+  <li><a href="#spatial-join-matching-features-by-location-not-by-column" id="toc-spatial-join-matching-features-by-location-not-by-column" class="nav-link" data-scroll-target="#spatial-join-matching-features-by-location-not-by-column">Spatial Join: Matching Features by Location, Not by Column</a></li>
+  <li><a href="#buffer-from-a-feature-to-a-zone-around-it" id="toc-buffer-from-a-feature-to-a-zone-around-it" class="nav-link" data-scroll-target="#buffer-from-a-feature-to-a-zone-around-it">Buffer: From a Feature to a Zone Around It</a>
+  <ul class="collapse">
+  <li><a href="#combining-the-buffers" id="toc-combining-the-buffers" class="nav-link" data-scroll-target="#combining-the-buffers">Combining the Buffers</a></li>
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#from-vector-to-raster-rasterizing-the-access-zone" id="toc-from-vector-to-raster-rasterizing-the-access-zone" class="nav-link" data-scroll-target="#from-vector-to-raster-rasterizing-the-access-zone">From Vector to Raster: Rasterizing the Access Zone</a></li>
+  <li><a href="#saving-the-result" id="toc-saving-the-result" class="nav-link" data-scroll-target="#saving-the-result">Saving the Result</a>
+  <ul class="collapse">
+  <li><a href="#quick-quiz-1" id="toc-quick-quiz-1" class="nav-link" data-scroll-target="#quick-quiz-1">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#building-spatial_analysis.py" id="toc-building-spatial_analysis.py" class="nav-link" data-scroll-target="#building-spatial_analysis.py">Building <code>spatial_analysis.py</code></a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-06-buffers-distance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-06-buffers-distance.html"><span class="chapter-title">session-06-buffers-distance.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-06-buffers-distance.html"><span class="chapter-title">session 06: vector spatial analysis, buffer and access</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">session 06: vector spatial analysis, buffer and access</span></h1>
+<p class="subtitle lead">Dissolve, spatial joins, and turning distance into our fourth suitability factor</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div style="text-align: justify;">
+<p>Three of our four suitability factors already exist: slope and aspect, from <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>, and land cover, from the NDVI layer in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>. The fourth, access to infrastructure, is the only one that starts and mostly stays a vector problem, rather than a raster one from the beginning. <code>road.gpkg</code> and <code>power.gpkg</code> are lines, not grids, and the question we actually care about, “how close is this pixel to a road or a power line”, only becomes a raster question at the very last step of this session.</p>
+</div>
+<div style="text-align: justify;">
+<p>This is also the session where we go properly deeper into <code>geopandas</code> than <a href="../sessions/session-02-vector-data.html"><strong>Session 02</strong></a> did. Reading, plotting, and checking CRS, what we did there, is the minimum needed to look at vector data. Combining and reshaping it, dissolving features by an attribute, joining two datasets by their spatial relationship rather than a shared column, and buffering, is what real vector analysis looks like, and it is the toolbox this session adds.</p>
+</div>
+</section>
+<section id="setting-up" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up">Setting Up</h2>
+<div id="6fc77ecf" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>boundary <span class="op">=</span> gpd.read_file(<span class="st">"data/Desierto_de_Tabernas.gpkg"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>roads <span class="op">=</span> gpd.read_file(<span class="st">"data/road.gpkg"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>power_points <span class="op">=</span> gpd.read_file(<span class="st">"data/power.gpkg"</span>, layer<span class="op">=</span><span class="st">"power_point"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>power_lines <span class="op">=</span> gpd.read_file(<span class="st">"data/power.gpkg"</span>, layer<span class="op">=</span><span class="st">"power_line"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Boundary CRS:"</span>, boundary.crs)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Roads CRS:"</span>, roads.crs)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Power lines CRS:"</span>, power_lines.crs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Boundary CRS: EPSG:3857
+Roads CRS: EPSG:4326
+Power lines CRS: EPSG:4326</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note: this is the same data from <a href="../sessions/session-02-vector-data.html"><strong>Session 02</strong></a>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>roads</code> carries a <code>highway</code> column describing the road type, along with the usual columns <code>OSMnx</code> attaches, such as <code>osmid</code> and <code>length</code>. <code>power_lines</code> carries a <code>power</code> column, with values such as <code>line</code> and <code>minor_line</code>. <code>boundary</code> is in <code>EPSG:3857</code>, a projected, meters-based CRS, while <code>roads</code> and <code>power_lines</code>, freshly built from OpenStreetMap, are in <code>EPSG:4326</code>, geographic, degrees-based. This mismatch is exactly what we found and fixed in <a href="../sessions/session-02-vector-data.html"><strong>Session 02</strong></a>, and we will need to fix it again here, deliberately, more than once.</p>
+</div>
+</div>
+</section>
+<section id="dissolve-merging-features-by-attribute" class="level2">
+<h2 class="anchored" data-anchor-id="dissolve-merging-features-by-attribute">Dissolve: Merging Features by Attribute</h2>
+<div style="text-align: justify;">
+<p><code>road.gpkg</code> stores every road as a separate segment, since that is how OpenStreetMap represents a network: one row per edge between two intersections, not one row per named road. For some questions this is exactly what we want. For others, such as “how much total primary road exists in this area”, it is the wrong shape, since a single primary road might be split across dozens of rows. <code>.dissolve()</code> solves this by merging every row that shares the same value in a chosen column into a single row, combining their geometries into one.</p>
+</div>
+<div id="9c71e262" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>roads_by_type <span class="op">=</span> roads.dissolve(by<span class="op">=</span><span class="st">"highway"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows before dissolve:"</span>, <span class="bu">len</span>(roads))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rows after dissolve:"</span>, <span class="bu">len</span>(roads_by_type))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>roads_by_type.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows before dissolve: 1124
+Rows after dissolve: 11</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">geometry</th>
+<th data-quarto-table-cell-role="th">u</th>
+<th data-quarto-table-cell-role="th">v</th>
+<th data-quarto-table-cell-role="th">key</th>
+<th data-quarto-table-cell-role="th">osmid</th>
+<th data-quarto-table-cell-role="th">oneway</th>
+<th data-quarto-table-cell-role="th">reversed</th>
+<th data-quarto-table-cell-role="th">length</th>
+<th data-quarto-table-cell-role="th">junction</th>
+<th data-quarto-table-cell-role="th">lanes</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">ref</th>
+<th data-quarto-table-cell-role="th">maxspeed</th>
+<th data-quarto-table-cell-role="th">bridge</th>
+<th data-quarto-table-cell-role="th">tunnel</th>
+<th data-quarto-table-cell-role="th">width</th>
+<th data-quarto-table-cell-role="th">access</th>
+<th data-quarto-table-cell-role="th">est_width</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">highway</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">['living_street', 'residential']</th>
+<td>MULTILINESTRING ((-2.586 36.99137, -2.58609 36...</td>
+<td>7801147421</td>
+<td>7801147425</td>
+<td>0</td>
+<td>[760819034, 929790858]</td>
+<td>False</td>
+<td>True</td>
+<td>42.113827</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">['unclassified', 'residential']</th>
+<td>MULTILINESTRING ((-2.58631 36.98858, -2.58627 ...</td>
+<td>7107872735</td>
+<td>2261581905</td>
+<td>0</td>
+<td>[508464859, 881321564]</td>
+<td>False</td>
+<td>[False, True]</td>
+<td>58.443676</td>
+<td>None</td>
+<td>None</td>
+<td>Calle Pintor Federico Castellón</td>
+<td>None</td>
+<td>None</td>
+<td>yes</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">escape</th>
+<td>MULTILINESTRING ((-2.50189 37.07656, -2.5021 3...</td>
+<td>4501445800</td>
+<td>4501445795</td>
+<td>0</td>
+<td>192257291</td>
+<td>False</td>
+<td>True</td>
+<td>362.517789</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">living_street</th>
+<td>MULTILINESTRING ((-2.58631 36.98858, -2.5861 3...</td>
+<td>7107872735</td>
+<td>2261571607</td>
+<td>0</td>
+<td>760819300</td>
+<td>False</td>
+<td>False</td>
+<td>73.906539</td>
+<td>None</td>
+<td>None</td>
+<td>Calle Morales</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">motorway</th>
+<td>MULTILINESTRING ((-2.49167 37.06823, -2.4915 3...</td>
+<td>1956677891</td>
+<td>4501445835</td>
+<td>0</td>
+<td>453399022</td>
+<td>True</td>
+<td>False</td>
+<td>618.654635</td>
+<td>None</td>
+<td>2</td>
+<td>Autovía de Sevilla a Almería por Granada</td>
+<td>A-92</td>
+<td>120</td>
+<td>yes</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: dissolve versus a plain union
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>.dissolve()</code> is attribute-aware: it groups rows by a column first, then merges geometries within each group, the same mental model as <code>pandas</code>’s <code>.groupby()</code> combined with a spatial merge. A plain <code>unary_union</code>, which we use later in this session, ignores attributes entirely and merges every geometry into one, with no grouping at all. Use <code>dissolve</code> when the result still needs to distinguish categories, and <code>unary_union</code> when it does not.</p>
+</div>
+</div>
+<div style="margin-top: 30px; margin-bottom: 45px; text-align: center;">
+<p><img src="../images/session_06_dissolve_concept.webp" class="img-fluid" style="width:100.0%" alt="a simple before and after diagram showing several separate line segments of the same road type on the left merging into a single continuous line on the right, illustrating the dissolve operation"></p>
+</div>
+<div style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;">
+<p><em>Image generated with GPT Image 2.5.</em></p>
+</div>
+<section id="measuring-real-length-by-road-type" class="level3">
+<h3 class="anchored" data-anchor-id="measuring-real-length-by-road-type">Measuring Real Length by Road Type</h3>
+<div style="text-align: justify;">
+<p><code>roads</code> is in <code>EPSG:4326</code>, so, exactly as flagged in <a href="../sessions/session-02-vector-data.html"><strong>Session 02</strong></a> and again in <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>, calling <code>.length</code> directly on it returns degrees, not meters. We reproject to a projected CRS first, <code>EPSG:32629</code>, the UTM zone that covers our study area, before measuring anything.</p>
+</div>
+<div id="35c4a80d" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>roads_utm <span class="op">=</span> roads.to_crs(<span class="st">"EPSG:32629"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>roads_utm[<span class="st">"length_km"</span>] <span class="op">=</span> roads_utm.length <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>length_by_type <span class="op">=</span> roads_utm.groupby(<span class="st">"highway"</span>)[<span class="st">"length_km"</span>].<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(length_by_type)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>highway
+unclassified                        97.519657
+tertiary                            68.305479
+motorway                            46.714834
+residential                         36.329080
+trunk                                6.055220
+motorway_link                        5.812509
+['unclassified', 'residential']      1.282572
+escape                               1.020043
+living_street                        0.741918
+['living_street', 'residential']     0.200187
+tertiary_link                        0.067177
+Name: length_km, dtype: float64</code></pre>
+</div>
+</div>
+<div id="a17378cc" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>length_by_type.plot(kind<span class="op">=</span><span class="st">"bar"</span>, ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"steelblue"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Total length (km)"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Road type (highway)"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Total Road Length by Type"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-06-buffers-distance_files/figure-html/cell-5-output-1.png" width="854" height="468" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: groupby versus dissolve
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>.groupby("highway")["length_km"].sum()</code> and <code>roads_by_type = roads.dissolve(by="highway")</code> are solving related but different problems. <code>groupby</code> here only aggregates the numbers, it throws the geometry away and returns a plain summary. <code>dissolve</code> keeps the geometry, merging it into one shape per group, which is what we need whenever the merged shape itself, not just a total, is the thing we want next.</p>
+</div>
+</div>
+<details>
+<summary>
+Exercise 1: Dissolve the power lines
+</summary>
+<div style="text-align: justify;">
+<p>Dissolve <code>power_lines</code> by its <code>power</code> column, then reproject the result to <code>EPSG:32629</code> and print the total length in kilometers for each value of <code>power</code>.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="4319e7af" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>power_by_type <span class="op">=</span> power_lines.dissolve(by<span class="op">=</span><span class="st">"power"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>power_by_type_utm <span class="op">=</span> power_by_type.to_crs(<span class="st">"EPSG:32629"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>power_by_type_utm[<span class="st">"length_km"</span>] <span class="op">=</span> power_by_type_utm.length <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(power_by_type_utm[<span class="st">"length_km"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>power
+line          34.899304
+minor_line    30.338987
+Name: length_km, dtype: float64</code></pre>
+</div>
+</div>
+</details>
+</details>
+</section>
+</section>
+<section id="spatial-join-matching-features-by-location-not-by-column" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-join-matching-features-by-location-not-by-column">Spatial Join: Matching Features by Location, Not by Column</h2>
+<div style="text-align: justify;">
+<p>An ordinary <code>pandas</code> join matches rows using a shared column, such as an ID. A spatial join matches rows using a geometric relationship instead, such as “this point falls inside this polygon”, with no shared column required at all. <code>gpd.sjoin()</code> is the tool for this, and it needs a <code>predicate</code> argument telling it exactly what relationship counts as a match: <code>"within"</code>, <code>"intersects"</code>, <code>"contains"</code>, and a handful of others.</p>
+</div>
+<div id="73f51d4d" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>boundary_wgs84 <span class="op">=</span> boundary.to_crs(power_points.crs)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>points_with_boundary <span class="op">=</span> gpd.sjoin(power_points, boundary_wgs84, predicate<span class="op">=</span><span class="st">"within"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>inside_count <span class="op">=</span> points_with_boundary[<span class="st">"index_right"</span>].notna().<span class="bu">sum</span>()</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>outside_count <span class="op">=</span> points_with_boundary[<span class="st">"index_right"</span>].isna().<span class="bu">sum</span>()</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Power points inside boundary:"</span>, inside_count)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Power points outside boundary:"</span>, outside_count)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Power points inside boundary: 108
+Power points outside boundary: 134</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: reproject before joining, not after
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>sjoin</code> compares geometries directly, so both GeoDataFrames must already share the same CRS before the join runs, exactly like the CRS check we have run before every overlay since <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a>. We reprojected <code>boundary</code> to match <code>power_points</code> first, rather than the other way around, following the same rule from <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a>: reproject the smaller, simpler vector layer rather than an expensive raster, and here, between two vector layers, we reproject whichever one is more convenient, as long as it happens before the join.</p>
+</div>
+</div>
+<div id="8708dfc5" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="st">"Inside boundary"</span>, <span class="st">"Outside boundary"</span>]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> [inside_count, outside_count]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>ax.pie(counts, labels<span class="op">=</span>labels, autopct<span class="op">=</span><span class="st">"</span><span class="sc">%1.1f%%</span><span class="st">"</span>, colors<span class="op">=</span>[<span class="st">"darkorange"</span>, <span class="st">"lightgray"</span>])</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Power Points Relative to Study Area Boundary"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-06-buffers-distance_files/figure-html/cell-8-output-1.png" width="463" height="483" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="text-align: justify;">
+<p><code>how="left"</code> keeps every row from <code>power_points</code>, even the ones with no match, filling <code>index_right</code> with <code>NaN</code> for those. This is usually the safer default for a spatial join: <code>how="inner"</code> would silently drop every point outside the boundary, which is sometimes exactly what you want, but not something that should happen without noticing.</p>
+</div>
+<details>
+<summary>
+Exercise 2: Join with a different predicate
+</summary>
+<div style="text-align: justify;">
+<p>Repeat the spatial join above using <code>predicate="intersects"</code> instead of <code>"within"</code>, and compare the resulting inside and outside counts to the ones above. For point geometries, do you expect a difference?</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="0583aa83" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>points_intersects <span class="op">=</span> gpd.sjoin(power_points, boundary_wgs84, predicate<span class="op">=</span><span class="st">"intersects"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>inside_intersects <span class="op">=</span> points_intersects[<span class="st">"index_right"</span>].notna().<span class="bu">sum</span>()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Inside (within):"</span>, inside_count)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Inside (intersects):"</span>, inside_intersects)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Inside (within): 108
+Inside (intersects): 108</code></pre>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>For point geometries against a polygon, <code>"within"</code> and <code>"intersects"</code> almost always agree, since a point has no boundary of its own to distinguish the two cases. The difference between these predicates becomes meaningful with lines and polygons, where a feature can cross a boundary without being fully inside it.</p>
+</div>
+</details>
+</details>
+</section>
+<section id="buffer-from-a-feature-to-a-zone-around-it" class="level2">
+<h2 class="anchored" data-anchor-id="buffer-from-a-feature-to-a-zone-around-it">Buffer: From a Feature to a Zone Around It</h2>
+<div style="text-align: justify;">
+<p>A buffer expands a geometry outward by a fixed distance in every direction, turning a line or a point into a polygon representing “everywhere within this distance of the original feature”. This is exactly the tool the access factor needs: a pixel counts as accessible if it falls inside a 1000 meter buffer around any road or power line.</p>
+</div>
+<div id="28dbc75b" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>roads_utm <span class="op">=</span> roads.to_crs(<span class="st">"EPSG:32629"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>power_lines_utm <span class="op">=</span> power_lines.to_crs(<span class="st">"EPSG:32629"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>road_buffer <span class="op">=</span> roads_utm.<span class="bu">buffer</span>(<span class="dv">1000</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>power_buffer <span class="op">=</span> power_lines_utm.<span class="bu">buffer</span>(<span class="dv">1000</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Road buffer area (sq km):"</span>, road_buffer.area.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1_000_000</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Power buffer area (sq km):"</span>, power_buffer.area.<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1_000_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Road buffer area (sq km): 4024.5305157115004
+Power buffer area (sq km): 208.3558685451346</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: buffer distance is only meaningful in a projected CRS
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>.buffer(1000)</code> interprets <code>1000</code> in whatever unit the GeoDataFrame’s current CRS uses. Called on <code>roads</code> directly, still in <code>EPSG:4326</code>, this would buffer by 1000 degrees, an area covering most of the planet, not 1000 meters. This is the same mistake flagged with <code>.length</code> and <code>.area</code> back in <a href="../sessions/session-02-vector-data.html"><strong>Session 02</strong></a>, and it is exactly why both layers were reprojected to <code>EPSG:32629</code>, a meters-based UTM zone, before buffering.</p>
+</div>
+</div>
+<section id="combining-the-buffers" class="level3">
+<h3 class="anchored" data-anchor-id="combining-the-buffers">Combining the Buffers</h3>
+<div style="text-align: justify;">
+<p><code>road_buffer</code> and <code>power_buffer</code> are each a <code>GeoSeries</code> with one buffered polygon per original feature. We now want a single combined shape representing “accessible from something”, with no distinction between road access and power access, and with all the individual overlapping buffer polygons merged into one. <code>unary_union</code> does exactly this, ignoring attributes entirely, unlike the attribute-aware <code>dissolve</code> used earlier in this session.</p>
+</div>
+<div id="662acdaa" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>combined_buffers <span class="op">=</span> gpd.GeoSeries(<span class="bu">list</span>(road_buffer) <span class="op">+</span> <span class="bu">list</span>(power_buffer), crs<span class="op">=</span><span class="st">"EPSG:32629"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>access_zone <span class="op">=</span> combined_buffers.unary_union</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(access_zone))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'shapely.geometry.multipolygon.MultiPolygon'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/tmp/ipykernel_2720/3642843768.py:4: DeprecationWarning: The 'unary_union' attribute is deprecated, use the 'union_all()' method instead.
+  access_zone = combined_buffers.unary_union</code></pre>
+</div>
+</div>
+<div id="5dba5018" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>boundary_utm <span class="op">=</span> boundary.to_crs(<span class="st">"EPSG:32629"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>gpd.GeoSeries([access_zone], crs<span class="op">=</span><span class="st">"EPSG:32629"</span>).plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"moccasin"</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>roads_utm.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"dimgray"</span>, linewidth<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>power_lines_utm.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"darkorange"</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>boundary_utm.boundary.plot(ax<span class="op">=</span>ax, edgecolor<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"1000m Access Buffer Around Roads and Power Lines"</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-06-buffers-distance_files/figure-html/cell-12-output-1.png" width="559" height="670" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<details>
+<summary>
+Exercise 3: A shorter buffer distance
+</summary>
+<div style="text-align: justify;">
+<p>Rebuild the combined buffer using 500 meters instead of 1000, and compare the total buffered area, in square kilometers, between the two distances.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="ce767aec" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>road_buffer_500 <span class="op">=</span> roads_utm.<span class="bu">buffer</span>(<span class="dv">500</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>power_buffer_500 <span class="op">=</span> power_lines_utm.<span class="bu">buffer</span>(<span class="dv">500</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>combined_500 <span class="op">=</span> gpd.GeoSeries(<span class="bu">list</span>(road_buffer_500) <span class="op">+</span> <span class="bu">list</span>(power_buffer_500), crs<span class="op">=</span><span class="st">"EPSG:32629"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>access_zone_500 <span class="op">=</span> combined_500.unary_union</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>areas_km2 <span class="op">=</span> [access_zone_500.area <span class="op">/</span> <span class="dv">1_000_000</span>, access_zone.area <span class="op">/</span> <span class="dv">1_000_000</span>]</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>ax.bar([<span class="st">"500m buffer"</span>, <span class="st">"1000m buffer"</span>], areas_km2, color<span class="op">=</span>[<span class="st">"lightseagreen"</span>, <span class="st">"darkorange"</span>])</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Total accessible area (sq km)"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Effect of Buffer Distance on Accessible Area"</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/tmp/ipykernel_2720/1282928680.py:4: DeprecationWarning: The 'unary_union' attribute is deprecated, use the 'union_all()' method instead.
+  access_zone_500 = combined_500.unary_union</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-06-buffers-distance_files/figure-html/cell-13-output-2.png" width="519" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+</details>
+</section>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Why does <code>unary_union</code>, rather than <code>dissolve</code>, get used to combine the road and power buffers into a single access zone?</p>
+</div>
+<p>A. Because <code>dissolve</code> cannot be used on buffered geometries</p>
+<p>B. Because the access zone should not distinguish between road access and power access, so no attribute grouping is needed</p>
+<p>C. Because <code>unary_union</code> is faster in every case</p>
+<p>D. Because the buffers are in different CRS</p>
+<details>
+<summary>
+Answer
+</summary>
+B. <code>dissolve</code> groups by an attribute column before merging, which is useful when the result still needs categories. Here we deliberately want one undifferentiated zone, “accessible or not”, with no distinction kept between the source layers, which is exactly what a plain <code>unary_union</code> gives us.
+</details>
+</details>
+</section>
+</section>
+<section id="from-vector-to-raster-rasterizing-the-access-zone" class="level2">
+<h2 class="anchored" data-anchor-id="from-vector-to-raster-rasterizing-the-access-zone">From Vector to Raster: Rasterizing the Access Zone</h2>
+<div style="text-align: justify;">
+<p>Every other suitability factor is already a raster, aligned to the same grid as <code>dem.tif</code>. The access zone, so far, is a single <code>shapely</code> polygon with no pixels at all. <code>rasterio.features.rasterize()</code> closes this gap: given a geometry and a reference grid, defined by a shape and a transform, exactly the metadata we studied in <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>, it produces a new array marking which pixels fall inside that geometry.</p>
+</div>
+<div id="b75acdc8" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio.features</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/dem.tif"</span>) <span class="im">as</span> src:</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    reference_shape <span class="op">=</span> (src.height, src.width)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    reference_transform <span class="op">=</span> src.transform</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    reference_crs <span class="op">=</span> src.crs</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    reference_profile <span class="op">=</span> src.profile</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Note: the geometry must match the reference raster’s CRS
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>rasterize()</code> has no awareness of CRS at all, it works purely in the reference grid’s own coordinates. <code>access_zone</code> is currently in <code>EPSG:32629</code>, from the buffering step above, while <code>dem.tif</code> is in <code>EPSG:4326</code>, as noted since <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>. The geometry has to be reprojected to match the raster before rasterizing, or every pixel will be marked incorrectly.</p>
+</div>
+</div>
+<div id="5d6414be" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyproj <span class="im">import</span> CRS</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.ops <span class="im">import</span> transform <span class="im">as</span> shapely_transform</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyproj <span class="im">import</span> Transformer</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>transformer <span class="op">=</span> Transformer.from_crs(<span class="st">"EPSG:32629"</span>, reference_crs, always_xy<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>access_zone_dem_crs <span class="op">=</span> shapely_transform(transformer.transform, access_zone)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>access_raster <span class="op">=</span> rasterio.features.rasterize(</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    [(access_zone_dem_crs, <span class="dv">1</span>)],</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    out_shape<span class="op">=</span>reference_shape,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    transform<span class="op">=</span>reference_transform,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    fill<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    dtype<span class="op">=</span><span class="st">"uint8"</span>,</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Access raster shape:"</span>, access_raster.shape)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Accessible pixels:"</span>, np.<span class="bu">sum</span>(access_raster <span class="op">==</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Access raster shape: (605, 610)
+Accessible pixels: 222850</code></pre>
+</div>
+</div>
+<div id="73a2bb73" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>accessible_percentage <span class="op">=</span> (np.<span class="bu">sum</span>(access_raster <span class="op">==</span> <span class="dv">1</span>) <span class="op">/</span> access_raster.size) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>ax.imshow(access_raster, cmap<span class="op">=</span><span class="st">"Greens"</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="ss">f"Access Mask (within 1000m of road or power), </span><span class="sc">{</span>accessible_percentage<span class="sc">:.2f}</span><span class="ss">% of pixels"</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-06-buffers-distance_files/figure-html/cell-16-output-1.png" width="579" height="578" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>This is the same style of percentage summary used for the NDWI water mask in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a> and the gentle slope and south facing masks in <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>, and deliberately so: every one of the project’s four suitability inputs ends this course’s early sessions the same way, as a mask or continuous layer with a printed percentage, ready to be combined once every layer finally shares one grid, in <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>.</p>
+</div>
+</section>
+<section id="saving-the-result" class="level2">
+<h2 class="anchored" data-anchor-id="saving-the-result">Saving the Result</h2>
+<div id="61d10f78" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>output_profile <span class="op">=</span> reference_profile.copy()</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>output_profile.update({<span class="st">"dtype"</span>: <span class="st">"uint8"</span>, <span class="st">"count"</span>: <span class="dv">1</span>, <span class="st">"nodata"</span>: <span class="va">None</span>})</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/outputs/access.tif"</span>, <span class="st">"w"</span>, <span class="op">**</span>output_profile) <span class="im">as</span> dst:</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    dst.write(access_raster, <span class="dv">1</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Saved access.tif to data/outputs/"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved access.tif to data/outputs/</code></pre>
+</div>
+</div>
+<details>
+<summary>
+Exercise 4: Rasterize the 500m buffer
+</summary>
+<div style="text-align: justify;">
+<p>Using <code>access_zone_500</code> from Exercise 3, reproject it to the DEM’s CRS and rasterize it against the same reference grid. Compare the accessible percentage against the 1000m version above with a bar chart.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div id="349aa2b7" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>access_zone_500_dem_crs <span class="op">=</span> shapely_transform(transformer.transform, access_zone_500)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>access_raster_500 <span class="op">=</span> rasterio.features.rasterize(</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    [(access_zone_500_dem_crs, <span class="dv">1</span>)],</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    out_shape<span class="op">=</span>reference_shape,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    transform<span class="op">=</span>reference_transform,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    fill<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    dtype<span class="op">=</span><span class="st">"uint8"</span>,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>percentage_500 <span class="op">=</span> (np.<span class="bu">sum</span>(access_raster_500 <span class="op">==</span> <span class="dv">1</span>) <span class="op">/</span> access_raster_500.size) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>ax.bar([<span class="st">"500m buffer"</span>, <span class="st">"1000m buffer"</span>], [percentage_500, accessible_percentage], color<span class="op">=</span>[<span class="st">"lightseagreen"</span>, <span class="st">"darkorange"</span>])</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Accessible pixels (%)"</span>)</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Effect of Buffer Distance on Accessible Area"</span>)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="session-06-buffers-distance_files/figure-html/cell-18-output-1.png" width="510" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+</details>
+<section id="quick-quiz-1" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz-1">Quick quiz</h3>
+<details>
+<summary>
+Question 2
+</summary>
+<div style="text-align: justify;">
+<p>Why does <code>rasterize()</code> need a reference raster’s shape and transform, rather than just the geometry itself?</p>
+</div>
+<p>A. Because <code>rasterize()</code> cannot work with polygons, only points</p>
+<p>B. Because the geometry has no pixel grid of its own; the reference grid supplies the resolution and extent that turns it into pixels</p>
+<p>C. Because the geometry must already be in raster format</p>
+<p>D. Because <code>rasterize()</code> always produces a raster the same size as the geometry’s bounding box</p>
+<details>
+<summary>
+Answer
+</summary>
+B. A vector geometry is defined by coordinates, not pixels. <code>rasterize()</code> needs to be told exactly what grid, what resolution, what extent, and what alignment, to stamp that geometry onto, which is exactly the <code>out_shape</code> and <code>transform</code> supplied from the reference raster.
+</details>
+</details>
+</section>
+</section>
+<section id="building-spatial_analysis.py" class="level2">
+<h2 class="anchored" data-anchor-id="building-spatial_analysis.py">Building <code>spatial_analysis.py</code></h2>
+<div style="text-align: justify;">
+<p>This session’s module collects the dissolve, join, buffer, and rasterize steps above into reusable functions, saved into <code>modules/spatial_analysis.py</code>.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># modules/spatial_analysis.py</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio.features</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyproj <span class="im">import</span> Transformer</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.ops <span class="im">import</span> transform <span class="im">as</span> shapely_transform</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dissolve_by_type(gdf, column):</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Merge features sharing the same value in a given column into one geometry per group."""</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> gdf.dissolve(by<span class="op">=</span>column)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> join_within_boundary(gdf, boundary):</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return only the features of gdf that fall within boundary, after matching their CRS."""</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    boundary_matched <span class="op">=</span> boundary.to_crs(gdf.crs)</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    joined <span class="op">=</span> gpd.sjoin(gdf, boundary_matched, predicate<span class="op">=</span><span class="st">"within"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> joined[joined[<span class="st">"index_right"</span>].notna()]</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> buffer_and_union(gdf_list, distance, projected_crs):</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Buffer each GeoDataFrame in gdf_list by distance (in the units of projected_crs),</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="co">    then merge every resulting buffer into a single combined geometry."""</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>    all_buffers <span class="op">=</span> []</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> gdf <span class="kw">in</span> gdf_list:</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>        gdf_projected <span class="op">=</span> gdf.to_crs(projected_crs)</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>        all_buffers.extend(<span class="bu">list</span>(gdf_projected.<span class="bu">buffer</span>(distance)))</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>    combined <span class="op">=</span> gpd.GeoSeries(all_buffers, crs<span class="op">=</span>projected_crs)</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> combined.unary_union</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rasterize_to_reference(geometry, geometry_crs, reference_shape, reference_transform, reference_crs):</span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Rasterize a single geometry onto a reference raster's grid, reprojecting it first if needed."""</span></span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> geometry_crs <span class="op">!=</span> reference_crs:</span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>        transformer <span class="op">=</span> Transformer.from_crs(geometry_crs, reference_crs, always_xy<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>        geometry <span class="op">=</span> shapely_transform(transformer.transform, geometry)</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rasterio.features.rasterize(</span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>        [(geometry, <span class="dv">1</span>)],</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>        out_shape<span class="op">=</span>reference_shape,</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>        transform<span class="op">=</span>reference_transform,</span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>        dtype<span class="op">=</span><span class="st">"uint8"</span>,</span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Following the same split used in every module so far, <code>dissolve_by_type</code> and <code>join_within_boundary</code> work directly on GeoDataFrames with no file access, while <code>rasterize_to_reference</code> is the one function here that bridges vector and raster, exactly the boundary this session itself walked across.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session pushed our <code>geopandas</code> skills well past reading and plotting: <code>.dissolve()</code> merged road and power features by attribute, <code>gpd.sjoin()</code> matched features by spatial relationship rather than a shared column, and <code>.buffer()</code> turned lines and points into zones of influence, all while carefully managing the CRS reprojections that <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a> and <a href="../sessions/session-02-vector-data.html"><strong>Session 02</strong></a> already warned us about. We combined road and power buffers into a single access zone with <code>unary_union</code>, and closed the loop back to raster with <code>rasterio.features.rasterize()</code>, producing and saving <code>access.tif</code>, our fourth and final suitability factor. We also built <code>modules/spatial_analysis.py</code>. Every factor the project needs now exists as a raster, but each one has its own shape, resolution, and CRS. <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> is where we force all four onto one common grid, so they can finally be combined.</p>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -834,8 +1663,8 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../sessions/session-07-reprojection.html" class="pagination-link" aria-label="session-07-reprojection.html">
-        <span class="nav-page-text"><span class="chapter-title">session-07-reprojection.html</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../sessions/session-07-reprojection.html" class="pagination-link" aria-label="session 07: resampling, reprojection, and alignment">
+        <span class="nav-page-text"><span class="chapter-title">session 07: resampling, reprojection, and alignment</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -847,7 +1676,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-06-buffers-distance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-06-buffers-distance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>
