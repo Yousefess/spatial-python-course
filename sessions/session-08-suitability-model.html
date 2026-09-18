@@ -508,7 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="loading-the-aligned-layers" class="level2">
 <h2 class="anchored" data-anchor-id="loading-the-aligned-layers">Loading the Aligned Layers</h2>
-<div id="4df2ce04" class="cell" data-execution_count="1">
+<div id="c6c70152" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -546,7 +546,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Nothing in this section checks alignment by hand, since <code>check_alignment</code> from <code>modules/reprojector.py</code>, built in <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>, already exists specifically to be called here first, before any of this session’s own math runs. It is good practice to actually call it, rather than only trusting that <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> worked.</p>
 </div>
 </div>
-<div id="c2e3cad8" class="cell" data-execution_count="2">
+<div id="0e27df29" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sys.path.append(<span class="st">"modules"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> reprojector <span class="im">import</span> check_alignment</span>
@@ -562,7 +562,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>Gentle slopes are good for solar installation, steep slopes are not, so slope needs an inverted normalization: low slope should map close to 1, and high slope should map close to 0. A simple, common approach is min-max normalization, rescaling the actual range of values in the data to sit between 0 and 1, then flipping it.</p>
 </div>
-<div id="65d25fd7" class="cell" data-execution_count="3">
+<div id="097fe34a" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_slope(slope, max_slope<span class="op">=</span><span class="dv">45</span>):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize slope so 0 degrees scores 1 (best) and max_slope or more scores 0 (worst)."""</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    clipped <span class="op">=</span> np.clip(slope, <span class="dv">0</span>, max_slope)</span>
@@ -595,7 +595,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>Aspect needs more care than a straight min-max rescale, for the same reason flagged back in <a href="../sessions/session-05-slope-aspect.html"><strong>Session 05</strong></a>: it is a circular quantity. A south-facing slope, around 180 degrees, is ideal. As aspect moves away from 180 in either direction, east through west or west through east, suitability should fall off symmetrically, until due north, 0 or 360 degrees, is the worst possible aspect. A plain <code>aspect / 360</code> would incorrectly treat 359 degrees as almost the best score, when it is actually almost due north, one of the worst.</p>
 </div>
-<div id="eafc0884" class="cell" data-execution_count="4">
+<div id="f9189909" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_aspect(aspect):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Score aspect by closeness to south (180 degrees). Flat pixels (-1) score 0."""</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    distance_from_south <span class="op">=</span> np.<span class="bu">abs</span>(aspect <span class="op">-</span> <span class="dv">180</span>)</span>
@@ -634,7 +634,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>Low NDVI, bare or scrubby ground, is preferable for this project, exactly as established back in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, so NDVI also needs an inverted normalization, the same shape as slope’s, but over NDVI’s own natural range.</p>
 </div>
-<div id="145b1982" class="cell" data-execution_count="5">
+<div id="c79e6a01" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_ndvi(ndvi):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize NDVI so low vegetation scores 1 (best) and high vegetation scores 0 (worst)."""</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    clipped <span class="op">=</span> np.clip(ndvi, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
@@ -657,7 +657,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p><code>access.tif</code> already stores exactly 0 or 1, with 1 already meaning “good”, accessible, so no rescaling is needed at all. It is included here only to make explicit that not every layer requires the same treatment, and that checking what a layer already represents comes before deciding how, or whether, to transform it.</p>
 </div>
-<div id="ee5b1c2e" class="cell" data-execution_count="6">
+<div id="04004271" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>access_score <span class="op">=</span> layers[<span class="st">"access"</span>]</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Access score unique values:"</span>, np.unique(access_score))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -670,7 +670,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>Before combining anything, it is worth looking at all four scores side by side, now that they finally share not just a grid, but a scale. Every one of these four maps should visually range from 0, shown pale or dark depending on the colormap, to 1.</p>
 </div>
-<div id="db61eb61" class="cell" data-execution_count="7">
+<div id="f80f2cc7" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> {<span class="st">"Slope"</span>: slope_score, <span class="st">"Aspect"</span>: aspect_score, <span class="st">"NDVI"</span>: ndvi_score, <span class="st">"Access"</span>: access_score}</span>
@@ -697,7 +697,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>A <strong>weight</strong> is simply a number representing how much a factor should count relative to the others, and the weights across all factors are chosen to add up to 1, so the final combined score stays within the same 0 to 1 range as each individual input. This project’s default weights, established at the start of the course, are slope 0.3, aspect 0.2, NDVI 0.3, and access 0.2, reflecting that terrain, slope and land cover, matters somewhat more for this particular project than proximity to existing infrastructure, though this is a modeling choice, not a fact about solar siting in general, which is exactly why it becomes this session’s main exercise to change.</p>
 </div>
-<div id="320427a1" class="cell" data-execution_count="8">
+<div id="4d1c357f" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> {</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slope"</span>: <span class="fl">0.3</span>,</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"aspect"</span>: <span class="fl">0.2</span>,</span>
@@ -710,7 +710,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Weights sum to: 1.0</code></pre>
 </div>
 </div>
-<div id="6982db1f" class="cell" data-execution_count="9">
+<div id="0314edd6" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_final_score(slope_score, aspect_score, ndvi_score, access_score, weights):</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Combine four normalized 0-1 layers into one weighted score, scaled to 0-100."""</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    combined <span class="op">=</span> (</span>
@@ -747,7 +747,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>The NDWI water mask, built and inspected but deliberately never applied back in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, finally gets used here. A pixel sitting in water is not simply penalized for it, exactly as that session explained, it should be removed from consideration entirely, regardless of how favorably every other factor scored it. We rebuild the mask here, since it was not one of the four factor layers carried through <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>’s alignment, and apply it directly to the final score.</p>
 </div>
-<div id="3e2aa7aa" class="cell" data-execution_count="10">
+<div id="76b294a4" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/sentinel.tif"</span>) <span class="im">as</span> src:</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    green <span class="op">=</span> src.read(<span class="dv">2</span>).astype(<span class="st">"float32"</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    nir <span class="op">=</span> src.read(<span class="dv">4</span>).astype(<span class="st">"float32"</span>)</span>
@@ -774,7 +774,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>ndwi</code> above was calculated directly from <code>sentinel.tif</code>, still in its original grid from <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, not the aligned grid this session has been using since. Applying it directly to <code>suitability_score</code> would silently reintroduce the exact misalignment problem <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> exists to prevent. In a full project, this mask would be run through the same <code>resample_to_reference</code> step from <code>modules/reprojector.py</code> before use. For this session, since building the full mask is a repeat of <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>’s own steps, we take the shortcut of resampling only the boolean mask itself with nearest-neighbor resampling, the correct method for categorical data, exactly as decided in <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>.</p>
 </div>
 </div>
-<div id="8d24133a" class="cell" data-execution_count="11">
+<div id="30120af6" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.warp <span class="im">import</span> reproject, Resampling</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(<span class="st">"data/sentinel.tif"</span>) <span class="im">as</span> src:</span>
@@ -803,7 +803,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>A continuous 0 to 100 score is precise, but a decision maker usually wants a simpler answer: is this location suitable or not. We split the continuous score into three classes using fixed thresholds, following the project’s original plan: below 40 is unsuitable, 40 to 70 is moderate, and above 70 is suitable.</p>
 </div>
-<div id="eb432f19" class="cell" data-execution_count="12">
+<div id="b837fe75" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_suitability(score, low_threshold<span class="op">=</span><span class="dv">40</span>, high_threshold<span class="op">=</span><span class="dv">70</span>):</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Classify a continuous suitability score into 3 classes: 0=unsuitable, 1=moderate, 2=suitable."""</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    classified <span class="op">=</span> np.zeros_like(score, dtype<span class="op">=</span><span class="st">"uint8"</span>)</span>
@@ -831,7 +831,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="visualizing-the-final-result" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-the-final-result">Visualizing the Final Result</h2>
-<div id="72dd1a53" class="cell" data-execution_count="13">
+<div id="91ac32e9" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">7</span>))</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>score_im <span class="op">=</span> axes[<span class="dv">0</span>].imshow(suitability_score, cmap<span class="op">=</span><span class="st">"RdYlGn"</span>, vmin<span class="op">=</span><span class="dv">0</span>, vmax<span class="op">=</span><span class="dv">100</span>)</span>
@@ -862,7 +862,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: justify;">
 <p>A map communicates location, but a decision maker often wants a single summary number first: how much of the study area is actually usable. We count pixels per class and convert that count into an approximate area, using the pixel resolution carried in <code>reference_profile</code>.</p>
 </div>
-<div id="519cb679" class="cell" data-execution_count="14">
+<div id="0b3a3b35" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pixel_area_m2 <span class="op">=</span> <span class="bu">abs</span>(reference_profile[<span class="st">"transform"</span>].a <span class="op">*</span> reference_profile[<span class="st">"transform"</span>].e)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>class_counts <span class="op">=</span> {label: np.<span class="bu">sum</span>(suitability_class <span class="op">==</span> value) <span class="cf">for</span> value, label <span class="kw">in</span> class_labels.items()}</span>
@@ -876,7 +876,7 @@ Moderate: 235.71 sq km
 Suitable: 23.97 sq km</code></pre>
 </div>
 </div>
-<div id="fe358384" class="cell" data-execution_count="15">
+<div id="0a2ebad2" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>ax.bar(class_area_km2.keys(), class_area_km2.values(), color<span class="op">=</span>[<span class="st">"firebrick"</span>, <span class="st">"khaki"</span>, <span class="st">"forestgreen"</span>])</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Area (sq km)"</span>)</span>
@@ -901,7 +901,7 @@ Exercise 1: Change the weights
 <summary>
 Solution
 </summary>
-<div id="c59c0e73" class="cell" data-execution_count="16">
+<div id="f496f890" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>equal_weights <span class="op">=</span> {<span class="st">"slope"</span>: <span class="fl">0.25</span>, <span class="st">"aspect"</span>: <span class="fl">0.25</span>, <span class="st">"ndvi"</span>: <span class="fl">0.25</span>, <span class="st">"access"</span>: <span class="fl">0.25</span>}</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>suitability_equal <span class="op">=</span> calculate_final_score(slope_score, aspect_score, ndvi_score, access_score, equal_weights)</span>
@@ -946,7 +946,7 @@ Exercise 2: A stricter suitable threshold
 <summary>
 Solution
 </summary>
-<div id="02400479" class="cell" data-execution_count="17">
+<div id="470ddcb1" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>strict_class <span class="op">=</span> classify_suitability(suitability_score, low_threshold<span class="op">=</span><span class="dv">40</span>, high_threshold<span class="op">=</span><span class="dv">80</span>)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>strict_suitable_km2 <span class="op">=</span> (np.<span class="bu">sum</span>(strict_class <span class="op">==</span> <span class="dv">2</span>) <span class="op">*</span> pixel_area_m2) <span class="op">/</span> <span class="dv">1_000_000</span></span>
@@ -1003,7 +1003,7 @@ B. This is the same reasoning introduced in <a href="../sessions/session-04-ndvi
 </section>
 <section id="saving-the-results" class="level2">
 <h2 class="anchored" data-anchor-id="saving-the-results">Saving the Results</h2>
-<div id="7a887926" class="cell" data-execution_count="18">
+<div id="2946a869" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
