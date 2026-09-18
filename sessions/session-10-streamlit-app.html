@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="A hands-on, project-based course for learning spatial data science with Python, covering vector data, raster data, remote sensing, spatial analysis, suitability modeling, interactive maps, and Streamlit applications.">
 
-<title>session-10-streamlit-app – Spatial Python</title>
+<title>session 10: a Streamlit app, from ten sessions to one page – Spatial Python</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -25,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -256,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-10-streamlit-app.html"><span class="chapter-title">session-10-streamlit-app.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-10-streamlit-app.html"><span class="chapter-title">session 10: a Streamlit app, from ten sessions to one page</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -364,7 +400,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-10-streamlit-app.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session-10-streamlit-app.html</span></a>
+  <a href="../sessions/session-10-streamlit-app.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">session 10: a Streamlit app, from ten sessions to one page</span></a>
   </div>
 </li>
       </ul>
@@ -395,18 +431,306 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#why-streamlit-and-not-just-a-bigger-notebook" id="toc-why-streamlit-and-not-just-a-bigger-notebook" class="nav-link" data-scroll-target="#why-streamlit-and-not-just-a-bigger-notebook">Why Streamlit, and Not Just a Bigger Notebook</a></li>
+  <li><a href="#the-two-caching-decorators-that-make-this-fast" id="toc-the-two-caching-decorators-that-make-this-fast" class="nav-link" data-scroll-target="#the-two-caching-decorators-that-make-this-fast">The Two Caching Decorators That Make This Fast</a></li>
+  <li><a href="#building-the-sidebar" id="toc-building-the-sidebar" class="nav-link" data-scroll-target="#building-the-sidebar">Building the Sidebar</a></li>
+  <li><a href="#laying-out-the-main-page" id="toc-laying-out-the-main-page" class="nav-link" data-scroll-target="#laying-out-the-main-page">Laying Out the Main Page</a></li>
+  <li><a href="#the-one-time-pipeline-shown-live" id="toc-the-one-time-pipeline-shown-live" class="nav-link" data-scroll-target="#the-one-time-pipeline-shown-live">The One-Time Pipeline, Shown Live</a></li>
+  <li><a href="#guarding-against-missing-data" id="toc-guarding-against-missing-data" class="nav-link" data-scroll-target="#guarding-against-missing-data">Guarding Against Missing Data</a>
+  <ul class="collapse">
+  <li><a href="#quick-quiz" id="toc-quick-quiz" class="nav-link" data-scroll-target="#quick-quiz">Quick quiz</a></li>
+  </ul></li>
+  <li><a href="#running-the-app" id="toc-running-the-app" class="nav-link" data-scroll-target="#running-the-app">Running the App</a></li>
+  <li><a href="#what-app.py-deliberately-does-not-do" id="toc-what-app.py-deliberately-does-not-do" class="nav-link" data-scroll-target="#what-app.py-deliberately-does-not-do">What <code>app.py</code> Deliberately Does Not Do</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-10-streamlit-app.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-10-streamlit-app.html"><span class="chapter-title">session-10-streamlit-app.html</span></a></li></ol></nav></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sessions/session-01-intro-loading-data.html">Building the Project</a></li><li class="breadcrumb-item"><a href="../sessions/session-10-streamlit-app.html"><span class="chapter-title">session 10: a Streamlit app, from ten sessions to one page</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">session 10: a Streamlit app, from ten sessions to one page</span></h1>
+<p class="subtitle lead">Turning every module built so far into a live, interactive tool</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div style="text-align: justify;">
+<p>Every session since <a href="../sessions/session-01-intro-loading-data.html"><strong>Session 01</strong></a> has ended the same way: build one module, save it into <code>modules/</code>, move on. <a href="../sessions/session-09-interactive-map.html"><strong>Session 09</strong></a> produced a real interactive map, <code>solar_map.html</code>, but it was still a static export, a snapshot of one specific set of weights and thresholds, saved once and then frozen. This final session wraps everything built so far into <code>app.py</code>, a Streamlit web application where a viewer can move a slider and watch the suitability map redraw itself, live, in the browser, with no Python and no notebook in sight.</p>
+</div>
+<div style="text-align: justify;">
+<p>This session is different from every one before it in one important way: it does not build a new module. <code>app.py</code> contains almost no analysis logic of its own. Its only job is to import <code>data_loader.py</code>, <code>raster_utils.py</code>, <code>indices.py</code>, <code>terrain_analysis.py</code>, <code>spatial_analysis.py</code>, <code>reprojector.py</code>, <code>solar_suitability.py</code>, and <code>interactive_map.py</code>, and wire them together. That is deliberate, and it is the entire point of having spent nine sessions building modules instead of writing one long script: the hard part is already finished.</p>
+</div>
+</section>
+<section id="why-streamlit-and-not-just-a-bigger-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="why-streamlit-and-not-just-a-bigger-notebook">Why Streamlit, and Not Just a Bigger Notebook</h2>
+<div style="text-align: justify;">
+<p>A notebook, or the plain HTML file from <a href="../sessions/session-09-interactive-map.html"><strong>Session 09</strong></a>, only ever shows one result at a time, the one that was on screen when it was last saved. Streamlit turns a plain Python script into a web app by re-running that entire script, top to bottom, every single time the viewer interacts with anything, a slider, a checkbox, a button. This one idea, a full rerun on every interaction, explains almost everything about how a Streamlit app has to be written, and is worth understanding before looking at a single widget.</p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note: “rerun the whole script” sounds wasteful, and would be, without caching
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If moving a weight slider genuinely re-read every GeoTIFF from disk and rebuilt the entire pipeline from <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a> through <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> each time, this app would be unusably slow. <code>st.cache_resource</code> and <code>st.cache_data</code>, covered next, exist specifically so that only the truly cheap part, the weighted sum itself, actually reruns on every slider move.</p>
+</div>
+</div>
+</section>
+<section id="the-two-caching-decorators-that-make-this-fast" class="level2">
+<h2 class="anchored" data-anchor-id="the-two-caching-decorators-that-make-this-fast">The Two Caching Decorators That Make This Fast</h2>
+<div style="text-align: justify;">
+<p><code>app.py</code> uses two different Streamlit caching decorators, on purpose, for two different kinds of expensive work.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="at">@st.cache_resource</span>(show_spinner<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_aligned_layers_if_needed():</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.cache_resource</code> is meant for something built once and reused as-is for the lifetime of the app, a database connection, a loaded model, or here, the entire <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a> through <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a> pipeline that produces the four aligned GeoTIFFs. The function checks whether <code>data/outputs/aligned/*.tif</code> already exist, and if so returns their paths immediately without recalculating anything. The very first time the app runs against a fresh <code>data/</code> folder, this function actually calls <code>load_and_calculate_indices</code>, <code>load_and_calculate_terrain</code>, <code>buffer_and_union</code>, <code>rasterize_to_reference</code>, <code>reproject_raster</code>, <code>resample_to_reference</code>, and <code>clip_array_to_boundary</code>, in that order, the exact chain Sessions 04 through 07 built by hand. Every rerun after that, this function’s body never executes again for the lifetime of the running app.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="at">@st.cache_data</span>(show_spinner<span class="op">=</span><span class="st">"Loading aligned layers..."</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_layers(_aligned_paths):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.cache_data</code> is meant for data, specifically for a function whose return value Streamlit can safely copy and hash by its inputs. <code>load_layers</code>, <code>compute_normalized_scores</code>, and <code>compute_aligned_water_mask</code> are all cached this way: the first time they run with a given input, Streamlit stores the result; every later rerun with the same input returns the cached array instantly instead of re-reading a GeoTIFF or recomputing a normalization.</p>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Note: the leading underscore in <code>_aligned_paths</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Streamlit’s caching works by hashing a function’s arguments, to know whether it has already seen this exact input before. A parameter name that starts with an underscore tells Streamlit not to try hashing it, useful here since <code>_aligned_paths</code> is a plain dictionary of file paths that will not change between reruns anyway, and some objects passed elsewhere in a larger app are not reliably hashable at all.</p>
+</div>
+</div>
+<div style="text-align: justify;">
+<p>Between these two layers of caching, the only thing that actually recomputes on every single rerun is the weighted sum itself, <code>calculate_final_score</code> from <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>, which is a handful of NumPy array multiplications on already-normalized arrays. That is fast enough to feel instant, which is the whole reason a slider works at all.</p>
+</div>
+</section>
+<section id="building-the-sidebar" class="level2">
+<h2 class="anchored" data-anchor-id="building-the-sidebar">Building the Sidebar</h2>
+<div style="text-align: justify;">
+<p>Every widget placed on <code>st.sidebar</code> instead of directly on <code>st</code>, renders in the collapsible panel down the left side of the page rather than in the main body, which is where this app keeps every control so the map itself stays full width.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>st.sidebar.header(<span class="st">"Suitability weights"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>raw_weights <span class="op">=</span> {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slope"</span>: st.sidebar.slider(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Slope"</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, DEFAULT_WEIGHTS[<span class="st">"slope"</span>], <span class="fl">0.05</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">help</span><span class="op">=</span><span class="st">"How much a gentle slope matters..."</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.sidebar.slider(label, min_value, max_value, value, step, help=...)</code> returns whatever value the slider is currently sitting at, every single time the script reruns, which is why simply calling it and storing the return value is enough, there is no separate “on change” callback needed the way there would be in a traditional GUI toolkit. The <code>help</code> argument is doing real work here too: it renders a small icon next to the label that shows the given text in a tooltip on hover, which is how this app explains what each of the four factors actually means without needing a separate help button anywhere.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>weight_sum <span class="op">=</span> <span class="bu">sum</span>(raw_weights.values()) <span class="kw">or</span> <span class="fl">1.0</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> {name: value <span class="op">/</span> weight_sum <span class="cf">for</span> name, value <span class="kw">in</span> raw_weights.items()}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a> required its weights to add up to 1 by hand. Here, since a viewer might drag any slider to any value, the app rescales all four automatically every rerun, so no combination of slider positions can ever produce an invalid weighted sum.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>n_classes <span class="op">=</span> st.sidebar.radio(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Number of classes"</span>, options<span class="op">=</span>[<span class="dv">3</span>, <span class="dv">5</span>], horizontal<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">help</span><span class="op">=</span><span class="st">"3 classes: Unsuitable / Moderate / Suitable..."</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.sidebar.radio</code> works the same way as the sliders: it returns whichever option is currently selected, every rerun. This app uses that return value to pick between two entirely different color schemes and classification functions, <code>classify_suitability</code> for 3 classes with adjustable thresholds, and <code>classify_multi</code> for a fixed 5-class breakdown, both from <code>modules/solar_suitability.py</code>.</p>
+</div>
+</section>
+<section id="laying-out-the-main-page" class="level2">
+<h2 class="anchored" data-anchor-id="laying-out-the-main-page">Laying Out the Main Page</h2>
+<div style="text-align: justify;">
+<p><code>st.columns(n)</code> splits the current section of the page into <code>n</code> side-by-side containers, and is used twice in this app: once for the two download buttons near the top, and once for the metric cards above the bar chart.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>download_col1, download_col2 <span class="op">=</span> st.columns(<span class="dv">2</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> download_col1:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    st.download_button(<span class="st">"Download suitability_class.tif"</span>, data<span class="op">=</span>tif_buffer, ...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.download_button</code> needs its <code>data</code> argument ready before the button is drawn, which is why the app writes the classified raster into an in-memory <code>io.BytesIO</code> buffer, using <code>rasterio.io.MemoryFile</code>, and renders the Folium map’s full HTML with <code>m.get_root().render()</code>, before either download button appears on the page. Nothing is written to disk for either download; both exist only as bytes held in memory for exactly as long as this rerun lasts.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>st_folium(m, height<span class="op">=</span><span class="dv">700</span>, use_container_width<span class="op">=</span><span class="va">True</span>, returned_objects<span class="op">=</span>[])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st_folium</code>, from the separate <code>streamlit-folium</code> package, is what actually places a Folium map object inside a Streamlit page. Passing <code>returned_objects=[]</code> tells it not to bother sending anything back from the map, such as the last click location, since this app never reads that back; leaving it out would work too, but would waste a little time on every rerun serializing information nothing here uses.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>st.metric(label, <span class="ss">f"</span><span class="sc">{</span>area<span class="sc">:.1f}</span><span class="ss"> km²"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.metric</code> renders a single, large, dashboard-style number with a label above it, which is what turns “Suitable: 12.4” from a line of text into something that reads at a glance, exactly the kind of summary a non-technical stakeholder scans first.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>st.altair_chart(bar_chart, use_container_width<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p>Streamlit’s own <code>st.bar_chart</code> is a fast, simple default, but it does not let each bar take its own specific color. Since this app needs the bar chart’s colors to exactly match the map’s legend, “Suitable” green on the map has to be the same green in the chart, it builds the chart with <code>altair</code> instead, and passes an explicit <code>alt.Scale(domain=..., range=...)</code> mapping each class label to the same hex color used everywhere else. <code>st.altair_chart</code> is simply the function that renders any chart built with the <code>altair</code> library inside a Streamlit page.</p>
+</div>
+</section>
+<section id="the-one-time-pipeline-shown-live" class="level2">
+<h2 class="anchored" data-anchor-id="the-one-time-pipeline-shown-live">The One-Time Pipeline, Shown Live</h2>
+<div style="text-align: justify;">
+<p>The very first time <code>app.py</code> runs against a fresh project, <code>build_aligned_layers_if_needed</code> has real work to do, and a viewer would otherwise stare at a blank page for however long that takes.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>progress <span class="op">=</span> st.progress(<span class="dv">0</span>, text<span class="op">=</span><span class="st">"Running the full pipeline for the first time..."</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>progress.progress(<span class="dv">30</span>, text<span class="op">=</span><span class="st">"Calculating slope and aspect (Session 05)..."</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>progress.progress(<span class="dv">100</span>, text<span class="op">=</span><span class="st">"Done."</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>progress.empty()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.progress</code> draws a progress bar and returns a handle; calling <code>.progress()</code> again on that same handle updates the existing bar in place, rather than drawing a new one underneath it, and updating its <code>text</code> argument at each step is what lets the viewer see exactly which Session’s logic is currently running. <code>.empty()</code> removes the bar entirely once the pipeline is done, so it does not sit uselessly on the page for the rest of the session.</p>
+</div>
+</section>
+<section id="guarding-against-missing-data" class="level2">
+<h2 class="anchored" data-anchor-id="guarding-against-missing-data">Guarding Against Missing Data</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> DEM_PATH.exists() <span class="kw">or</span> <span class="kw">not</span> SENTINEL_PATH.exists() <span class="kw">or</span> <span class="kw">not</span> BOUNDARY_PATH.exists():</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    st.error(<span class="st">"Expected data files were not found under `data/`. ..."</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    st.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>st.error</code> renders a message in Streamlit’s red error styling, and <code>st.stop()</code> immediately halts the script for this rerun, without raising an exception or showing a traceback to the viewer. This is the difference between a clear, one-line explanation of what is missing, and a wall of Python errors the moment someone opens the app against an empty <code>data/</code> folder.</p>
+</div>
+<details>
+<summary>
+Exercise 1: Add a fifth weight for a new factor
+</summary>
+<div style="text-align: justify;">
+<p>Suppose the project added a fifth suitability factor, distance from the nearest existing solar installation, already normalized to 0-1 and available as <code>layers["existing_solar"]</code>. Add a new <code>st.sidebar.slider</code> for its weight, include it in the <code>raw_weights</code> dictionary, and adjust <code>calculate_final_score</code>’s call so the automatic rescaling in <code>weights</code> still guarantees every weight sums to 1 regardless of how many factors there are.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>raw_weights <span class="op">=</span> {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"slope"</span>: st.sidebar.slider(<span class="st">"Slope"</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.25</span>, <span class="fl">0.05</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"aspect"</span>: st.sidebar.slider(<span class="st">"Aspect"</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.15</span>, <span class="fl">0.05</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ndvi"</span>: st.sidebar.slider(<span class="st">"Land cover (NDVI)"</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.25</span>, <span class="fl">0.05</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"access"</span>: st.sidebar.slider(<span class="st">"Access (roads/power)"</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.15</span>, <span class="fl">0.05</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"existing_solar"</span>: st.sidebar.slider(<span class="st">"Distance from existing solar"</span>, <span class="fl">0.0</span>, <span class="fl">1.0</span>, <span class="fl">0.20</span>, <span class="fl">0.05</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>weight_sum <span class="op">=</span> <span class="bu">sum</span>(raw_weights.values()) <span class="kw">or</span> <span class="fl">1.0</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> {name: value <span class="op">/</span> weight_sum <span class="cf">for</span> name, value <span class="kw">in</span> raw_weights.items()}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p><code>weight_sum</code> and the dictionary comprehension that builds <code>weights</code> never assumed exactly four factors, only that <code>raw_weights</code> is a dictionary of numbers, so no other line needs to change. <code>calculate_final_score</code> itself would need a fifth term added to its weighted sum in <code>modules/solar_suitability.py</code>, since that function’s signature is written for exactly four named factors.</p>
+</div>
+</details>
+</details>
+<details>
+<summary>
+Exercise 2: Warn when the weights are heavily skewed
+</summary>
+<div style="text-align: justify;">
+<p>Add a check in the sidebar that shows <code>st.sidebar.warning(...)</code> whenever any single factor’s rescaled weight exceeds 0.6, so a viewer who drags one slider all the way up gets a gentle nudge that the result is now dominated by one factor almost entirely.</p>
+</div>
+<details>
+<summary>
+Solution
+</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dominant <span class="op">=</span> [name <span class="cf">for</span> name, value <span class="kw">in</span> weights.items() <span class="cf">if</span> value <span class="op">&gt;</span> <span class="fl">0.6</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> dominant:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    st.sidebar.warning(<span class="ss">f"</span><span class="sc">{</span>dominant[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> is currently dominating the score (weight above 0.6)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</details>
+<section id="quick-quiz" class="level3">
+<h3 class="anchored" data-anchor-id="quick-quiz">Quick quiz</h3>
+<details>
+<summary>
+Question 1
+</summary>
+<div style="text-align: justify;">
+<p>Why does <code>app.py</code> use <code>st.cache_resource</code> for the alignment pipeline but <code>st.cache_data</code> for loading the aligned arrays afterward?</p>
+</div>
+<p>A. <code>st.cache_resource</code> is simply a newer, faster version of <code>st.cache_data</code></p>
+<p>B. <code>st.cache_resource</code> is meant for something built once and reused as-is across reruns, like the pipeline’s on-disk output, while <code>st.cache_data</code> is meant for values Streamlit should treat as data and hash by input, like the arrays read back from those files</p>
+<p>C. <code>st.cache_data</code> cannot be used on functions that open files</p>
+<p>D. <code>st.cache_resource</code> only works inside the sidebar</p>
+<details>
+<summary>
+Answer
+</summary>
+B. The pipeline function is really a one-time setup step, checking whether the aligned GeoTIFFs already exist and building them if not; it fits <code>st.cache_resource</code>’s job of holding a resource for the app’s lifetime. Loading and normalizing the resulting arrays are genuine data-in, data-out computations, exactly what <code>st.cache_data</code> is built around.
+</details>
+</details>
+<details>
+<summary>
+Question 2
+</summary>
+<div style="text-align: justify;">
+<p>A viewer drags the NDVI weight slider from 0.30 to 0.60. Which parts of <code>app.py</code> actually rerun as a result?</p>
+</div>
+<p>A. The entire pipeline in <code>build_aligned_layers_if_needed</code>, since any change re-triggers every cached function</p>
+<p>B. Nothing, since Streamlit only reruns on page reload</p>
+<p>C. The whole script reruns top to bottom, but <code>build_aligned_layers_if_needed</code>, <code>load_layers</code>, <code>compute_normalized_scores</code>, and <code>compute_aligned_water_mask</code> all return their cached results instantly; only <code>calculate_final_score</code>, the masking, classification, and the map/chart rebuilding actually do new work</p>
+<p>D. Only the slider widget itself updates; the rest of the page is untouched until the browser is refreshed</p>
+<details>
+<summary>
+Answer
+</summary>
+C. This is the core Streamlit execution model: every interaction reruns the entire script, but caching means most of that rerun is instant lookups rather than real computation. Only the genuinely cheap, weight-dependent steps do new work on each move.
+</details>
+</details>
+</section>
+</section>
+<section id="running-the-app" class="level2">
+<h2 class="anchored" data-anchor-id="running-the-app">Running the App</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">streamlit</span> run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="text-align: justify;">
+<p>The first run builds <code>data/outputs/aligned/</code>, showing the progress bar from the pipeline above. Every run after that starts instantly, and every slider, radio button, and checkbox in the sidebar updates the map, the metrics, and the bar chart live, with no page reload.</p>
+</div>
+</section>
+<section id="what-app.py-deliberately-does-not-do" class="level2">
+<h2 class="anchored" data-anchor-id="what-app.py-deliberately-does-not-do">What <code>app.py</code> Deliberately Does Not Do</h2>
+<div style="text-align: justify;">
+<p>Nothing in <code>app.py</code> recalculates NDVI, slope, aspect, or the access buffer from scratch on a slider move, and nothing in it duplicates a single formula already written in <code>modules/solar_suitability.py</code> or <code>modules/interactive_map.py</code>. If a future version of this project needed a different normalization curve for slope, or a different color scheme for the map, that change would happen in exactly one place, the relevant module, and <code>app.py</code> would not need to change at all. This is the payoff of the module-per-session structure the whole course has followed: the final integration step is almost all wiring, not logic.</p>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div style="text-align: justify;">
+<p>This session closed the course by building <code>app.py</code>, a Streamlit application that turns every module from Sessions 01 through 09 into one interactive page: a one-time pipeline with a progress bar, <code>st.cache_resource</code> and <code>st.cache_data</code> to keep everything else instant, a sidebar of sliders, a radio button, and a checkbox built with Streamlit’s own widget functions and their <code>help</code> tooltips, a full-width Folium map placed with <code>st_folium</code>, download buttons built from in-memory buffers, and a bar chart deliberately colored to match the map’s own legend with <code>altair</code>. The suitability score, the classification, and the map all update live, on every rerun, without ever touching disk again after the very first run. That is the solar site suitability project, start to finish, ten sessions and one working app.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" style="text-align: justify;">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Full project code
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The complete project, every module from <code>data_loader.py</code> through <code>interactive_map.py</code>, <code>app.py</code>, and the folder structure described in the course plan, is available on GitHub:</p>
+<p><a href="https://github.com/Yousefess/spatial-python-course/tree/main/app">Solar Site Suitability - Desierto de Tabernas</a></p>
+</div>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -847,7 +1171,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-10-streamlit-app.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/yousefess/spatial-python-course/edit/main/sessions/session-10-streamlit-app.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/yousefess/spatial-python-course/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>Built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>
