@@ -1,0 +1,302 @@
+---
+title: "session 10: a Streamlit app, from ten sessions to one page"
+subtitle: "Turning every module built so far into a live, interactive tool"
+number-sections: false
+jupyter: python3
+execute:
+  enabled: false
+format:
+  html: default
+  ipynb: default
+format-links: [ipynb]
+---
+
+## Introduction
+
+::: {style="text-align: justify;"}
+Every session since [**Session 01**](session-01-intro-loading-data.qmd) has ended the same way: build one module, save it into `modules/`, move on. [**Session 09**](session-09-interactive-map.qmd) produced a real interactive map, `solar_map.html`, but it was still a static export, a snapshot of one specific set of weights and thresholds, saved once and then frozen. This final session wraps everything built so far into `app.py`, a Streamlit web application where a viewer can move a slider and watch the suitability map redraw itself, live, in the browser, with no Python and no notebook in sight.
+:::
+
+::: {style="text-align: justify;"}
+This session is different from every one before it in one important way: it does not build a new module. `app.py` contains almost no analysis logic of its own. Its only job is to import `data_loader.py`, `raster_utils.py`, `indices.py`, `terrain_analysis.py`, `spatial_analysis.py`, `reprojector.py`, `solar_suitability.py`, and `interactive_map.py`, and wire them together. That is deliberate, and it is the entire point of having spent nine sessions building modules instead of writing one long script: the hard part is already finished.
+:::
+
+## Why Streamlit, and Not Just a Bigger Notebook
+
+::: {style="text-align: justify;"}
+A notebook, or the plain HTML file from [**Session 09**](session-09-interactive-map.qmd), only ever shows one result at a time, the one that was on screen when it was last saved. Streamlit turns a plain Python script into a web app by re-running that entire script, top to bottom, every single time the viewer interacts with anything, a slider, a checkbox, a button. This one idea, a full rerun on every interaction, explains almost everything about how a Streamlit app has to be written, and is worth understanding before looking at a single widget.
+:::
+
+::: {.callout-important style="text-align: justify;"}
+## Note: "rerun the whole script" sounds wasteful, and would be, without caching
+If moving a weight slider genuinely re-read every GeoTIFF from disk and rebuilt the entire pipeline from [**Session 04**](session-04-ndvi.qmd) through [**Session 07**](session-07-reprojection.qmd) each time, this app would be unusably slow. `st.cache_resource` and `st.cache_data`, covered next, exist specifically so that only the truly cheap part, the weighted sum itself, actually reruns on every slider move.
+:::
+
+## The Two Caching Decorators That Make This Fast
+
+::: {style="text-align: justify;"}
+`app.py` uses two different Streamlit caching decorators, on purpose, for two different kinds of expensive work.
+:::
+
+```python
+@st.cache_resource(show_spinner=False)
+def build_aligned_layers_if_needed():
+    ...
+```
+
+::: {style="text-align: justify;"}
+`st.cache_resource` is meant for something built once and reused as-is for the lifetime of the app, a database connection, a loaded model, or here, the entire [**Session 04**](session-04-ndvi.qmd) through [**Session 07**](session-07-reprojection.qmd) pipeline that produces the four aligned GeoTIFFs. The function checks whether `data/outputs/aligned/*.tif` already exist, and if so returns their paths immediately without recalculating anything. The very first time the app runs against a fresh `data/` folder, this function actually calls `load_and_calculate_indices`, `load_and_calculate_terrain`, `buffer_and_union`, `rasterize_to_reference`, `reproject_raster`, `resample_to_reference`, and `clip_array_to_boundary`, in that order, the exact chain Sessions 04 through 07 built by hand. Every rerun after that, this function's body never executes again for the lifetime of the running app.
+:::
+
+```python
+@st.cache_data(show_spinner="Loading aligned layers...")
+def load_layers(_aligned_paths):
+    ...
+```
+
+::: {style="text-align: justify;"}
+`st.cache_data` is meant for data, specifically for a function whose return value Streamlit can safely copy and hash by its inputs. `load_layers`, `compute_normalized_scores`, and `compute_aligned_water_mask` are all cached this way: the first time they run with a given input, Streamlit stores the result; every later rerun with the same input returns the cached array instantly instead of re-reading a GeoTIFF or recomputing a normalization.
+:::
+
+::: {.callout-tip style="text-align: justify;"}
+## Note: the leading underscore in `_aligned_paths`
+Streamlit's caching works by hashing a function's arguments, to know whether it has already seen this exact input before. A parameter name that starts with an underscore tells Streamlit not to try hashing it, useful here since `_aligned_paths` is a plain dictionary of file paths that will not change between reruns anyway, and some objects passed elsewhere in a larger app are not reliably hashable at all.
+:::
+
+::: {style="text-align: justify;"}
+Between these two layers of caching, the only thing that actually recomputes on every single rerun is the weighted sum itself, `calculate_final_score` from [**Session 08**](session-08-suitability-model.qmd), which is a handful of NumPy array multiplications on already-normalized arrays. That is fast enough to feel instant, which is the whole reason a slider works at all.
+:::
+
+## Building the Sidebar
+
+::: {style="text-align: justify;"}
+Every widget placed on `st.sidebar` instead of directly on `st`, renders in the collapsible panel down the left side of the page rather than in the main body, which is where this app keeps every control so the map itself stays full width.
+:::
+
+```python
+st.sidebar.header("Suitability weights")
+
+raw_weights = {
+    "slope": st.sidebar.slider(
+        "Slope", 0.0, 1.0, DEFAULT_WEIGHTS["slope"], 0.05,
+        help="How much a gentle slope matters...",
+    ),
+    ...
+}
+```
+
+::: {style="text-align: justify;"}
+`st.sidebar.slider(label, min_value, max_value, value, step, help=...)` returns whatever value the slider is currently sitting at, every single time the script reruns, which is why simply calling it and storing the return value is enough, there is no separate "on change" callback needed the way there would be in a traditional GUI toolkit. The `help` argument is doing real work here too: it renders a small icon next to the label that shows the given text in a tooltip on hover, which is how this app explains what each of the four factors actually means without needing a separate help button anywhere.
+:::
+
+```python
+weight_sum = sum(raw_weights.values()) or 1.0
+weights = {name: value / weight_sum for name, value in raw_weights.items()}
+```
+
+::: {style="text-align: justify;"}
+[**Session 08**](session-08-suitability-model.qmd) required its weights to add up to 1 by hand. Here, since a viewer might drag any slider to any value, the app rescales all four automatically every rerun, so no combination of slider positions can ever produce an invalid weighted sum.
+:::
+
+```python
+n_classes = st.sidebar.radio(
+    "Number of classes", options=[3, 5], horizontal=True,
+    help="3 classes: Unsuitable / Moderate / Suitable...",
+)
+```
+
+::: {style="text-align: justify;"}
+`st.sidebar.radio` works the same way as the sliders: it returns whichever option is currently selected, every rerun. This app uses that return value to pick between two entirely different color schemes and classification functions, `classify_suitability` for 3 classes with adjustable thresholds, and `classify_multi` for a fixed 5-class breakdown, both from `modules/solar_suitability.py`.
+:::
+
+## Laying Out the Main Page
+
+::: {style="text-align: justify;"}
+`st.columns(n)` splits the current section of the page into `n` side-by-side containers, and is used twice in this app: once for the two download buttons near the top, and once for the metric cards above the bar chart.
+:::
+
+```python
+download_col1, download_col2 = st.columns(2)
+with download_col1:
+    st.download_button("Download suitability_class.tif", data=tif_buffer, ...)
+```
+
+::: {style="text-align: justify;"}
+`st.download_button` needs its `data` argument ready before the button is drawn, which is why the app writes the classified raster into an in-memory `io.BytesIO` buffer, using `rasterio.io.MemoryFile`, and renders the Folium map's full HTML with `m.get_root().render()`, before either download button appears on the page. Nothing is written to disk for either download; both exist only as bytes held in memory for exactly as long as this rerun lasts.
+:::
+
+```python
+st_folium(m, height=700, use_container_width=True, returned_objects=[])
+```
+
+::: {style="text-align: justify;"}
+`st_folium`, from the separate `streamlit-folium` package, is what actually places a Folium map object inside a Streamlit page. Passing `returned_objects=[]` tells it not to bother sending anything back from the map, such as the last click location, since this app never reads that back; leaving it out would work too, but would waste a little time on every rerun serializing information nothing here uses.
+:::
+
+```python
+st.metric(label, f"{area:.1f} km²")
+```
+
+::: {style="text-align: justify;"}
+`st.metric` renders a single, large, dashboard-style number with a label above it, which is what turns "Suitable: 12.4" from a line of text into something that reads at a glance, exactly the kind of summary a non-technical stakeholder scans first.
+:::
+
+```python
+st.altair_chart(bar_chart, use_container_width=True)
+```
+
+::: {style="text-align: justify;"}
+Streamlit's own `st.bar_chart` is a fast, simple default, but it does not let each bar take its own specific color. Since this app needs the bar chart's colors to exactly match the map's legend, "Suitable" green on the map has to be the same green in the chart, it builds the chart with `altair` instead, and passes an explicit `alt.Scale(domain=..., range=...)` mapping each class label to the same hex color used everywhere else. `st.altair_chart` is simply the function that renders any chart built with the `altair` library inside a Streamlit page.
+:::
+
+## The One-Time Pipeline, Shown Live
+
+::: {style="text-align: justify;"}
+The very first time `app.py` runs against a fresh project, `build_aligned_layers_if_needed` has real work to do, and a viewer would otherwise stare at a blank page for however long that takes.
+:::
+
+```python
+progress = st.progress(0, text="Running the full pipeline for the first time...")
+progress.progress(30, text="Calculating slope and aspect (Session 05)...")
+...
+progress.progress(100, text="Done.")
+progress.empty()
+```
+
+::: {style="text-align: justify;"}
+`st.progress` draws a progress bar and returns a handle; calling `.progress()` again on that same handle updates the existing bar in place, rather than drawing a new one underneath it, and updating its `text` argument at each step is what lets the viewer see exactly which Session's logic is currently running. `.empty()` removes the bar entirely once the pipeline is done, so it does not sit uselessly on the page for the rest of the session.
+:::
+
+## Guarding Against Missing Data
+
+```python
+if not DEM_PATH.exists() or not SENTINEL_PATH.exists() or not BOUNDARY_PATH.exists():
+    st.error("Expected data files were not found under `data/`. ...")
+    st.stop()
+```
+
+::: {style="text-align: justify;"}
+`st.error` renders a message in Streamlit's red error styling, and `st.stop()` immediately halts the script for this rerun, without raising an exception or showing a traceback to the viewer. This is the difference between a clear, one-line explanation of what is missing, and a wall of Python errors the moment someone opens the app against an empty `data/` folder.
+:::
+
+<details>
+<summary>Exercise 1: Add a fifth weight for a new factor</summary>
+
+::: {style="text-align: justify;"}
+Suppose the project added a fifth suitability factor, distance from the nearest existing solar installation, already normalized to 0-1 and available as `layers["existing_solar"]`. Add a new `st.sidebar.slider` for its weight, include it in the `raw_weights` dictionary, and adjust `calculate_final_score`'s call so the automatic rescaling in `weights` still guarantees every weight sums to 1 regardless of how many factors there are.
+:::
+
+<details>
+<summary>Solution</summary>
+
+```python
+raw_weights = {
+    "slope": st.sidebar.slider("Slope", 0.0, 1.0, 0.25, 0.05),
+    "aspect": st.sidebar.slider("Aspect", 0.0, 1.0, 0.15, 0.05),
+    "ndvi": st.sidebar.slider("Land cover (NDVI)", 0.0, 1.0, 0.25, 0.05),
+    "access": st.sidebar.slider("Access (roads/power)", 0.0, 1.0, 0.15, 0.05),
+    "existing_solar": st.sidebar.slider("Distance from existing solar", 0.0, 1.0, 0.20, 0.05),
+}
+weight_sum = sum(raw_weights.values()) or 1.0
+weights = {name: value / weight_sum for name, value in raw_weights.items()}
+```
+
+::: {style="text-align: justify;"}
+`weight_sum` and the dictionary comprehension that builds `weights` never assumed exactly four factors, only that `raw_weights` is a dictionary of numbers, so no other line needs to change. `calculate_final_score` itself would need a fifth term added to its weighted sum in `modules/solar_suitability.py`, since that function's signature is written for exactly four named factors.
+:::
+
+</details>
+</details>
+
+<details>
+<summary>Exercise 2: Warn when the weights are heavily skewed</summary>
+
+::: {style="text-align: justify;"}
+Add a check in the sidebar that shows `st.sidebar.warning(...)` whenever any single factor's rescaled weight exceeds 0.6, so a viewer who drags one slider all the way up gets a gentle nudge that the result is now dominated by one factor almost entirely.
+:::
+
+<details>
+<summary>Solution</summary>
+
+```python
+dominant = [name for name, value in weights.items() if value > 0.6]
+if dominant:
+    st.sidebar.warning(f"{dominant[0]} is currently dominating the score (weight above 0.6).")
+```
+
+</details>
+</details>
+
+### Quick quiz
+
+<details>
+<summary>Question 1</summary>
+
+::: {style="text-align: justify;"}
+Why does `app.py` use `st.cache_resource` for the alignment pipeline but `st.cache_data` for loading the aligned arrays afterward?
+:::
+
+A. `st.cache_resource` is simply a newer, faster version of `st.cache_data`
+
+B. `st.cache_resource` is meant for something built once and reused as-is across reruns, like the pipeline's on-disk output, while `st.cache_data` is meant for values Streamlit should treat as data and hash by input, like the arrays read back from those files
+
+C. `st.cache_data` cannot be used on functions that open files
+
+D. `st.cache_resource` only works inside the sidebar
+
+<details>
+<summary>Answer</summary>
+B. The pipeline function is really a one-time setup step, checking whether the aligned GeoTIFFs already exist and building them if not; it fits `st.cache_resource`'s job of holding a resource for the app's lifetime. Loading and normalizing the resulting arrays are genuine data-in, data-out computations, exactly what `st.cache_data` is built around.
+</details>
+</details>
+
+<details>
+<summary>Question 2</summary>
+
+::: {style="text-align: justify;"}
+A viewer drags the NDVI weight slider from 0.30 to 0.60. Which parts of `app.py` actually rerun as a result?
+:::
+
+A. The entire pipeline in `build_aligned_layers_if_needed`, since any change re-triggers every cached function
+
+B. Nothing, since Streamlit only reruns on page reload
+
+C. The whole script reruns top to bottom, but `build_aligned_layers_if_needed`, `load_layers`, `compute_normalized_scores`, and `compute_aligned_water_mask` all return their cached results instantly; only `calculate_final_score`, the masking, classification, and the map/chart rebuilding actually do new work
+
+D. Only the slider widget itself updates; the rest of the page is untouched until the browser is refreshed
+
+<details>
+<summary>Answer</summary>
+C. This is the core Streamlit execution model: every interaction reruns the entire script, but caching means most of that rerun is instant lookups rather than real computation. Only the genuinely cheap, weight-dependent steps do new work on each move.
+</details>
+</details>
+
+## Running the App
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+::: {style="text-align: justify;"}
+The first run builds `data/outputs/aligned/`, showing the progress bar from the pipeline above. Every run after that starts instantly, and every slider, radio button, and checkbox in the sidebar updates the map, the metrics, and the bar chart live, with no page reload.
+:::
+
+## What `app.py` Deliberately Does Not Do
+
+::: {style="text-align: justify;"}
+Nothing in `app.py` recalculates NDVI, slope, aspect, or the access buffer from scratch on a slider move, and nothing in it duplicates a single formula already written in `modules/solar_suitability.py` or `modules/interactive_map.py`. If a future version of this project needed a different normalization curve for slope, or a different color scheme for the map, that change would happen in exactly one place, the relevant module, and `app.py` would not need to change at all. This is the payoff of the module-per-session structure the whole course has followed: the final integration step is almost all wiring, not logic.
+:::
+
+## Summary
+
+::: {style="text-align: justify;"}
+This session closed the course by building `app.py`, a Streamlit application that turns every module from Sessions 01 through 09 into one interactive page: a one-time pipeline with a progress bar, `st.cache_resource` and `st.cache_data` to keep everything else instant, a sidebar of sliders, a radio button, and a checkbox built with Streamlit's own widget functions and their `help` tooltips, a full-width Folium map placed with `st_folium`, download buttons built from in-memory buffers, and a bar chart deliberately colored to match the map's own legend with `altair`. The suitability score, the classification, and the map all update live, on every rerun, without ever touching disk again after the very first run. That is the solar site suitability project, start to finish, ten sessions and one working app.
+:::
+
+::: {.callout-note style="text-align: justify;"}
+## Full project code
+The complete project, every module from `data_loader.py` through `interactive_map.py`, `app.py`, and the folder structure described in the course plan, is available on GitHub:
+
+[Solar Site Suitability - Desierto de Tabernas](https://github.com/Yousefess/spatial-python-course/tree/main/app)
+:::
