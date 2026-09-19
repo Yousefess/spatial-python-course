@@ -4,7 +4,7 @@ project:
 
 book:
   title: "Spatial Python"
-  subtitle: "A project-based course in spatial data science with Python"
+  subtitle: "A project-based course in spatial data with Python"
   author: "Yousef Esmaeili"
   date: today
 

@@ -1,0 +1,56 @@
+---
+title: "references"
+subtitle: "Courses and books this material draws on and points to for further study"
+number-sections: false
+format:
+  html: default
+---
+
+::: {style="text-align: justify;"}
+This course does not exist in isolation. The four resources below cover much of the same ground, sometimes with more depth, sometimes from a different angle, and are worth working through alongside or after this course, depending on what a student wants next.
+:::
+
+## Geo-Python
+
+::: {style="text-align: justify;"}
+[geo-python-site.readthedocs.io](https://geo-python-site.readthedocs.io/en/latest/)
+:::
+
+::: {style="text-align: justify;"}
+A free, open-access course from the University of Helsinki, jointly run by its Geography and Geoscience programs. It teaches general-purpose Python for scientific data analysis from the very beginning, variables, lists, functions, pandas, and plotting, with no assumed programming background. This course assumed exactly that foundation already existed; Geo-Python is the right place to build it first, or to fill any gaps [**Session 00**](session-00-python-review.qmd) moved through quickly.
+:::
+
+## Spatial Thoughts
+
+::: {style="text-align: justify;"}
+[courses.spatialthoughts.com](https://courses.spatialthoughts.com/index.html)
+:::
+
+::: {style="text-align: justify;"}
+An open learning platform run by Ujaval Gandhi, covering QGIS, Python, Google Earth Engine, and GDAL through free, self-paced course material as well as paid, instructor-led classes. Its Python offerings span from a general spatial analysis foundation through to dedicated courses on mapping and dashboarding, including Folium and Streamlit, the same two libraries this course's final sessions are built around. Useful both as a second, independent explanation of topics this course covers, and for going further into remote sensing and Google Earth Engine, which this course does not touch at all.
+:::
+
+## Geographic Data Science with Python
+
+::: {style="text-align: justify;"}
+[geographicdata.science/book](https://geographicdata.science/book/)
+:::
+
+::: {style="text-align: justify;"}
+The free online edition of the textbook by Sergio Rey, Dani Arribas-Bel, and Levi Wolf, also published in print by CRC Press. It leans more toward spatial statistics and spatial data science proper, clustering, spatial autocorrelation, regionalization, than toward raster processing, which makes it a natural next step after this course for anyone whose interest is less "build a suitability map" and more "ask statistical questions of geographic data."
+:::
+
+## Geospatial Data Science Applications (Duke)
+
+::: {style="text-align: justify;"}
+[ryan-lab-duke.github.io/gds-applications-site](https://ryan-lab-duke.github.io/gds-applications-site/intro.html)
+:::
+
+::: {style="text-align: justify;"}
+Course material from Jonathan Ryan's Geospatial Data Science course at Duke University's Earth and Climate Sciences department. Being university course material rather than a self-contained public tutorial series, it is more variable in how self-explanatory it is outside its original classroom, but it is a useful applied counterpart to this course, working through real geospatial data science workflows end to end, the same instinct behind this course's single running solar suitability project.
+:::
+
+::: {.callout-note style="text-align: justify;"}
+## How to use these alongside this course
+None of the four resources above are prerequisites. They are listed here for after this course, or alongside it, for a student who wants a second explanation of a specific topic, such as reprojection or spatial joins, or who wants to go further into an area this course only touches once, such as remote sensing with Google Earth Engine, or spatial statistics proper.
+:::
