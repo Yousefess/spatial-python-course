@@ -355,7 +355,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sessions/session-01-intro-loading-data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 01: working with raster data</span></a>
+  <a href="../sessions/session-01-intro-loading-data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">session 01: getting started with spatial data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -502,7 +502,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="text-align: center; margin-top: -25px; margin-bottom: 50px; font-size: 0.85em; opacity: 0.65;">
 <p><em>Image generated with GPT Image 2.5.</em></p>
 </div>
-<div id="d0317020" class="cell" data-execution_count="1">
+<div id="7aff7821" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -542,7 +542,7 @@ Is geographic: True
 <div style="text-align: justify;">
 <p>The correct fix, reprojecting the DEM into a projected, meters-based CRS such as a UTM zone, is exactly the topic of <a href="../sessions/session-07-reprojection.html"><strong>Session 07</strong></a>, and doing it properly there means resampling the whole raster onto a new grid, not just adjusting two numbers. For this session, since we only need a reasonable pixel size in meters to get slope and aspect right, not a fully reprojected raster, we convert the degree-based resolution to an approximate meter-based one instead, using the well known fact that one degree of latitude is about 111,320 meters everywhere, while one degree of longitude shrinks as latitude increases, since meridians converge toward the poles.</p>
 </div>
-<div id="b79a6cee" class="cell" data-execution_count="2">
+<div id="87aa6d3f" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> crs.is_geographic:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    center_latitude <span class="op">=</span> (bounds.top <span class="op">+</span> bounds.bottom) <span class="op">/</span> <span class="dv">2</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    meters_per_degree_lat <span class="op">=</span> <span class="dv">111320</span></span>
@@ -575,7 +575,7 @@ Is geographic: True
 <div style="text-align: justify;">
 <p><code>np.gradient</code> computes exactly this kind of neighbor-to-neighbor rate of change for an entire array at once, no explicit loop needed, the same vectorized spirit as every calculation so far in this course. Passed a spacing value for each axis, it divides by the correct real-world distance automatically.</p>
 </div>
-<div id="8e9ffea0" class="cell" data-execution_count="3">
+<div id="4c8ef831" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dy, dx <span class="op">=</span> np.gradient(dem, y_resolution, x_resolution)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"dx shape:"</span>, dx.shape)</span>
@@ -604,7 +604,7 @@ dy shape: (605, 610)</code></pre>
 <div style="text-align: justify;">
 <p>Slope is the steepness of the terrain at each pixel, independent of which direction it faces. Once we have <code>dx</code> and <code>dy</code>, slope is the angle whose tangent is the combined magnitude of the two gradients, converted from radians to degrees since degrees are the more familiar unit for describing a hillside.</p>
 </div>
-<div id="d4f1aa7b" class="cell" data-execution_count="4">
+<div id="8c95b9a9" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_slope(dx, dy):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate slope in degrees from x and y gradients."""</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    slope_radians <span class="op">=</span> np.arctan(np.sqrt(dx<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> dy<span class="op">**</span><span class="dv">2</span>))</span>
@@ -627,7 +627,7 @@ dy shape: (605, 610)</code></pre>
 <div style="text-align: justify;">
 <p>Aspect is the compass direction the slope faces, the direction water would flow downhill from that pixel. It comes from the same <code>dx</code> and <code>dy</code> gradients, but through <code>arctan2</code>, which correctly handles all four quadrants of direction rather than just a single angle.</p>
 </div>
-<div id="90ff1abd" class="cell" data-execution_count="5">
+<div id="85ca89f3" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_aspect(dx, dy):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate aspect in degrees (0-360, 0 = north, clockwise) from x and y gradients."""</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    aspect_radians <span class="op">=</span> np.arctan2(dy, <span class="op">-</span>dx)</span>
@@ -662,7 +662,7 @@ dy shape: (605, 610)</code></pre>
 <div style="text-align: justify;">
 <p>Where a pixel is perfectly flat, both <code>dx</code> and <code>dy</code> are 0, and aspect becomes mathematically undefined, not zero, undefined, since there is no downhill direction on flat ground. <code>arctan2(0, 0)</code> does not raise an error, it silently returns 0, which would incorrectly show every flat pixel as facing due north. We mark these pixels explicitly instead of letting that silent default stand.</p>
 </div>
-<div id="f89651bd" class="cell" data-execution_count="6">
+<div id="c2015234" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>FLAT_THRESHOLD <span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>flat_mask <span class="op">=</span> slope <span class="op">&lt;</span> FLAT_THRESHOLD</span>
@@ -680,7 +680,7 @@ dy shape: (605, 610)</code></pre>
 <div style="text-align: justify;">
 <p>Slope is a sequential quantity, 0 degrees is meaningfully “less” than 40 degrees, so a sequential colormap such as <code>"YlOrRd"</code> fits it well: pale for gentle, dark red for steep. Aspect is different: it is a circular quantity, 359 degrees and 1 degree are almost the same direction, nearly due north, but a normal sequential colormap would show them as opposite ends of the color scale, visually implying they are as different as possible. A cyclic colormap such as <code>"hsv"</code> or <code>"twilight"</code> fixes this, wrapping smoothly back to its starting color as the value passes 360.</p>
 </div>
-<div id="b17547b8" class="cell" data-execution_count="7">
+<div id="9d92d662" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>))</span>
@@ -723,7 +723,7 @@ Tip
 <div style="text-align: justify;">
 <p>A normal histogram works well for slope, since it is not a circular quantity.</p>
 </div>
-<div id="51c07ae9" class="cell" data-execution_count="8">
+<div id="b2e46d9d" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ax.hist(slope.flatten(), bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"darkorange"</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Slope (degrees)"</span>)</span>
@@ -757,7 +757,7 @@ Tip
 <div style="text-align: justify;">
 <p>The project’s suitability rule favors slopes under 10 degrees and south facing aspects, roughly 150 to 220 degrees. We build both masks here to inspect them, exactly as we did with the NDWI water mask in <a href="../sessions/session-04-ndvi.html"><strong>Session 04</strong></a>, without applying them to any score yet, that step waits for the weighted overlay in <a href="../sessions/session-08-suitability-model.html"><strong>Session 08</strong></a>.</p>
 </div>
-<div id="89472964" class="cell" data-execution_count="9">
+<div id="0944099d" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gentle_slope_mask <span class="op">=</span> slope <span class="op">&lt;</span> <span class="dv">10</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>south_facing_mask <span class="op">=</span> (aspect <span class="op">&gt;=</span> <span class="dv">150</span>) <span class="op">&amp;</span> (aspect <span class="op">&lt;=</span> <span class="dv">220</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>both_favorable <span class="op">=</span> gentle_slope_mask <span class="op">&amp;</span> south_facing_mask</span>
@@ -771,7 +771,7 @@ South facing (150-220 deg): 24.72%
 Both favorable: 10.56%</code></pre>
 </div>
 </div>
-<div id="7f9326cd" class="cell" data-execution_count="10">
+<div id="eb8f6984" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ax.imshow(both_favorable, cmap<span class="op">=</span><span class="st">"Greens"</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Gentle Slope AND South Facing"</span>)</span>
@@ -795,7 +795,7 @@ Exercise 1: A stricter slope threshold
 <summary>
 Solution
 </summary>
-<div id="791c9f5e" class="cell" data-execution_count="11">
+<div id="03814be7" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>strict_slope_mask <span class="op">=</span> slope <span class="op">&lt;</span> <span class="dv">5</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Under 5 degrees: </span><span class="sc">{</span>(np.<span class="bu">sum</span>(strict_slope_mask) <span class="op">/</span> strict_slope_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
@@ -818,7 +818,7 @@ Exercise 2: Widen the favorable aspect range
 <summary>
 Solution
 </summary>
-<div id="56072a22" class="cell" data-execution_count="12">
+<div id="4238c530" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>wide_south_facing_mask <span class="op">=</span> (aspect <span class="op">&gt;=</span> <span class="dv">120</span>) <span class="op">&amp;</span> (aspect <span class="op">&lt;=</span> <span class="dv">250</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Narrow range (150-220): </span><span class="sc">{</span>(np.<span class="bu">sum</span>(south_facing_mask) <span class="op">/</span> south_facing_mask.size) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
@@ -854,7 +854,7 @@ B. Flat ground has no downhill direction, so aspect is genuinely undefined there
 </section>
 <section id="saving-the-results" class="level2">
 <h2 class="anchored" data-anchor-id="saving-the-results">Saving the Results</h2>
-<div id="34365667" class="cell" data-execution_count="13">
+<div id="70d8796e" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>Path(<span class="st">"data/outputs"</span>).mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
@@ -882,7 +882,7 @@ B. Flat ground has no downhill direction, so aspect is genuinely undefined there
 <div style="text-align: justify;">
 <p><code>matplotlib</code> ships a ready-made tool for this, <code>matplotlib.colors.LightSource</code>, which takes a raw elevation array and a chosen sun azimuth, compass direction, and altitude, angle above the horizon, and returns a shaded image directly, without us needing to reimplement the illumination formula by hand.</p>
 </div>
-<div id="536e64d8" class="cell" data-execution_count="14">
+<div id="dfba979e" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> LightSource</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>light_source <span class="op">=</span> LightSource(azdeg<span class="op">=</span><span class="dv">315</span>, altdeg<span class="op">=</span><span class="dv">45</span>)</span>
@@ -928,7 +928,7 @@ Exercise 3: Light from the east
 <summary>
 Solution
 </summary>
-<div id="27fc1480" class="cell" data-execution_count="15">
+<div id="46d2c032" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>light_source_east <span class="op">=</span> LightSource(azdeg<span class="op">=</span><span class="dv">90</span>, altdeg<span class="op">=</span><span class="dv">45</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>hillshade_east <span class="op">=</span> light_source_east.hillshade(dem, vert_exag<span class="op">=</span><span class="dv">1</span>, dx<span class="op">=</span>x_resolution, dy<span class="op">=</span>y_resolution)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
