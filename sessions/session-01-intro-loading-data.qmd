@@ -1,6 +1,6 @@
 ---
-title: "session 01: working with raster data"
-subtitle: "Getting started with spatial data and rasterio"
+title: "session 01: getting started with spatial data"
+subtitle: "Getting started with spatial data, rasterio, and geopandas"
 number-sections: false
 jupyter: python3
 execute:
@@ -30,7 +30,7 @@ Spatial resolution is the single most important property of a raster to internal
 :::
 
 ::: {style="text-align: justify;"}
-A raster is never just a grid of numbers. Every raster file also carries geographic metadata that ties that grid to a real location on Earth: a coordinate reference system (CRS), defining which projection and datum the coordinates use, and an affine transform, defining exactly how a pixel's row and column position maps to a real-world coordinate. Without this metadata, a raster is just an image; with it, a raster becomes a georeferenced dataset that can be measured, compared, and combined with other spatial data. This is the deepest conceptual difference between a raster and an ordinary photograph: a photograph has pixels, but a raster has pixels that know exactly where they are. We will look closely at this metadata in [**Session 03**](session-03-raster-metadata-crs); for now it is enough to know that it exists.
+A raster is never just a grid of numbers. Every raster file also carries geographic metadata that ties that grid to a real location on Earth: a coordinate reference system (CRS), defining which projection and datum the coordinates use, and an affine transform, defining exactly how a pixel's row and column position maps to a real-world coordinate. Without this metadata, a raster is just an image; with it, a raster becomes a georeferenced dataset that can be measured, compared, and combined with other spatial data. This is the deepest conceptual difference between a raster and an ordinary photograph: a photograph has pixels, but a raster has pixels that know exactly where they are. We will look closely at this metadata in [**Session 03**](session-03-raster-metadata-crs.qmd); for now it is enough to know that it exists.
 :::
 
 ::: {style="text-align: justify;"}
@@ -93,12 +93,24 @@ import matplotlib.pyplot as plt
 ## Reading and Displaying a Raster
 
 ::: {style="text-align: justify;"}
-A raster file is opened with `rasterio.open()`, which returns a dataset object giving access to both the pixel values and the geographic metadata attached to the file. We open files using a `with` block, which automatically closes the file once we are done with it, even if an error occurs inside the block. This is the same pattern used when reading plain text files in Python, and you should use it every time you open a raster in this course.
+A raster file is opened with `rasterio.open()`, which returns a dataset object giving access to both the pixel values and the geographic metadata attached to the file. Before introducing the pattern we will use throughout this course, it is worth seeing the plain, manual way of doing this first.
 :::
 
 ```{python}
 sentinel_path = "data/sentinel.tif"
 
+# Without with: we must open and close the file ourselves
+src = rasterio.open(sentinel_path)
+print("Number of bands:", src.count)
+print("Width, height:", src.width, src.height)
+src.close()
+```
+
+::: {.callout-warning style="text-align: justify;"}
+In this approach, if we forget to call `src.close()`, or an error occurs between opening and closing the file, the file stays open and system resources are never released. This is why the standard, recommended pattern throughout this course is the `with` block, shown next: the file closes automatically, even if an error occurs inside the block. This is the same pattern used when reading plain text files in Python, and you should use it every time you open a raster in this course.
+:::
+
+```{python}
 with rasterio.open(sentinel_path) as src:
     print("Number of bands:", src.count)
     print("Width, height:", src.width, src.height)
@@ -123,7 +135,28 @@ with rasterio.open(sentinel_path) as src:
 ```
 
 ::: {.callout-note style="text-align: justify;"}
-The colors in this first look are not necessarily a fully accurate natural color image, since we have not yet told `rasterio` which bands correspond to red, green, and blue, or corrected the brightness. We return to building a proper color composite in a later session. For now, this is enough to confirm the file opens correctly and to see the shape of our study area.
+The colors in this first look are not necessarily a fully accurate natural color image, since we have not yet told `rasterio` which bands correspond to red, green, and blue, or corrected the brightness. For now, this is enough to confirm the file opens correctly and to see the shape of our study area. The next plot explains exactly why it looks the way it does.
+:::
+
+```{python}
+import numpy as np
+
+with rasterio.open(sentinel_path) as src:
+    fig, ax = plt.subplots(figsize=(8, 8))
+    # Bands reordered to Red, Green, Blue (3, 2, 1) for true color
+    rgb = src.read([3, 2, 1]).astype("float32")
+    # Normalize each band to the 0-1 range using percentile stretch
+    for i in range(rgb.shape[0]):
+        band = rgb[i]
+        low, high = np.percentile(band, (2, 98))
+        rgb[i] = np.clip((band - low) / (high - low), 0, 1)
+    show(rgb, transform=src.transform, ax=ax)
+    ax.set_title("Sentinel-2 Image (True Color, bands 3-2-1)")
+    plt.show()
+```
+
+::: {.callout-note style="text-align: justify;"}
+The image above the plot appears blue because `show(src)` by default maps a dataset's first, second, and third bands to the red, green, and blue display channels, in that order. In this course's `sentinel.tif`, band 1 is Blue, band 2 is Green, and band 3 is Red, so that default mapping swaps the colors and tints the whole image blue. Passing the bands manually in true-color order, `[3, 2, 1]` (Red, Green, Blue), displays the image with realistic colors instead. We look at band order and building a proper color composite in more detail in [**Session 03**](session-03-raster-metadata-crs.qmd); this is just a quick preview of why the problem happens.
 :::
 
 ## Overlaying the Study Boundary
@@ -140,7 +173,7 @@ boundary.head()
 ```
 
 ::: {style="text-align: justify;"}
-Before drawing two spatial datasets together, we must confirm they share the same coordinate reference system. If they do not, the two layers are measured in different units or origins, and drawing them on the same axes places them in completely different, unrelated positions, which is exactly what causes the boundary to appear missing or wildly out of place. We cover CRS properly in [**Session 03**](session-03-raster-metadata-crs); for now we only need `.to_crs()` to fix a mismatch when we find one.
+Before drawing two spatial datasets together, we must confirm they share the same coordinate reference system. If they do not, the two layers are measured in different units or origins, and drawing them on the same axes places them in completely different, unrelated positions, which is exactly what causes the boundary to appear missing or wildly out of place. We cover CRS properly in [**Session 03**](session-03-raster-metadata-crs.qmd); for now we only need `.to_crs()` to fix a mismatch when we find one.
 :::
 
 ```{python}

@@ -5,7 +5,7 @@ number-sections: false
 ---
 
 ::: {style="text-align: justify;"}
-This page documents every dataset the Solar Site Suitability project relies on: where it comes from, what it actually represents, why it was chosen over alternatives, and how it is downloaded. The code shown here is the exact acquisition script used to prepare the course data before **Session 1**. It is shown for reference and is not executed on this page, since running it requires personal credentials (a Google Earth Engine project) and produces large files that do not belong on a documentation page.
+This page documents every dataset the Solar Site Suitability project relies on: where it comes from, what it actually represents, why it was chosen over alternatives, and how it is downloaded. The code shown here is the exact acquisition script used to prepare the course data before [**Session 01**](session-01-intro-loading-data.qmd). It is shown for reference and is not executed on this page, since running it requires personal credentials (a Google Earth Engine project) and produces large files that do not belong on a documentation page.
 :::
 
 ::: {.callout-note}
@@ -53,7 +53,7 @@ boundary_gdf.to_file(DATA_DIR / "boundary.gpkg", driver="GPKG")
 
 ::: {.callout-tip}
 ## Why EPSG:4326
-The boundary is kept in EPSG:4326 (plain latitude and longitude) because this is the coordinate system that Earth Engine expects when a region is passed to it. Reprojecting into a metric CRS happens later, in Session 3 and Session 7, once we actually need to measure distances or areas in meters.
+The boundary is kept in EPSG:4326 (plain latitude and longitude) because this is the coordinate system that Earth Engine expects when a region is passed to it. Reprojecting into a metric CRS happens later, in [**Session 03**](session-03-raster-metadata-crs.qmd) and [**Session 07**](session-07-reprojection.qmd), once we actually need to measure distances or areas in meters.
 :::
 
 ## Digital Elevation Model, Copernicus GLO-30
@@ -206,7 +206,7 @@ OpenStreetMap tags high voltage transmission lines as `power=line` and lower vol
 ## Summary of Files Produced
 
 ::: {style="text-align: justify;"}
-Running the full acquisition script produces the following files inside the project's `data` folder, all sharing the same study area boundary and coordinate reference system, ready to be used starting in Session 1.
+Running the full acquisition script produces the following files inside the project's `data` folder, all sharing the same study area boundary and coordinate reference system, ready to be used starting in [**Session 01**](session-01-intro-loading-data.qmd).
 :::
 
 | File | Source | Format | Resolution |

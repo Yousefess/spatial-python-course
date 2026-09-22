@@ -9,3 +9,5 @@ streamlit==1.64.0
 streamlit-folium==0.26.2
 pandas==2.3.3
 altair==6.2.2
+osmnx==2.0.7
+jupyter==1.1.1
