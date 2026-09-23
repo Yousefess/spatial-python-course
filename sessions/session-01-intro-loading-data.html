@@ -86,9 +86,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-5d0a22d5375dadc0ddf890a35cf88ce7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-a7fd6c084b342e237892950f5c4da81a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-d63b0be70d7b14b41bfe1a90cf2836ae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-a7fd6c084b342e237892950f5c4da81a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c6ff206949e7280a2a80383af5830921.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-f18cd0e9f554a7f63248d41a889299b5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-c6ff206949e7280a2a80383af5830921.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -543,7 +543,7 @@ Note
 <div style="text-align: justify;">
 <p><code>rasterio</code> is the core library for reading and writing raster data, built on top of GDAL, the standard low-level engine for geospatial data access. <code>matplotlib</code> is used for all visualization. We import both up front.</p>
 </div>
-<div id="94a8e1a4" class="cell" data-execution_count="1">
+<div id="7e8e0306" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rasterio</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -553,7 +553,7 @@ Note
 <div style="text-align: justify;">
 <p>A raster file is opened with <code>rasterio.open()</code>, which returns a dataset object giving access to both the pixel values and the geographic metadata attached to the file. Before introducing the pattern we will use throughout this course, it is worth seeing the plain, manual way of doing this first.</p>
 </div>
-<div id="c66d21f8" class="cell" data-execution_count="2">
+<div id="f3f63c1b" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sentinel_path <span class="op">=</span> <span class="st">"data/sentinel.tif"</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Without with: we must open and close the file ourselves</span></span>
@@ -579,7 +579,7 @@ Warning
 <p>In this approach, if we forget to call <code>src.close()</code>, or an error occurs between opening and closing the file, the file stays open and system resources are never released. This is why the standard, recommended pattern throughout this course is the <code>with</code> block, shown next: the file closes automatically, even if an error occurs inside the block. This is the same pattern used when reading plain text files in Python, and you should use it every time you open a raster in this course.</p>
 </div>
 </div>
-<div id="b32e323a" class="cell" data-execution_count="3">
+<div id="14066675" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of bands:"</span>, src.count)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Width, height:"</span>, src.width, src.height)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -604,7 +604,7 @@ Important
 <div style="text-align: justify;">
 <p><code>rasterio.plot.show</code> is a convenience function built specifically to display raster data correctly, plotting pixels at their true geographic coordinates using the file’s transform, rather than raw pixel indices. Passed a multi-band dataset directly, it automatically builds a simple color composite from the first three bands.</p>
 </div>
-<div id="0f5559f8" class="cell" data-execution_count="4">
+<div id="3e17214d" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rasterio.plot <span class="im">import</span> show</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
@@ -633,7 +633,7 @@ Note
 <p>The colors in this first look are not necessarily a fully accurate natural color image, since we have not yet told <code>rasterio</code> which bands correspond to red, green, and blue, or corrected the brightness. For now, this is enough to confirm the file opens correctly and to see the shape of our study area. The next plot explains exactly why it looks the way it does.</p>
 </div>
 </div>
-<div id="82f9e10f" class="cell" data-execution_count="5">
+<div id="abaceee4" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
@@ -675,7 +675,7 @@ Note
 <div style="text-align: justify;">
 <p>We use <code>geopandas</code> to read the vector boundary of our study area. <code>geopandas</code> extends the familiar <code>pandas</code> DataFrame with a geometry column, allowing spatial data to be read and drawn with a simple, consistent syntax. We will study it properly in the next session; here we only need <code>.read_file()</code> and <code>.plot()</code>.</p>
 </div>
-<div id="81fd1145" class="cell" data-execution_count="6">
+<div id="3837cf2b" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>boundary <span class="op">=</span> gpd.read_file(<span class="st">"data/Desierto_de_Tabernas.gpkg"</span>)</span>
@@ -717,7 +717,7 @@ Note
 <div style="text-align: justify;">
 <p>Before drawing two spatial datasets together, we must confirm they share the same coordinate reference system. If they do not, the two layers are measured in different units or origins, and drawing them on the same axes places them in completely different, unrelated positions, which is exactly what causes the boundary to appear missing or wildly out of place. We cover CRS properly in <a href="../sessions/session-03-raster-metadata-crs.html"><strong>Session 03</strong></a>; for now we only need <code>.to_crs()</code> to fix a mismatch when we find one.</p>
 </div>
-<div id="9f89e52a" class="cell" data-execution_count="7">
+<div id="c01acc8a" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    sentinel_crs <span class="op">=</span> src.crs</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -733,7 +733,7 @@ Boundary CRS: EPSG:3857
 Match: False</code></pre>
 </div>
 </div>
-<div id="0776e64e" class="cell" data-execution_count="8">
+<div id="59a1a3cc" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(sentinel_path) <span class="im">as</span> src:</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    show(src, ax<span class="op">=</span>ax)</span>
@@ -772,7 +772,7 @@ Exercise: Open the DEM
 <summary>
 Solution
 </summary>
-<div id="12e4c0a6" class="cell" data-execution_count="9">
+<div id="d23a51dc" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dem_path <span class="op">=</span> <span class="st">"data/dem.tif"</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> rasterio.<span class="bu">open</span>(dem_path) <span class="im">as</span> src:</span>
